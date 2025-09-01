@@ -12,11 +12,11 @@ Then run:
 ```sh
 cd proxy
 export ACUBE_TOKEN=`./auth.sh`
-export USERS="{\"glamicks\":\"john\"}"
+export USERS="{\"glamicks\":\"9915:123456\"}"
 pnpm install
 pnpm build
 pnpm start
-curl -X POST -H 'Authorization: Bearer glamicks' -d '{"identifier":"9915:123456"}' -H 'Content-Type: application/json' http://localhost:3000/reg
+curl -X POST -H 'Authorization: Bearer glamicks' -H 'Content-Type: application/json' http://localhost:3000/reg
 curl -X POST --data-binary "@../docs/example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
 ```
 

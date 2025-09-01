@@ -51,8 +51,7 @@ export async function startServer(): Promise<void> {
         res.end('Unauthorized\n');
         return;
       }
-      console.log('req.body:', req.body);
-      const responseCode = await register(req.body.identifier);
+      const responseCode = await register(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {
