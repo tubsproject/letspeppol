@@ -32,6 +32,10 @@ const server = createServer((req, res) => {
       res.setHeader('Content-Type', 'text/plain');
       res.end('Invoice sent\n');
     });
+  } else if (req.url === '/') {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Let\'s Peppol!\n');
   } else {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain');
