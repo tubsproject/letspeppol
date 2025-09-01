@@ -19,6 +19,7 @@ Then run:
 cd proxy
 export ACUBE_TOKEN=`./auth.sh`
 npm start
+curl -X POST -H 'Authorization: Bearer glamicks' -d "9915:12345" http://localhost:3000/reg
 curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
 ```
 

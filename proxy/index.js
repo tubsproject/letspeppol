@@ -25,15 +25,15 @@ const server = createServer(async (req, res) => {
       body.push(chunk);
     });
     req.on('end', async () => {
-      const json = Buffer.concat(body).toString();
-      console.log('Received JSON:', json.length);
-      const responseCode = await register(json);
+      const identifier = Buffer.concat(body).toString();
+      console.log('Received identifier:', identifier);
+      const responseCode = await register(identifier);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 202) {
-        res.end('Invoice sent\n');
+      if (responseCode === 201 || responseCode === 202) {
+        res.end(`Success (${responseCode} response from A-Cube)\n`);
       } else {
-        res.end(`Failed to send invoice (${responseCode} response from A-Cube)\n`);
+        res.end(`Failure (${responseCode} response from A-Cube)\n`);
       }
     });
   } else if (req.method === 'POST' && req.url === '/send') {
@@ -56,10 +56,10 @@ const server = createServer(async (req, res) => {
       const responseCode = await sendInvoice(xml);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 202) {
-        res.end('Invoice sent\n');
+      if (responseCode === 201 || responseCode === 202) {
+        res.end(`Success (${responseCode} response from A-Cube)\n`);
       } else {
-        res.end(`Failed to send invoice (${responseCode} response from A-Cube)\n`);
+        res.end(`Failure (${responseCode} response from A-Cube)\n`);
       }
     });
   } else if (req.url === '/') {

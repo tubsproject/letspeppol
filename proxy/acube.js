@@ -25,7 +25,7 @@ export async function listOurEntities() {
   return response.status; 
 }
 
-export async function register(json) {
+export async function register(identifier) {
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
     method: 'POST',
     headers: {
@@ -40,7 +40,7 @@ export async function register(json) {
       "stateOrProvince": "string",
       "zipCode": "string",
       "identifierScheme": "iso6523-actorid-upis",
-      "identifierValue": "9915:abc",
+      "identifierValue": identifier,
       "receivedDocumentNotificationEmails": [
         "notif@pondersource.com"
       ]
@@ -50,32 +50,4 @@ export async function register(json) {
   const responseBody = await response.json();
   console.log('Response body from A-Cube', responseBody);
   return response.status;  
-}
-
-export async function unregister(json) {
-  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-      'Content-Type': 'application/ld+json'
-    },
-    body: JSON.stringify({
-      "registeredName": "Ponder Source",
-      "country": "SE",
-      "address": "string",
-      "city": "string",
-      "stateOrProvince": "string",
-      "zipCode": "string",
-      "identifierScheme": "iso6523-actorid-upis",
-      "identifierValue": "0007:5567212047",
-      "receivedDocumentNotificationEmails": [
-        "notif@pondersource.com"
-      ]
-    })
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  return response.status;
-  
 }
