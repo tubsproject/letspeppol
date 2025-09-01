@@ -1,12 +1,5 @@
 {
-  "name": "api.letspeppol.org",
-  "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "start": "node ./proxy/index.js"
-  },
-  "type": "module",
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }

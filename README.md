@@ -7,8 +7,17 @@ This repo contains:
 * an `app` folder that will contain our web interface
 
 ## Development
+Create a `proxy/.env` file that looks like this:
+```
+ACUBE_USR="your-acube-username"
+ACUBE_PWD="your-acube-passwords"
+USERS="{\"glamicks\":\"john\"}"
+```
+
+Then run:
 ```sh
-export USERS="{\"glamicks\":\"john\"}";
+cd proxy
+export ACUBE_TOKEN=`./auth.sh | json token`
 npm start
 curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
 ```
