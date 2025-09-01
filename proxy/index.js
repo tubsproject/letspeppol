@@ -1,5 +1,5 @@
 import { createServer } from 'http';
-import { sendInvoice } from './acube.js';
+import { sendInvoice, register, listOurEntities } from './acube.js';
 
 const users = JSON.parse(process.env.USERS || '{}');
 function checkAuth(authorization) {
@@ -9,8 +9,34 @@ function checkAuth(authorization) {
   return users[token] || null;
 }
 
-const server = createServer((req, res) => {
-  if (req.method === 'POST' && req.url === '/send') {
+const server = createServer(async (req, res) => {
+  if (req.method === 'POST' && req.url === '/reg') {
+    console.log(req.headers);
+    const sendingEntity = checkAuth(req.headers['authorization']);
+    console.log('sending entity', sendingEntity);
+    if (sendingEntity === null) {
+      res.statusCode = 401;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end('Unauthorized\n');
+      return;
+    }
+    const body = [];
+    req.on('data', chunk => {
+      body.push(chunk);
+    });
+    req.on('end', async () => {
+      const json = Buffer.concat(body).toString();
+      console.log('Received JSON:', json.length);
+      const responseCode = await register(json);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      if (responseCode === 202) {
+        res.end('Invoice sent\n');
+      } else {
+        res.end(`Failed to send invoice (${responseCode} response from A-Cube)\n`);
+      }
+    });
+  } else if (req.method === 'POST' && req.url === '/send') {
     console.log(req.headers);
     const sendingEntity = checkAuth(req.headers['authorization']);
     console.log('sending entity', sendingEntity);
@@ -27,12 +53,17 @@ const server = createServer((req, res) => {
     req.on('end', async () => {
       const xml = Buffer.concat(body).toString();
       console.log('Received XML:', xml.length);
-      await sendInvoice(xml);
+      const responseCode = await sendInvoice(xml);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      res.end('Invoice sent\n');
+      if (responseCode === 202) {
+        res.end('Invoice sent\n');
+      } else {
+        res.end(`Failed to send invoice (${responseCode} response from A-Cube)\n`);
+      }
     });
   } else if (req.url === '/') {
+    await listOurEntities();
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Let\'s Peppol!\n');

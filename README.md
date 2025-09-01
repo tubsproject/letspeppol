@@ -17,7 +17,7 @@ USERS="{\"glamicks\":\"john\"}"
 Then run:
 ```sh
 cd proxy
-export ACUBE_TOKEN=`./auth.sh | json token`
+export ACUBE_TOKEN=`./auth.sh`
 npm start
 curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
 ```
