@@ -8,11 +8,12 @@ This repo contains:
 
 ## Development
 ```sh
+export USERS="{\"glamicks\":\"john\"}";
 npm start
-curl -X POST --data-binary "@./example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
+curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer glamicks' http://localhost:3000/send
 ```
 
 ## Staging
 ```sh
-curl -X POST --data-binary "@./example.xml" -H 'Authorization: Bearer glamicks' https://api.letspeppol.org/send
+curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer glamicks' https://api.letspeppol.org/send
 ```
