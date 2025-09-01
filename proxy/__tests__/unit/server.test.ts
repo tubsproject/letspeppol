@@ -17,6 +17,6 @@ describe('startServer function', () => {
 
     await startServer();
 
-    expect(consoleMock).toHaveBeenCalledWith(`Server running at http://localhost:${port}/`);
+    expect(consoleMock).toHaveBeenCalledWith(`LetsPeppol listening on port ${port}`);
   });
 });
