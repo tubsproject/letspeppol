@@ -1,6 +1,6 @@
 
 // curl -i -X POST --data-binary "@./example.xml" -H "Authorization: Bearer $ACUBE_TOKEN" -H "Content-Type: application/xml" https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl
-export async function sendInvoice(invoiceXml) {
+export async function sendInvoice(invoiceXml): Promise<number> {
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl', {
     method: 'POST',
     headers: {
@@ -9,11 +9,12 @@ export async function sendInvoice(invoiceXml) {
     },
     body: invoiceXml
   });
-  console.log('Response from A-Cube', response.status);
+  const responseBody = await response.text();
+  console.log('Response from A-Cube', response.status, response.headers, responseBody);
   return response.status;
 }
 
-export async function listOurEntities() {
+export async function listOurEntities(): Promise<number> {
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
@@ -25,7 +26,7 @@ export async function listOurEntities() {
   return response.status; 
 }
 
-export async function register(identifier) {
+export async function register(identifier): Promise<number> {
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
     method: 'POST',
     headers: {
