@@ -24,7 +24,7 @@
     "vitest": "~2.1"
   },
   "scripts": {
-    "postinstall": "npm run build",
+    "postinstall": "pnpm build",
     "start": "NODE_OPTIONS=--enable-source-maps node build/src/main.js",
     "clean": "rimraf coverage build tmp",
     "prebuild": "npm run lint",
