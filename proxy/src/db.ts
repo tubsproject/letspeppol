@@ -14,10 +14,7 @@ function sha256(plaintext: string): string {
 
 async function getPostgresClient(): Promise<Client> {
   const client = new Client({
-    user: process.env.POSTGRES_APP_USER || 'letspeppol',
-    password: process.env.POSTGRES_APP_PASSWORD || 'letspeppol',
-    host: process.env.POSTGRES_HOST || 'localhost',
-    database: process.env.POSTGRES_APP_DB || 'letspeppol',
+    connectionString: process.env.DATABASE_URL || 'postgres://letspeppol:something-secret@localhost:5432/letspeppol',
   }); 
   await client.connect();
   return client;
