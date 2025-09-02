@@ -31,12 +31,12 @@ pnpm start
 # get a session token:
 export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"9915:1234","password":"waggiboo"}' http://localhost:3000/token | json token`
 # register your peppolId on the real Peppol test infrastructure:
-curl -X POST -H 'Authorization: Bearer $LETSPEPPOL_TOKEN' -H 'Content-Type: application/json' http://localhost:3000/reg
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
 # send an invoice on the real Peppol test infrastructure:
-curl -X POST --data-binary "@../docs/example.xml" -H 'Authorization: Bearer $LETSPEPPOL_TOKEN' http://localhost:3000/send
+curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/send
 ```
 
 ## Staging
 ```sh
-curl -X POST --data-binary "@./docs/example.xml" -H 'Authorization: Bearer $LETSPEPPOL_TOKEN' https://api.letspeppol.org/send
+curl -X POST --data-binary "@./docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" https://api.letspeppol.org/send
 ```

@@ -49,3 +49,13 @@ VALUES ($1, $2, now()::timestamp + interval '1 day')
   console.log(`Generated token for ${peppolId}: ${token}`);
   return token;
 }
+
+export async function checkBearerToken(token: string): Promise<string | null> {
+  const query = `
+SELECT peppolId
+FROM sessions
+WHERE token = $1 AND expires > now()
+`;
+  const result = await client.query(query, [token]);
+  return result.rows[0]?.peppolid || null;
+}

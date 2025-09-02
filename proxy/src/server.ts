@@ -1,15 +1,26 @@
 import express from 'express';
-import { checkPassHash, generateToken } from './db.js';
+import { checkPassHash, generateToken, checkBearerToken } from './db.js';
 import { listOurEntities, sendInvoice, register } from './acube.js';
 
 const users = JSON.parse(process.env.USERS || '{}');
 
-function checkAuth(authorization: string): string | null {
+// express middleware for authentication
+async function checkAuth(req, res, next): Promise<void> {
+  const authorization = req.headers['authorization'];
   console.log(`Authorization string: "${authorization}"`);
-  if (!authorization) return null;
-  const token = authorization.replace('Bearer ', '');
-  console.log('looking up token', token, users);
-  return users[token] || null;
+  if (!authorization) {
+    res.status(401).json({ error: 'Unauthorized' });
+  } else {
+    const token = authorization.replace('Bearer ', '');
+    console.log('looking up token', token, users);
+    const peppolId = await checkBearerToken(token);
+    if (peppolId) {
+      req.peppolId = peppolId;
+      next();
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  }
 }
 
 export async function startServer(): Promise<void> {
@@ -31,16 +42,10 @@ export async function startServer(): Promise<void> {
         res.status(401).json({ error: 'Unauthorized' });
       }
     });
-    app.post('/send', express.text({type: '*/*'}), async(req, res) => {
+    app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
       console.log(req.headers);
-      const sendingEntity = checkAuth(req.headers['authorization']);
+      const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
-      if (sendingEntity === null) {
-        res.statusCode = 401;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('Unauthorized\n');
-        return;
-      }
       console.log('Received XML:', req.body.length);
       const responseCode = await sendInvoice(req.body);
       res.statusCode = 200;
@@ -51,16 +56,10 @@ export async function startServer(): Promise<void> {
         res.end(`Failure (${responseCode} response from A-Cube)\n`);
       }
     });
-    app.post('/reg', async (req, res) => {
+    app.post('/reg', checkAuth, async (req, res) => {
       console.log(req.headers);
-      const sendingEntity = checkAuth(req.headers['authorization']);
+      const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
-      if (sendingEntity === null) {
-        res.statusCode = 401;
-        res.setHeader('Content-Type', 'text/plain');
-        res.end('Unauthorized\n');
-        return;
-      }
       const responseCode = await register(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
