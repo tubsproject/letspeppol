@@ -1,6 +1,0 @@
-{
-  "scripts": {
-    "start": "node ./proxy/index.js",
-    "postinstall": "cd proxy && npm install && npm run build"
-  }
-}
