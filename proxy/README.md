@@ -66,6 +66,7 @@ First, get an access token. This will be valid for 24 hours:
 export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"9915:1234","password":"waggiboo"}' https://api.letspeppol.org/token | json token`
 ```
 
+Then run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
 ```sh
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
 ```
