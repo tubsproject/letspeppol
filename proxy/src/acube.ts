@@ -9,7 +9,8 @@ export async function sendInvoice(invoiceXml): Promise<number> {
     },
     body: invoiceXml
   });
-  console.log('Response from A-Cube', response.status);
+  const responseBody = await response.text();
+  console.log('Response from A-Cube', response.status, response.headers, responseBody);
   return response.status;
 }
 
