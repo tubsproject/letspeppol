@@ -15,6 +15,9 @@ function sha256(plaintext: string): string {
 async function getPostgresClient(): Promise<Client> {
   const client = new Client({
     connectionString: process.env.DATABASE_URL || 'postgres://letspeppol:something-secret@localhost:5432/letspeppol',
+    ssl: {
+      rejectUnauthorized: false
+    }
   }); 
   await client.connect();
   return client;

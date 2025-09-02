@@ -53,7 +53,7 @@ If you host it on a platform other than Heroku you might need to add your own TL
 If you have the `DATABASE_URL` env var for the staging instance, you can run the `create table` commands from the development instructions and create the database tables.
 
 ### Pushing changes
-Select 'deploy using Heroku git' because linking the Heroku instance directly with GitHub is hard to do with the proxy code being in a subfolder of this GitHub repo. Copy the `proxy` folder into the root of the Heroku git repo. The remote build is still failing though.
+Select 'deploy using Heroku git' because linking the Heroku instance directly with GitHub is hard to do with the proxy code being in a subfolder of this GitHub repo. Copy the `proxy` folder into the root of the Heroku git repo.
 
 ## Usage in Staging
 For now you can use '9915:1234' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
