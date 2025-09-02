@@ -1,4 +1,5 @@
 import express from 'express';
+import { checkPassHash, generateToken } from './db.js';
 import { listOurEntities, sendInvoice, register } from './acube.js';
 
 const users = JSON.parse(process.env.USERS || '{}');
@@ -20,6 +21,15 @@ export async function startServer(): Promise<void> {
       await listOurEntities();
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
+    });
+    app.post('/token', async(req, res) => {
+      const user = await checkPassHash(req.body.peppolId, req.body.password);
+      if (user) {
+        const token = await generateToken(user);
+        res.json({ token });
+      } else {
+        res.status(401).json({ error: 'Unauthorized' });
+      }
     });
     app.post('/send', express.text({type: '*/*'}), async(req, res) => {
       console.log(req.headers);
