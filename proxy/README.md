@@ -53,7 +53,9 @@ If you host it on a platform other than Heroku you might need to add your own TL
 If you have the `DATABASE_URL` env var for the staging instance, you can run the `create table` commands from the development instructions and create the database tables.
 
 ### Pushing changes
-Select 'deploy using Heroku git' because linking the Heroku instance directly with GitHub is hard to do with the proxy code being in a subfolder of this GitHub repo. Copy the `proxy` folder into the root of the Heroku git repo.
+* Select 'deploy using Heroku git' in the Heroku setting.
+* Do the Heroku git checkout so that a 'letspeppol' folder is added next to the proxy folder in your checkout of this repo.
+* In the `proxy` folder run `./deploy.sh` to push changes to Heroku
 
 ## Usage in Staging
 For now you can use '9915:1234' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
@@ -65,5 +67,5 @@ export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolI
 ```
 
 ```sh
-curl -X POST --data-binary "@./docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" https://api.letspeppol.org/send
+curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
 ```

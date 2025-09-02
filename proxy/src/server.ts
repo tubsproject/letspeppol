@@ -2,8 +2,6 @@ import express from 'express';
 import { checkPassHash, generateToken, checkBearerToken } from './db.js';
 import { listOurEntities, sendInvoice, register } from './acube.js';
 
-const users = JSON.parse(process.env.USERS || '{}');
-
 // express middleware for authentication
 async function checkAuth(req, res, next): Promise<void> {
   const authorization = req.headers['authorization'];
@@ -12,8 +10,8 @@ async function checkAuth(req, res, next): Promise<void> {
     res.status(401).json({ error: 'Unauthorized' });
   } else {
     const token = authorization.replace('Bearer ', '');
-    console.log('looking up token', token, users);
     const peppolId = await checkBearerToken(token);
+    console.log('looked up token', token, peppolId);
     if (peppolId) {
       req.peppolId = peppolId;
       next();
