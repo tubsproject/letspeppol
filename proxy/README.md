@@ -38,9 +38,9 @@ curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LET
 ```
 
 ## Deployment
-There is a Heroku instance deployed from the `express-based-typescript-proxy-with-tests` branch running at api.letspeppol.org.
+There is a Heroku instance running at api.letspeppol.org.
 You can also deploy staging instances elsewhere.
-It doesn't have `ACUBE_USR` or `ACUBE_PWD` in its env vars, but it has `ACUBE_TOKEN`. When this expires, you should run `auth.sh` in development to regenerate it (or for the Ponder Source sponsored instance, ask @michielbdejong to do this).
+It doesn't have `ACUBE_USR` or `ACUBE_PWD` in its env vars, but it has `ACUBE_TOKEN`. When this expires, you should run `auth.sh` in development to regenerate it (or for the Ponder Source sponsored instance, ask @michielbdejong to do this) and then edit the `ACUBE_TOKEN` env var in staging.
 
 It also has the `DATABASE_URL` env var inserted because of the postgres db that is linked to it. Copy it from Heroku -> Settings -> 'Reveal Config Vars' and set it as an env var locally. And you need to set `PASS_HASH_SALT` for the AS part. So the essential environment variables on Heroku or any other hosting environment will be:
 * `PORT`
@@ -48,9 +48,9 @@ It also has the `DATABASE_URL` env var inserted because of the postgres db that 
 * `DATABASE_URL`
 * `PASS_HASH_SALT`
 
-If you host it on a platform other than Heroku you might need to add your own TLS-offloading proxy, and then the `pnpm start` command will be similar to how it works in development.
+If you host it on a platform other than Heroku you might need to add your own TLS-offloading proxy, and then the `pnpm install; pnpm build; pnpm start` commands will be similar to how it works in development.
 
-If you have the `DATABASE_URL` env var for the staging instance, you can run the `create table` commands from the development instructions and create the database tables.
+If you have the `DATABASE_URL` env var for the staging instance, you can run the `create table` commands from the development instructions and create and populate the necessary the database tables.
 
 ### Pushing changes
 * Select 'deploy using Heroku git' in the Heroku setting.
@@ -70,3 +70,5 @@ Then run this command from the proxy folder (note the relative file path pointin
 ```sh
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
 ```
+
+Coming soon: additional API endpoints to publish/unpublish the Peppol ID on the testnet, and to list received invoices.
