@@ -68,9 +68,9 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {
-        res.end(`Success (${responseCode} response from A-Cube)\n`);
+        res.end(`Success (${responseCode} response from A-Cube component)\n`);
       } else {
-        res.end(`Failure (${responseCode} response from A-Cube)\n`);
+        res.end(`Failure (${responseCode} response from A-Cube component)\n`);
       }
     });
     app.post('/reg', checkAuth, async (req, res) => {
