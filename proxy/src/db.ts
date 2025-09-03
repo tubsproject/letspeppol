@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
 import { Client } from 'pg';
-import jsonwebtoken from 'jsonwebtoken';
 const client = await getPostgresClient();
 
 function sha256(plaintext: string): string {
@@ -42,31 +41,3 @@ WHERE peppolId = $1  AND passHash = $2
   return result.rows[0]?.peppolid || null;
 }
 
-export async function generateToken(peppolId: string): Promise<string> {
-
-  const secretKey = 'yourSecretKey'; // Replace with your own secret key
-  const options = {
-    expiresIn: '1h', // Token expiration time
-  };
-  const payload = { peppolId };
-  const token = jsonwebtoken.sign(payload, secretKey, options);
-//   const query = `
-// INSERT INTO sessions (peppolId, token, expires)
-// VALUES ($1, $2, now()::timestamp + interval '1 day')
-// `;
-//   await client.query(query, [peppolId, token]);
-  console.log(`Generated token for ${peppolId}: ${token}`);
-  return token;
-}
-
-export async function checkBearerToken(token: string): Promise<string | null> {
-  return new Promise((resolve) => {
-    jsonwebtoken.verify(token, 'yourSecretKey', (err, payload) => {
-      if (err) {
-        resolve(null);
-      } else {
-        resolve(payload.peppolId);
-      }
-    });
-  });
-}
