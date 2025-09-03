@@ -46,7 +46,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
       // await listOurEntities();
-      await listOurInvoices();
+      await listOurInvoices(1, '1023290711');
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
     });

@@ -59,15 +59,16 @@ export async function register(identifier): Promise<number> {
   return response.status;  
 }
 
-export async function listOurInvoices(): Promise<number> {
-  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices', {
+export async function listOurInvoices(page: number, senderId: string): Promise<number> {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices?page=${page}&senderId=${senderId}`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
     },
   });
   console.log('Response from A-Cube', response.status, response.headers);
   const responseBody = await response.json();
-  console.log('Response body from A-Cube', JSON.stringify(responseBody['hydra:member'].map(item => {
+  console.log('Response body from A-Cube', responseBody);
+  console.log('Invoices', JSON.stringify(responseBody['hydra:member'].map(item => {
     return {
       uuid: item.uuid,
       sender: item.sender?.identifier,

@@ -64,7 +64,7 @@ If you have the `DATABASE_URL` env var for the staging instance, you can run the
 For now you can use '0208:1023290711' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
 Contact @michielbdejong or use the `DATABASE_URL` from Heroku to add other Peppol ID's to the staging instance.
 
-First, get an access token. This will be valid for 1 hour:
+First, get an access token. This will be valid for 1 hour (the password for peppolId `0208:0705969661` is the same, you can try that too):
 ```sh
 export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"0208:1023290711","password":"waggiboo"}' https://api.letspeppol.org/token | json token`
 ```
@@ -74,4 +74,9 @@ Then run this command from the proxy folder (note the relative file path pointin
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
 ```
 
-Coming soon: additional API endpoints to publish/unpublish the Peppol ID on the testnet, and to list received invoices.
+The Peppol ID's we're testing with have already been registered, so if you try this you will get a 500 error, but in general new Peppol ID's can be registered (we think this goes to the real Peppol testnet) with the `/reg` endpoint:
+```sh
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
+```
+
+Coming soon: additional API endpoints to unpublish the Peppol ID on the testnet, and to list received invoices.
