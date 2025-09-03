@@ -23,7 +23,6 @@ cd proxy
 export ACUBE_TOKEN=`./auth.sh | json token`
 # create and populate the users database:
 psql $DATABASE_URL -c "create table passwords (peppolid varchar, passhash varchar)"
-psql $DATABASE_URL -c "create table sessions (peppolid varchar, token varchar, expires timestamp)"
 psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('9915:1234', sha256('waggiboo$PASS_HASH_SALT'))"
 # run the proxy:
 pnpm install
