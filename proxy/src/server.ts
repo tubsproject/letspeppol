@@ -21,11 +21,20 @@ async function checkAuth(req, res, next): Promise<void> {
   }
 }
 
-export async function startServer(): Promise<void> {
+export type ServerOptions = {
+  ACUBE_TOKEN: string;
+  PORT?: number;
+};
+
+export async function startServer(env: ServerOptions): Promise<number> {
+
+  if (!env.ACUBE_TOKEN) {
+    throw new Error('ACUBE_TOKEN is not set');
+  }
   const port = process.env.PORT || 3000;
   const app = express();
   app.use(express.json());
-  await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
       await listOurEntities();
       res.setHeader('Content-Type', 'text/plain');
@@ -71,8 +80,8 @@ export async function startServer(): Promise<void> {
       if (error) {
         reject(error);
       } else {
-        console.log(`LetsPeppol listening on port ${port}`)
-        resolve(void 0);
+        console.log(`LetsPeppol listening on port ${port}`);
+        resolve(0);
       }
     });
   });

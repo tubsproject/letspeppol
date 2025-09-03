@@ -15,7 +15,7 @@ describe('startServer function', () => {
     const port = 3000;
     process.env.PORT = port.toString();
 
-    await startServer();
+    await startServer({ ACUBE_TOKEN: 'test-token' });
 
     expect(consoleMock).toHaveBeenCalledWith(`LetsPeppol listening on port ${port}`);
   });
