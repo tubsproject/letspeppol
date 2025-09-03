@@ -20,8 +20,8 @@ export async function sendInvoice(invoiceXml: string, sendingEntity: string): Pr
   return response.status;
 }
 
-export async function listOurEntities(): Promise<number> {
-  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
+export async function getUuid(identifierValue: string): Promise<string | null> {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities`/*?identifierValue=${identifierValue}`*/, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
     },
@@ -29,7 +29,8 @@ export async function listOurEntities(): Promise<number> {
   console.log('Response from A-Cube', response.status, response.headers);
   const responseBody = await response.json();
   console.log('Response body from A-Cube', responseBody);
-  return response.status; 
+  void identifierValue;
+  return responseBody['hydra:member']?.[0]?.uuid || null;
 }
 
 export async function register(identifier): Promise<number> {
@@ -58,9 +59,27 @@ export async function register(identifier): Promise<number> {
   console.log('Response body from A-Cube', responseBody);
   return response.status;  
 }
+export async function unreg(identifier: string): Promise<number> {
+  const identifierValue = identifier.split(':')[1];
+  const uuid = await getUuid(identifierValue);
+  console.log('deleting legal entity', uuid);
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`
+    }
+  });
+  console.log('Response from A-Cube', response.status, response.headers);
+  const responseBody = await response.json();
+  console.log('Response body from A-Cube', responseBody);
+  return response.status;  
+}
 
-export async function listOurInvoices(page: number, senderId: string): Promise<number> {
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices?page=${page}&senderId=${senderId}`, {
+export async function listOurInvoices(page: number, recipientId: string): Promise<object[]> {
+  void page;
+  void recipientId;
+  console.log('filtering on recipientId', recipientId);
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices?recipientId=${recipientId.split(':')[1]}&direction=incoming`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
     },
@@ -68,13 +87,15 @@ export async function listOurInvoices(page: number, senderId: string): Promise<n
   console.log('Response from A-Cube', response.status, response.headers);
   const responseBody = await response.json();
   console.log('Response body from A-Cube', responseBody);
-  console.log('Invoices', JSON.stringify(responseBody['hydra:member'].map(item => {
-    return {
-      uuid: item.uuid,
-      sender: item.sender?.identifier,
-      recipient: item.recipient?.identifier,
-      direction: item.direction,
-    };
-  }), null, 2));
-  return response.status; 
+  const list = responseBody['hydra:member'];
+  // .map(item => {
+  //   return {
+  //     uuid: item.uuid,
+  //     sender: item.sender?.identifier,
+  //     recipient: item.recipient?.identifier,
+  //     direction: item.direction,
+  //   };
+  // });
+  console.log('Invoices', JSON.stringify(list, null, 2));
+  return list;
 }

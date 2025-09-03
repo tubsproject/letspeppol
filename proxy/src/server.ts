@@ -1,7 +1,8 @@
 import express from 'express';
 import { checkPassHash } from './db.js';
 import { generateToken, checkBearerToken } from './auth.js';
-import { sendInvoice, register, listOurInvoices } from './acube.js';
+import { sendInvoice, register, getUuid, listOurInvoices, unreg } from './acube.js';
+void getUuid;
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -45,10 +46,16 @@ export async function startServer(env: ServerOptions): Promise<number> {
   app.use(express.json());
   return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
-      // await listOurEntities();
+      // await getUuid('1023290711');
       await listOurInvoices(1, '1023290711');
+      await listOurInvoices(1, '0705969661');
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
+    });
+    app.get('/incoming', checkAuth, async (req, res) => {
+      const invoices = await listOurInvoices(1, req.peppolId);
+      res.setHeader('Content-Type', 'application/json');
+      res.json(invoices);
     });
     app.post('/token', async(req, res) => {
       const user = await checkPassHash(req.body.peppolId, req.body.password);
@@ -78,6 +85,19 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
       const responseCode = await register(sendingEntity);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      if (responseCode === 201 || responseCode === 202) {
+        res.end(`Success (${responseCode} response from A-Cube)\n`);
+      } else {
+        res.end(`Failure (${responseCode} response from A-Cube)\n`);
+      }
+    });
+    app.post('/unreg', checkAuth, async (req, res) => {
+      console.log(req.headers);
+      const sendingEntity = req.peppolId;
+      console.log('sending entity', sendingEntity);
+      const responseCode = await unreg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {

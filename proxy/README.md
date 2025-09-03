@@ -37,6 +37,8 @@ export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"p
 curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
 # send an invoice on the real Peppol test infrastructure:
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/send
+# list invoices you have received
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming | json
 ```
 
 ## Deployment
@@ -74,9 +76,14 @@ Then run this command from the proxy folder (note the relative file path pointin
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
 ```
 
-The Peppol ID's we're testing with have already been registered, so if you try this you will get a 500 error, but in general new Peppol ID's can be registered (we think this goes to the real Peppol testnet) with the `/reg` endpoint:
+The Peppol ID's we're testing with have already been registered, so if you try this you will get a 500 error, but in general new Peppol ID's can be registered (we think this goes to the real Peppol testnet) with the `/reg` endpoint (FIXME: this creates the legal entity at A-Cube but doesn't [activate its SMP record](https://github.com/michielbdejong/devlog/issues/48#issuecomment-3249680908)):
 ```sh
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
+curl -X POST -H "Authorization: Bearer $LP_STAGING" -H 'Content-Type: application/json' https://api.letspeppol.org/reg
 ```
 
-Coming soon: additional API endpoints to unpublish the Peppol ID on the testnet, and to list received invoices.
+And list invoices you have received (careful! data format subject to change):
+```sh
+curl -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/incoming | json
+```
+
+Coming soon: additional API endpoint to [unpublish](https://github.com/tubsproject/letspeppol/issues/9) your Peppol ID from the testnet.
