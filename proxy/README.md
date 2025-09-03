@@ -79,4 +79,4 @@ The Peppol ID's we're testing with have already been registered, so if you try t
 curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
 ```
 
-Coming soon: additional API endpoints to unpublish the Peppol ID on the testnet, and to list received invoices.
+Coming soon: additional API endpoints to [unpublish](https://github.com/tubsproject/letspeppol/issues/9) the Peppol ID on the testnet, and to [list received invoices](https://github.com/tubsproject/letspeppol/issues/8).
