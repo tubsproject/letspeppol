@@ -11,7 +11,7 @@ Create a `proxy/.env` file that looks like this:
 ACUBE_USR="your-acube-username"
 ACUBE_PWD="your-acube-passwords"
 PASS_HASH_SALT=some-secret-string
-DATABASE_URL=postgres://letspeppol:something-secret@localhost:5432/letspeppol
+DATABASE_URL=postgres://letspeppol:something-secret@localhost:5432/letspeppol?sslmode=disable
 ```
 
 Then run:
@@ -22,9 +22,9 @@ cd proxy
 # get a fresh token for the A-Cube API:
 export ACUBE_TOKEN=`./auth.sh | json token`
 # create and populate the users database:
-psql $DATABASE_URL -c "create table passwords (peppolId varchar, passHash varchar)"
-psql $DATABASE_URL -c "create table sessions (peppolId varchar, token varchar, expires timestamp)"
-psql $DATABASE_URL -c "insert into passwords (peppolId, passHash) values ('9915:1234', sha256('waggiboo$PASS_HASH_SALT'))"
+psql $DATABASE_URL -c "create table passwords (peppolid varchar, passhash varchar)"
+psql $DATABASE_URL -c "create table sessions (peppolid varchar, token varchar, expires timestamp)"
+psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('9915:1234', sha256('waggiboo$PASS_HASH_SALT'))"
 # run the proxy:
 pnpm install
 pnpm build
