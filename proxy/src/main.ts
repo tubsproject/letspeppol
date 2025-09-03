@@ -1,10 +1,5 @@
 import 'dotenv/config';
-import { startServer } from './server.js';
-
-if (!process.env.ACUBE_TOKEN) {
-  console.error('ACUBE_TOKEN is not set');
-  process.exit(1);
-}
+import { startServer, ServerOptions } from './server.js';
 
 // ...
-startServer();
+startServer(process.env as unknown as ServerOptions);
