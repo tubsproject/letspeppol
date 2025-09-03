@@ -1,7 +1,7 @@
 import express from 'express';
 import { checkPassHash } from './db.js';
 import { generateToken, checkBearerToken } from './auth.js';
-import { listOurEntities, sendInvoice, register } from './acube.js';
+import { sendInvoice, register, listOurInvoices } from './acube.js';
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -45,7 +45,8 @@ export async function startServer(env: ServerOptions): Promise<number> {
   app.use(express.json());
   return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
-      await listOurEntities();
+      // await listOurEntities();
+      await listOurInvoices();
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
     });
@@ -63,7 +64,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
       console.log('Received XML:', req.body.length);
-      const responseCode = await sendInvoice(req.body);
+      const responseCode = await sendInvoice(req.body, sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {

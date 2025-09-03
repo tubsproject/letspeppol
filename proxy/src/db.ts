@@ -29,7 +29,7 @@ export async function checkPassHash(
   peppolId: string,
   password: string,
 ): Promise<string | null> {
-  const passHash = sha256(password);
+  const passHash = sha256(`${peppolId}:${password}`);
   const query = `
 SELECT peppolId
 FROM passwords

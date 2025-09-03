@@ -8,6 +8,7 @@ You could also contact A-Cube directly if you want to use this code in an instan
 Apart from an A-Cube account you will need a postgres database somewhere and that you have the [`json` CLI tool](https://github.com/trentm/json?tab=readme-ov-file#installation) installed.
 Create a `proxy/.env` file that looks like this:
 ```sh
+PORT=3000
 ACUBE_USR="your-acube-username"
 ACUBE_PWD="your-acube-passwords"
 PASS_HASH_SALT="some-secret-string"
@@ -24,13 +25,14 @@ cd proxy
 export ACUBE_TOKEN=`./auth.sh | json token`
 # create and populate the users database:
 psql $DATABASE_URL -c "create table passwords (peppolid varchar, passhash varchar)"
-psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('9915:1234', sha256('waggiboo$PASS_HASH_SALT'))"
+psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('0208:1023290711', sha256('0208:1023290711:waggiboo$PASS_HASH_SALT'))"
+psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('0208:0705969661', sha256('0208:0705969661:waggiboo$PASS_HASH_SALT'))"
 # run the proxy:
 pnpm install
 pnpm build
 pnpm start
 # get a session token:
-export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"9915:1234","password":"waggiboo"}' http://localhost:3000/token | json token`
+export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"0208:1023290711","password":"waggiboo"}' http://localhost:3000/token | json token`
 # register your peppolId on the real Peppol test infrastructure:
 curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
 # send an invoice on the real Peppol test infrastructure:
@@ -59,12 +61,12 @@ If you have the `DATABASE_URL` env var for the staging instance, you can run the
 * In the `proxy` folder run `./deploy.sh` to push changes to Heroku
 
 ## Usage in Staging
-For now you can use '9915:1234' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
+For now you can use '0208:1023290711' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
 Contact @michielbdejong or use the `DATABASE_URL` from Heroku to add other Peppol ID's to the staging instance.
 
 First, get an access token. This will be valid for 1 hour:
 ```sh
-export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"9915:1234","password":"waggiboo"}' https://api.letspeppol.org/token | json token`
+export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"0208:1023290711","password":"waggiboo"}' https://api.letspeppol.org/token | json token`
 ```
 
 Then run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):

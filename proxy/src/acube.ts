@@ -1,6 +1,12 @@
-
-// curl -i -X POST --data-binary "@./example.xml" -H "Authorization: Bearer $ACUBE_TOKEN" -H "Content-Type: application/xml" https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl
-export async function sendInvoice(invoiceXml): Promise<number> {
+import { parseInvoice } from './parse.js';
+  
+export async function sendInvoice(invoiceXml: string, sendingEntity: string): Promise<number> {
+  const { sender, recipient } = parseInvoice(invoiceXml);
+  if (sender !== sendingEntity) {
+    console.error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
+    return 400;
+  }
+  console.log(`Parsed invoice, sender OK: ${sender}, recipient: ${recipient}`);
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl', {
     method: 'POST',
     headers: {
@@ -51,4 +57,23 @@ export async function register(identifier): Promise<number> {
   const responseBody = await response.json();
   console.log('Response body from A-Cube', responseBody);
   return response.status;  
+}
+
+export async function listOurInvoices(): Promise<number> {
+  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices', {
+    headers: {
+      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
+    },
+  });
+  console.log('Response from A-Cube', response.status, response.headers);
+  const responseBody = await response.json();
+  console.log('Response body from A-Cube', JSON.stringify(responseBody['hydra:member'].map(item => {
+    return {
+      uuid: item.uuid,
+      sender: item.sender?.identifier,
+      recipient: item.recipient?.identifier,
+      direction: item.direction,
+    };
+  }), null, 2));
+  return response.status; 
 }
