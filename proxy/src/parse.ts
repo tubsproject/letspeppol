@@ -3,6 +3,11 @@ import { XMLParser } from 'fast-xml-parser';
 export function parseInvoice(invoiceXml: string): { sender: string | undefined; recipient: string | undefined; } {
   const parserOptions = {
     ignoreAttributes: false,
+    numberParseOptions: {
+      leadingZeros: false,
+      hex: true,
+      skipLike: /(?:)/ // Disable number parsing
+    }
   };
   const parser = new XMLParser(parserOptions);
   const jObj = parser.parse(invoiceXml);
