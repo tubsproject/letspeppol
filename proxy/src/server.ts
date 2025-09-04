@@ -13,13 +13,14 @@ function getAuthMiddleware(secretKey: string) {
       res.status(401).json({ error: 'Unauthorized' });
     } else {
       const token = authorization.replace('Bearer ', '');
-      const peppolId = await checkBearerToken(token, secretKey);
-      console.log('looked up token', token, peppolId);
-      if (peppolId) {
+      try {
+        const peppolId = await checkBearerToken(token, secretKey);
+        console.log('looked up token', token, peppolId);
         req.peppolId = peppolId;
         next();
-      } else {
-        res.status(401).json({ error: 'Unauthorized' });
+      } catch (err: { message: string } | any) {
+        console.error('Error verifying token:', err);
+        res.status(401).json({ error: err.message });
       }
     }
 }
