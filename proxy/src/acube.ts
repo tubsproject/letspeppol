@@ -98,6 +98,7 @@ export async function getInvoiceXml(peppolId: string, uuid: string): Promise<str
   const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices/${uuid}/source`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
+      'Accept': 'application/xml',
     },
   });
   console.log('Response from A-Cube', response.status, response.headers);
