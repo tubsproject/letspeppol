@@ -46,6 +46,10 @@ curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming
 ## Docker
 ```sh
 docker build -t proxy .
+export ACUBE_TOKEN=`./auth.sh | json token`
+docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -p 3000:3000 proxy
+curl http://localhost:3000
+```
 
 ## Deployment
 There is a Heroku instance running at api.letspeppol.org.
