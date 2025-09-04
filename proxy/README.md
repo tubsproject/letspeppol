@@ -43,6 +43,10 @@ curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming
 curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming/{uuid} | json
 ```
 
+## Docker
+```sh
+docker build -t proxy .
+
 ## Deployment
 There is a Heroku instance running at api.letspeppol.org.
 You can also deploy staging instances elsewhere.

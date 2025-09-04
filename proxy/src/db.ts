@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
 import { Client } from 'pg';
-const client = await getPostgresClient();
 
 function sha256(plaintext: string): string {
   if (typeof plaintext !== 'string') throw new Error('Invalid input');
@@ -36,6 +35,8 @@ FROM passwords
 WHERE peppolId = $1  AND passHash = $2
 `;
   console.log(query, [peppolId, passHash]);
+  const client = await getPostgresClient();
+
   const result = await client.query(query, [peppolId, passHash]);
   console.log(result.rows);
   return result.rows[0]?.peppolid || null;
