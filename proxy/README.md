@@ -39,6 +39,8 @@ curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: appl
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/send
 # list invoices you have received
 curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming | json
+# fetch a specific incoming invoice by UUID as XML
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming/{uuid} | json
 ```
 
 ## Deployment

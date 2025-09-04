@@ -1,7 +1,7 @@
 import express from 'express';
 import { checkPassHash } from './db.js';
 import { generateToken, checkBearerToken } from './auth.js';
-import { sendInvoice, register, getUuid, listOurInvoices, unreg } from './acube.js';
+import { sendInvoice, register, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
 void getUuid;
 
 function getAuthMiddleware(secretKey: string) {
@@ -56,6 +56,11 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const invoices = await listOurInvoices(1, req.peppolId);
       res.setHeader('Content-Type', 'application/json');
       res.json(invoices);
+    });
+    app.get('/incoming/:uuid', checkAuth, async (req, res) => {
+      const xml = await getInvoiceXml(req.peppolId, req.params.uuid);
+      res.setHeader('Content-Type', 'text/xml');
+      res.send(xml);
     });
     app.post('/token', async(req, res) => {
       const user = await checkPassHash(req.body.peppolId, req.body.password);
