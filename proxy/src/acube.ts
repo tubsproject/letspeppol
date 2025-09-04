@@ -1,5 +1,42 @@
 import { parseInvoice } from './parse.js';
-  
+
+const CAPABILITIES = {
+  "documentTypeScheme": "busdox-docid-qns",
+  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
+  "processScheme": "cenbii-procid-ubl",
+  "process": "cenbii-procid-ubl urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+};
+
+async function fetchSmpRecord(uuid: string): Promise<any> {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
+    },
+  });
+  console.log('Response from A-Cube', response.status, response.headers);
+  const responseBody = await response.json();
+  console.log('Response body from A-Cube', responseBody);
+  return responseBody;
+}
+
+async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      enabled,
+      capabilities: [CAPABILITIES],
+    }),
+  });
+  console.log('Response from A-Cube', response.status, response.headers);
+  const responseBody = await response.json();
+  console.log('Response body from A-Cube', responseBody);
+  return responseBody;
+}
+
 export async function sendInvoice(invoiceXml: string, sendingEntity: string): Promise<number> {
   const { sender, recipient } = parseInvoice(invoiceXml);
   if (sender !== sendingEntity) {
@@ -20,7 +57,8 @@ export async function sendInvoice(invoiceXml: string, sendingEntity: string): Pr
   return response.status;
 }
 
-export async function getUuid(identifierValue: string): Promise<string | null> {
+export async function getUuid(identifier: string): Promise<string | null> {
+  const identifierValue = identifier.split(':')[1];
   const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities`/*?identifierValue=${identifierValue}`*/, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
@@ -33,7 +71,7 @@ export async function getUuid(identifierValue: string): Promise<string | null> {
   return responseBody['hydra:member']?.[0]?.uuid || null;
 }
 
-export async function register(identifier): Promise<number> {
+export async function createLegalEntity(identifier: string): Promise<number> {
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
     method: 'POST',
     headers: {
@@ -59,20 +97,35 @@ export async function register(identifier): Promise<number> {
   console.log('Response body from A-Cube', responseBody);
   return response.status;  
 }
-export async function unreg(identifier: string): Promise<number> {
-  const identifierValue = identifier.split(':')[1];
-  const uuid = await getUuid(identifierValue);
-  console.log('deleting legal entity', uuid);
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`
+
+async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
+    console.log('Fetching UUID');
+    const uuid = await getUuid(identifier);
+    if (!uuid) {
+      console.log('Could not fetch UUID', uuid);
+      return 500;
     }
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  return response.status;  
+    const smpRecord = await fetchSmpRecord(uuid);
+    console.log('Fetched SMP record, now updating', smpRecord);
+    const response = await putSmpRecord(uuid, enabled);
+    console.log('Updated SMP record', response);
+    return 200;
+}
+
+export async function register(identifier: string): Promise<number> {
+  const createResult = await createLegalEntity(identifier);
+  if (createResult === 201 || createResult === 202) {
+    await setSmpRecord(identifier, true);
+  }
+  return 400;
+}
+
+export async function unreg(identifier: string): Promise<number> {
+  const uuid = await getUuid(identifier);
+  console.log('deleting legal entity', uuid);
+  const response = await putSmpRecord(uuid!, false);
+  console.log('Updated SMP record', response);
+  return 200;  
 }
 
 export async function listOurInvoices(page: number, recipientId: string): Promise<object[]> {
