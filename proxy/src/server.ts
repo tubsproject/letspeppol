@@ -1,7 +1,7 @@
 import express from 'express';
 import { checkPassHash } from './db.js';
 import { generateToken, checkBearerToken } from './auth.js';
-import { sendInvoice, createLegalEntity, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
+import { sendInvoice, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
 
@@ -106,7 +106,8 @@ export async function startServer(env: ServerOptions): Promise<number> {
       console.log(req.headers);
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
-      const responseCode = await createLegalEntity(sendingEntity);
+      // const responseCode = await createLegalEntity(sendingEntity);
+      const responseCode =await setSmpRecord(sendingEntity, true);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {
@@ -122,7 +123,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const responseCode = await unreg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 201 || responseCode === 202) {
+      if (responseCode === 200) {
         res.end(`Success (${responseCode} response from A-Cube)\n`);
       } else {
         res.end(`Failure (${responseCode} response from A-Cube)\n`);

@@ -4,7 +4,7 @@ const CAPABILITIES = {
   "documentTypeScheme": "busdox-docid-qns",
   "documentType": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
   "processScheme": "cenbii-procid-ubl",
-  "process": "cenbii-procid-ubl urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
 };
 
 async function fetchSmpRecord(uuid: string): Promise<any> {
@@ -98,7 +98,7 @@ export async function createLegalEntity(identifier: string): Promise<number> {
   return response.status;  
 }
 
-async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
+export async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
     console.log('Fetching UUID');
     const uuid = await getUuid(identifier);
     if (!uuid) {
@@ -115,7 +115,7 @@ async function setSmpRecord(identifier: string, enabled: boolean): Promise<numbe
 export async function register(identifier: string): Promise<number> {
   const createResult = await createLegalEntity(identifier);
   if (createResult === 201 || createResult === 202) {
-    await setSmpRecord(identifier, true);
+    return setSmpRecord(identifier, true);
   }
   return 400;
 }
