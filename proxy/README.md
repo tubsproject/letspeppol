@@ -37,7 +37,7 @@ export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"p
 curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
 # send an invoice on the real Peppol test infrastructure:
 curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/send
-# list invoices you have received
+# list UUIDs of invoices you have received
 curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming | json
 # fetch a specific incoming invoice by UUID as XML
 curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming/{uuid} | json
