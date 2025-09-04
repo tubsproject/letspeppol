@@ -14,6 +14,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      express-rate-limit:
+        specifier: ^8.0.1
+        version: 8.0.1(express@5.1.0)
       fast-xml-parser:
         specifier: ^5.2.5
         version: 5.2.5
@@ -853,6 +856,12 @@ packages:
     resolution: {integrity: sha512-JhFGDVJ7tmDJItKhYgJCGLOWjuK9vPxiXoUFLwLDc99NlmklilbiQJwoctZtt13+xMw91MCk/REan6MWHqDjyA==}
     engines: {node: '>=12.0.0'}
 
+  express-rate-limit@8.0.1:
+    resolution: {integrity: sha512-aZVCnybn7TVmxO4BtlmnvX+nuz8qHW124KKJ8dumsBsmv5ZLxE0pYu7S2nwyRBGHHCAzdmnGyrc5U/rksSPO7Q==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: '>= 4.11'
+
   express@5.1.0:
     resolution: {integrity: sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA==}
     engines: {node: '>= 18'}
@@ -997,6 +1006,10 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  ip-address@10.0.1:
+    resolution: {integrity: sha512-NWv9YLW4PoW2B7xtzaS3NCot75m6nK7Icdv0o3lfMceJVRfSoQwqD4wEH5rLwoKJwUiZ/rfpiVBhnaF0FK4HoA==}
+    engines: {node: '>= 12'}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -2376,6 +2389,11 @@ snapshots:
 
   expect-type@1.2.2: {}
 
+  express-rate-limit@8.0.1(express@5.1.0):
+    dependencies:
+      express: 5.1.0
+      ip-address: 10.0.1
+
   express@5.1.0:
     dependencies:
       accepts: 2.0.0
@@ -2559,6 +2577,8 @@ snapshots:
   imurmurhash@0.1.4: {}
 
   inherits@2.0.4: {}
+
+  ip-address@10.0.1: {}
 
   ipaddr.js@1.9.1: {}
 

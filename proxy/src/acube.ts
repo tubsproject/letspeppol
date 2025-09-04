@@ -87,15 +87,22 @@ export async function listOurInvoices(page: number, recipientId: string): Promis
   console.log('Response from A-Cube', response.status, response.headers);
   const responseBody = await response.json();
   console.log('Response body from A-Cube', responseBody);
-  const list = responseBody['hydra:member'];
-  // .map(item => {
-  //   return {
-  //     uuid: item.uuid,
-  //     sender: item.sender?.identifier,
-  //     recipient: item.recipient?.identifier,
-  //     direction: item.direction,
-  //   };
-  // });
-  console.log('Invoices', JSON.stringify(list, null, 2));
+  const list = responseBody['hydra:member'].map(item => item.uuid);
+  console.log('Invoice UUIDs', JSON.stringify(list, null, 2));
   return list;
+}
+
+
+export async function getInvoiceXml(peppolId: string, uuid: string): Promise<string | null> {
+  console.log('fetching invoice xml', peppolId, uuid);
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices/${uuid}/source`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
+      'Accept': 'application/xml',
+    },
+  });
+  console.log('Response from A-Cube', response.status, response.headers);
+  const responseBody = await response.text();
+  console.log('Response body from A-Cube', responseBody);
+  return responseBody;
 }

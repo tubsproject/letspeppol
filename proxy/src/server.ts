@@ -1,7 +1,8 @@
 import express from 'express';
 import { checkPassHash } from './db.js';
 import { generateToken, checkBearerToken } from './auth.js';
-import { sendInvoice, register, getUuid, listOurInvoices, unreg } from './acube.js';
+import { sendInvoice, register, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
+import rateLimit from 'express-rate-limit';
 void getUuid;
 
 function getAuthMiddleware(secretKey: string) {
@@ -12,13 +13,14 @@ function getAuthMiddleware(secretKey: string) {
       res.status(401).json({ error: 'Unauthorized' });
     } else {
       const token = authorization.replace('Bearer ', '');
-      const peppolId = await checkBearerToken(token, secretKey);
-      console.log('looked up token', token, peppolId);
-      if (peppolId) {
+      try {
+        const peppolId = await checkBearerToken(token, secretKey);
+        console.log('looked up token', token, peppolId);
         req.peppolId = peppolId;
         next();
-      } else {
-        res.status(401).json({ error: 'Unauthorized' });
+      } catch (err: { message: string } | any) {
+        console.error('Error verifying token:', err);
+        res.status(401).json({ error: err.message });
       }
     }
 }
@@ -43,6 +45,15 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
   const port = parseInt(env.PORT);
   const app = express();
+  app.use(rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    message: {
+      status: 429,
+      error: 'Too many requests, please try again later.',
+    },
+    headers: true, // Include rate limit info in response headers
+  }));
   app.use(express.json());
   return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
@@ -57,7 +68,18 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.setHeader('Content-Type', 'application/json');
       res.json(invoices);
     });
-    app.post('/token', async(req, res) => {
+    app.get('/incoming/:uuid', checkAuth, async (req, res) => {
+      const xml = await getInvoiceXml(req.peppolId, req.params.uuid);
+      res.setHeader('Content-Type', 'text/xml');
+      res.send(xml);
+    });
+    // Apply a stricter limit on login attempts
+    const loginLimiter = rateLimit({
+      windowMs: 5 * 60 * 1000, // 5 minutes
+      max: 5, // Limit each IP to 5 login requests per `window`
+      message: 'Too many login attempts. Please try again in 5 minutes.',
+    });
+    app.post('/token', loginLimiter, async(req, res) => {
       const user = await checkPassHash(req.body.peppolId, req.body.password);
       if (user) {
         const token = await generateToken(user, env.ACCESS_TOKEN_KEY);

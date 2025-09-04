@@ -42,6 +42,7 @@
   "dependencies": {
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
     "fast-xml-parser": "^5.2.5",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
