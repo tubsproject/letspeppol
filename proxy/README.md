@@ -23,9 +23,9 @@ curl $PROXY_HOST
 ```
 
 ### Send an invoice
-Run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
+Run this command from the proxy folder (note the relative file path pointing to [../docs/invoice.xml](../docs/invoice.xml)):
 ```sh
-curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
 ```
 
 ### Activate and de-activate SMP records
