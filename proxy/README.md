@@ -13,8 +13,10 @@ For now you can use for instance `0208:1023290711` or `0208:0705969661` as your 
 First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
 export ACCESS_TOKEN_KEY=...
-export LETSPEPPOL_TOKEN=`node token.js 0208:1023290711`
-echo $LETSPEPPOL_TOKEN
+export SENDER=`node token.js 0208:1023290711`
+export RECIPIENT=`node token.js 0208:0705969661`
+echo $SENDER
+echo $RECIPIENT
 ```
 
 ### Check connectivity
@@ -22,26 +24,27 @@ echo $LETSPEPPOL_TOKEN
 curl $PROXY_HOST
 ```
 
-### Send an invoice
+### Send a UBL document
 Run this command from the proxy folder (note the relative file path pointing to [../docs/invoice.xml](../docs/invoice.xml)):
 ```sh
-curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/credit-note.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
 ```
 
 ### Activate and de-activate SMP records
 ```sh
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/reg
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/unreg
+curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/json' $PROXY_HOST/reg
+curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/json' $PROXY_HOST/unreg
 ```
 
 ### Read invoices
 To list invoices you have received (coming soon: paging, filtering and sorting):
 ```sh
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming | json
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/incoming | json
 ```
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
 ```
 
 ## On the host system of your laptop

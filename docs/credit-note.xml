@@ -14,6 +14,11 @@ xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
 	<cac:AccountingSupplierParty>
 		<cbc:CustomerAssignedAccountID>CO001</cbc:CustomerAssignedAccountID>
 		<cac:Party>
+			<cbc:EndpointID schemeID="0208">1023290711</cbc:EndpointID>
+			<cac:PartyIdentification>
+                <cbc:ID schemeID="0208">1023290711</cbc:ID>
+            </cac:PartyIdentification>
+
 			<cac:PartyName>
 				<cbc:Name>Consortial</cbc:Name>
 			</cac:PartyName>
@@ -52,6 +57,10 @@ xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
 		<cbc:CustomerAssignedAccountID>XFB01</cbc:CustomerAssignedAccountID>
 		<cbc:SupplierAssignedAccountID>GT00978567</cbc:SupplierAssignedAccountID>
 		<cac:Party>
+        	<cbc:EndpointID schemeID="0208">0705969661</cbc:EndpointID>
+        	<cac:PartyIdentification>
+        	    <cbc:ID schemeID="0208">0705969661</cbc:ID>
+        	</cac:PartyIdentification>
 			<cac:PartyName>
 				<cbc:Name>IYT Corporation</cbc:Name>
 			</cac:PartyName>

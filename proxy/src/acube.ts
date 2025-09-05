@@ -1,4 +1,4 @@
-import { parseInvoice } from './parse.js';
+import { parseDocument } from './parse.js';
 
 const INVOICES = {
   "documentTypeScheme": "busdox-docid-qns",
@@ -46,20 +46,20 @@ async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
   return responseBody;
 }
 
-export async function sendInvoice(invoiceXml: string, sendingEntity: string): Promise<number> {
-  const { sender, recipient } = parseInvoice(invoiceXml);
+export async function sendDocument(documentXml: string, sendingEntity: string): Promise<number> {
+  const { sender, recipient } = parseDocument(documentXml);
   if (sender !== sendingEntity) {
     console.error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
     return 400;
   }
-  console.log(`Parsed invoice, sender OK: ${sender}, recipient: ${recipient}`);
+  console.log(`Parsed document, sender OK: ${sender}, recipient: ${recipient}`);
   const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
       'Content-Type': 'application/xml'
     },
-    body: invoiceXml
+    body: documentXml
   });
   const responseBody = await response.text();
   console.log('Response from A-Cube', response.status, response.headers, responseBody);

@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendInvoice, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
+import { sendDocument, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
 
@@ -77,7 +77,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
       console.log('Received XML:', req.body.length);
-      const responseCode = await sendInvoice(req.body, sendingEntity);
+      const responseCode = await sendDocument(req.body, sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {
