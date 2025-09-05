@@ -1,6 +1,49 @@
 # LetsPeppol Proxy
 This is what runs on api.letspeppol.org.
 
+## Usage
+First, set which proxy host you want to use. By default, use:
+```sh
+export PROXY_HOST=https://api.letspeppol.org
+```
+
+### Get an access token
+For now you can use for instance `0208:1023290711` or `0208:0705969661` as your peppol ID 
+
+First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
+```sh
+export ACCESS_TOKEN_KEY=...
+export LETSPEPPOL_TOKEN=`node token.js 0208:1023290711`
+echo $LETSPEPPOL_TOKEN
+```
+
+### Check connectivity
+```sh
+curl $PROXY_HOST
+```
+
+### Send an invoice
+Run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
+```sh
+curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
+```
+
+### Activate and de-activate SMP records
+```sh
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/reg
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/unreg
+```
+
+### Read invoices
+To list invoices you have received (coming soon: paging, filtering and sorting):
+```sh
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming | json
+```
+This will give an array of uuid string. To fetch the XML of a specific one:
+```sh
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+```
+
 ## On the host system of your laptop
 Ask @michielbdejong if you need to run this code in development, because the current instructions require A-Cube API credentials.
 You could also contact A-Cube directly if you want to use this code in an instance independent from the one sponsored by Ponder Source.
@@ -52,45 +95,3 @@ If you host it on a platform other than Heroku you might need to add your own TL
 * Select 'deploy using Heroku git' in the Heroku setting.
 * Do the Heroku git checkout so that a 'letspeppol' folder is added next to the proxy folder in your checkout of this repo.
 * In the `proxy` folder run `./deploy.sh` to push changes to Heroku
-
-## Usage
-If you haven't set `PROXY_HOST=http://localhost:3000` or similar in a previous step, now is the time to set:
-```sh
-PROXY_HOST=https://api.letspeppol.org
-```
-
-### Get an access token
-For now you can use for instance `0208:1023290711` or `0208:0705969661` as your peppol ID 
-
-First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
-```sh
-export LETSPEPPOL_TOKEN=`node token.js 0208:1023290711`
-echo $LETSPEPPOL_TOKEN
-```
-
-### Check connectivity
-```sh
-curl $PROXY_HOST
-```
-
-### Send an invoice
-Run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
-```sh
-curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
-```
-
-### Activate and de-activate SMP records
-```sh
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/reg
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/unreg
-```
-
-### Read invoices
-To list invoices you have received (coming soon: paging, filtering and sorting):
-```sh
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming | json
-```
-This will give an array of uuid string. To fetch the XML of a specific one:
-```sh
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
-```

@@ -1,6 +1,5 @@
 import express from 'express';
-import { checkPassHash } from './db.js';
-import { generateToken, checkBearerToken } from './auth.js';
+import { checkBearerToken } from './auth.js';
 import { sendInvoice, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
@@ -72,21 +71,6 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const xml = await getInvoiceXml(req.peppolId, req.params.uuid);
       res.setHeader('Content-Type', 'text/xml');
       res.send(xml);
-    });
-    // Apply a stricter limit on login attempts
-    const loginLimiter = rateLimit({
-      windowMs: 5 * 60 * 1000, // 5 minutes
-      max: 5, // Limit each IP to 5 login requests per `window`
-      message: 'Too many login attempts. Please try again in 5 minutes.',
-    });
-    app.post('/token', loginLimiter, async(req, res) => {
-      const user = await checkPassHash(req.body.peppolId, req.body.password);
-      if (user) {
-        const token = await generateToken(user, env.ACCESS_TOKEN_KEY);
-        res.json({ token });
-      } else {
-        res.status(401).json({ error: 'Unauthorized' });
-      }
     });
     app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
       console.log(req.headers);
