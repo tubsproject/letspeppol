@@ -94,7 +94,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const responseCode =await setSmpRecord(sendingEntity, true);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 201 || responseCode === 202) {
+      if (responseCode === 200) {
         res.end(`Success (${responseCode} response from A-Cube)\n`);
       } else {
         res.end(`Failure (${responseCode} response from A-Cube)\n`);
