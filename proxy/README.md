@@ -1,7 +1,7 @@
 # LetsPeppol Proxy
 This is what runs on api.letspeppol.org.
 
-## Development
+## On the host system of your laptop
 Ask @michielbdejong if you need to run this code in development, because the current instructions require A-Cube API credentials.
 You could also contact A-Cube directly if you want to use this code in an instance independent from the one sponsored by Ponder Source.
 
@@ -11,8 +11,6 @@ Create a `proxy/.env` file that looks like this:
 PORT=3000
 ACUBE_USR="your-acube-username"
 ACUBE_PWD="your-acube-passwords"
-PASS_HASH_SALT="some-secret-string"
-DATABASE_URL="postgres://letspeppol:something-secret@localhost:5432/letspeppol?sslmode=disable"
 ACCESS_TOKEN_KEY="some-other-secret"
 ```
 
@@ -20,80 +18,79 @@ Then run:
 ```sh
 cd proxy
 # load the variables from your .env file:
-. ./.env
-# get a fresh token for the A-Cube API:
+export $(xargs < .env)
+# get a fresh token for the A-Cube API, needed by the proxy server process:
 export ACUBE_TOKEN=`./auth.sh | json token`
-# create and populate the users database:
-psql $DATABASE_URL -c "create table passwords (peppolid varchar, passhash varchar)"
-psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('0208:1023290711', sha256('0208:1023290711:waggiboo$PASS_HASH_SALT'))"
-psql $DATABASE_URL -c "insert into passwords (peppolid, passhash) values ('0208:0705969661', sha256('0208:0705969661:waggiboo$PASS_HASH_SALT'))"
 # run the proxy:
 pnpm install
 pnpm build
 pnpm start
-# get a session token:
-export LETSPEPPOL_TOKEN=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"0208:1023290711","password":"waggiboo"}' http://localhost:3000/token | json token`
-# register your peppolId on the real Peppol test infrastructure:
-curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' http://localhost:3000/reg
-# send an invoice on the real Peppol test infrastructure:
-curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/send
-# list UUIDs of invoices you have received
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming | json
-# fetch a specific incoming invoice by UUID as XML
-curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" http://localhost:3000/incoming/{uuid} | json
+export PROXY_HOST=http://localhost:3000
 ```
 
-## Docker
+## With Docker
+The Docker image takes two environment variables, `ACUBE_TOKEN` and `PORT`.
 ```sh
 docker build -t proxy .
 export ACUBE_TOKEN=`./auth.sh | json token`
-docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -p 3000:3000 proxy
-curl http://localhost:3000
+docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e PORT=3000 -p 3000:3000 proxy
+export PROXY_HOST=http://localhost:3000
 ```
 
-## Deployment
+## At a Platform-as-a-Service provider like Heroku
 There is a Heroku instance running at api.letspeppol.org.
 You can also deploy staging instances elsewhere.
 It doesn't have `ACUBE_USR` or `ACUBE_PWD` in its env vars, but it has `ACUBE_TOKEN`. When this expires, you should run `auth.sh` in development to regenerate it (or for the Ponder Source sponsored instance, ask @michielbdejong to do this) and then edit the `ACUBE_TOKEN` env var in staging.
 
-It also has the `DATABASE_URL` env var inserted because of the postgres db that is linked to it. Copy it from Heroku -> Settings -> 'Reveal Config Vars' and set it as an env var locally. You need to set `PASS_HASH_SALT` and `ACCESS_TOKEN_KEY` for the AS part. So the essential environment variables on Heroku or any other hosting environment will be:
+So the essential environment variables on Heroku or any other hosting environment will be (same as for the Docker image):
 * `PORT`
 * `ACUBE_TOKEN`
-* `DATABASE_URL`
-* `PASS_HASH_SALT`
-* `ACCESS_TOKEN_KEY`
 
 If you host it on a platform other than Heroku you might need to add your own TLS-offloading proxy, and then the `pnpm install; pnpm build; pnpm start` commands will be similar to how it works in development.
 
-If you have the `DATABASE_URL` env var for the staging instance, you can run the `create table` commands from the development instructions and create and populate the necessary the database tables.
-
-### Pushing changes
+### Pushing changes to Heroku
 * Select 'deploy using Heroku git' in the Heroku setting.
 * Do the Heroku git checkout so that a 'letspeppol' folder is added next to the proxy folder in your checkout of this repo.
 * In the `proxy` folder run `./deploy.sh` to push changes to Heroku
 
-## Usage in Staging
-For now you can use '0208:1023290711' as your peppol ID (registration will fail because it's already registered) and 'waggiboo' as the password.
-Contact @michielbdejong or use the `DATABASE_URL` from Heroku to add other Peppol ID's to the staging instance.
-
-First, get an access token. This will be valid for 1 hour (the password for peppolId `0208:0705969661` is the same, you can try that too):
+## Usage
+If you haven't set `PROXY_HOST=http://localhost:3000` or similar in a previous step, now is the time to set:
 ```sh
-export LP_STAGING=`curl -X POST -H 'Content-Type: application/json' -d'{"peppolId":"0208:1023290711","password":"waggiboo"}' https://api.letspeppol.org/token | json token`
+PROXY_HOST=https://api.letspeppol.org
 ```
 
-Then run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
+### Get an access token
+For now you can use for instance `0208:1023290711` or `0208:0705969661` as your peppol ID 
+
+First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
-curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/send
+export LETSPEPPOL_TOKEN=`node token.js 0208:1023290711`
+echo $LETSPEPPOL_TOKEN
 ```
 
-The Peppol ID's we're testing with have already been registered, so if you try this you will get a 500 error, but in general new Peppol ID's can be registered (we think this goes to the real Peppol testnet) with the `/reg` endpoint (FIXME: this creates the legal entity at A-Cube but doesn't [activate its SMP record](https://github.com/michielbdejong/devlog/issues/48#issuecomment-3249680908)):
+### Check connectivity
 ```sh
-curl -X POST -H "Authorization: Bearer $LP_STAGING" -H 'Content-Type: application/json' https://api.letspeppol.org/reg
+curl $PROXY_HOST
 ```
 
-And list invoices you have received (careful! data format subject to change):
+### Send an invoice
+Run this command from the proxy folder (note the relative file path pointing to [../docs/example.xml](../docs/example.xml)):
 ```sh
-curl -H "Authorization: Bearer $LP_STAGING" https://api.letspeppol.org/incoming | json
+curl -X POST --data-binary "@../docs/example.xml" -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/send
 ```
 
-Coming soon: additional API endpoint to [unpublish](https://github.com/tubsproject/letspeppol/issues/9) your Peppol ID from the testnet.
+### Activate and de-activate SMP records
+```sh
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/reg
+curl -X POST -H "Authorization: Bearer $LETSPEPPOL_TOKEN" -H 'Content-Type: application/json' $PROXY_HOST/unreg
+```
+
+### Read invoices
+To list invoices you have received (coming soon: paging, filtering and sorting):
+```sh
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming | json
+```
+This will give an array of uuid string. To fetch the XML of a specific one:
+```sh
+curl -H "Authorization: Bearer $LETSPEPPOL_TOKEN" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+```

@@ -117,6 +117,10 @@ export async function register(identifier: string): Promise<number> {
   if (createResult === 201 || createResult === 202) {
     return setSmpRecord(identifier, true);
   }
+  if (createResult === 500) {
+    console.log('Assuming legal entity already exists, trying to set SMP record', identifier);
+    return setSmpRecord(identifier, true);
+  }
   return 400;
 }
 

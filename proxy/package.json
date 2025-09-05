@@ -45,7 +45,6 @@
     "express-rate-limit": "^8.0.1",
     "fast-xml-parser": "^5.2.5",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3",
     "tslib": "~2.8"
   },
   "volta": {
