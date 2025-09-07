@@ -1,171 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" 
-xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" 
-xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
-	<cbc:UBLVersionID>2.0</cbc:UBLVersionID>
-  	<cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
-	<cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
-	<cbc:ID>CN758494</cbc:ID>
-	<cbc:CopyIndicator>false</cbc:CopyIndicator>
-	<cbc:UUID>349ABBAE-DF9D-40B4-849F-94C5FF9D1AF4</cbc:UUID>
-	<cbc:IssueDate>2005-06-25</cbc:IssueDate>
-	<cbc:TaxPointDate>2005-06-21</cbc:TaxPointDate>
-	<cbc:Note>sample</cbc:Note>
-	<cac:AccountingSupplierParty>
-		<cbc:CustomerAssignedAccountID>CO001</cbc:CustomerAssignedAccountID>
-		<cac:Party>
-			<cbc:EndpointID schemeID="0208">1023290711</cbc:EndpointID>
-			<cac:PartyIdentification>
-                <cbc:ID schemeID="0208">1023290711</cbc:ID>
-            </cac:PartyIdentification>
+<CreditNote xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>Snippet1</cbc:ID>
+  <cbc:IssueDate>2017-11-13</cbc:IssueDate>
+  <cbc:CreditNoteTypeCode>381</cbc:CreditNoteTypeCode>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:AccountingCost>4025:123:4343</cbc:AccountingCost>
+  <cbc:BuyerReference>0150abc</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0208">1023290711</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0208">1023290711</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>SupplierTradingName Ltd.</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Main street 1</cbc:StreetName>
+        <cbc:AdditionalStreetName>Postbox 123</cbc:AdditionalStreetName>
+        <cbc:CityName>London</cbc:CityName>
+        <cbc:PostalZone>GB 123 EW</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>GB</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>GB1232434</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>SupplierOfficialName Ltd</cbc:RegistrationName>
+        <cbc:CompanyID>GB983294</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0208">0705969661</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0208">0705969661</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>BuyerTradingName AS</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Hovedgatan 32</cbc:StreetName>
+        <cbc:AdditionalStreetName>Po box 878</cbc:AdditionalStreetName>
+        <cbc:CityName>Stockholm</cbc:CityName>
+        <cbc:PostalZone>456 34</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>SE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>SE4598375937</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Buyer Official Name</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0183">39937423947</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Lisa Johnson</cbc:Name>
+        <cbc:Telephone>23434234</cbc:Telephone>
+        <cbc:ElectronicMail>lj@buyer.se</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>Insurance</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">25</cbc:Amount>
+    <cac:TaxCategory>
+      <cbc:ID>S</cbc:ID>
+      <cbc:Percent>25.0</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">331.25</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">1325</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">331.25</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>25.0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">1300</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">1325</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">1656.25</cbc:TaxInclusiveAmount>
+    <cbc:ChargeTotalAmount currencyID="EUR">25</cbc:ChargeTotalAmount>
+    <cbc:PayableAmount currencyID="EUR">1656.25</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
 
-			<cac:PartyName>
-				<cbc:Name>Consortial</cbc:Name>
-			</cac:PartyName>
-			<cac:PostalAddress>
-				<cbc:StreetName>Busy Street</cbc:StreetName>
-				<cbc:BuildingName>Thereabouts</cbc:BuildingName>
-				<cbc:BuildingNumber>56A</cbc:BuildingNumber>
-				<cbc:CityName>Farthing</cbc:CityName>
-				<cbc:PostalZone>AA99 1BB</cbc:PostalZone>
-				<cbc:CountrySubentity>Heremouthshire</cbc:CountrySubentity>
-				<cac:AddressLine>
-					<cbc:Line>The Roundabout</cbc:Line>
-				</cac:AddressLine>
-				<cac:Country>
-					<cbc:IdentificationCode>GB</cbc:IdentificationCode>
-				</cac:Country>
-			</cac:PostalAddress>
-			<cac:PartyTaxScheme>
-				<cbc:RegistrationName>Farthing Purchasing Consortium</cbc:RegistrationName>
-				<cbc:CompanyID>175 269 2355</cbc:CompanyID>
-				<cbc:ExemptionReason>N/A</cbc:ExemptionReason>
-				<cac:TaxScheme>
-					<cbc:ID>VAT</cbc:ID>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:PartyTaxScheme>
-			<cac:Contact>
-				<cbc:Name>Mrs Bouquet</cbc:Name>
-				<cbc:Telephone>0158 1233714</cbc:Telephone>
-				<cbc:Telefax>0158 1233856</cbc:Telefax>
-				<cbc:ElectronicMail>bouquet@fpconsortial.co.uk</cbc:ElectronicMail>
-			</cac:Contact>
-		</cac:Party>
-	</cac:AccountingSupplierParty>
-	<cac:AccountingCustomerParty>
-		<cbc:CustomerAssignedAccountID>XFB01</cbc:CustomerAssignedAccountID>
-		<cbc:SupplierAssignedAccountID>GT00978567</cbc:SupplierAssignedAccountID>
-		<cac:Party>
-        	<cbc:EndpointID schemeID="0208">0705969661</cbc:EndpointID>
-        	<cac:PartyIdentification>
-        	    <cbc:ID schemeID="0208">0705969661</cbc:ID>
-        	</cac:PartyIdentification>
-			<cac:PartyName>
-				<cbc:Name>IYT Corporation</cbc:Name>
-			</cac:PartyName>
-			<cac:PostalAddress>
-				<cbc:StreetName>Avon Way</cbc:StreetName>
-				<cbc:BuildingName>Thereabouts</cbc:BuildingName>
-				<cbc:BuildingNumber>56A</cbc:BuildingNumber>
-				<cbc:CityName>Bridgtow</cbc:CityName>
-				<cbc:PostalZone>ZZ99 1ZZ</cbc:PostalZone>
-				<cbc:CountrySubentity>Avon</cbc:CountrySubentity>
-				<cac:AddressLine>
-					<cbc:Line>3rd Floor, Room 5</cbc:Line>
-				</cac:AddressLine>
-				<cac:Country>
-					<cbc:IdentificationCode>GB</cbc:IdentificationCode>
-				</cac:Country>
-			</cac:PostalAddress>
-			<cac:PartyTaxScheme>
-				<cbc:RegistrationName>Bridgtow District Council</cbc:RegistrationName>
-				<cbc:CompanyID>12356478</cbc:CompanyID>
-				<cbc:ExemptionReason>Local Authority</cbc:ExemptionReason>
-				<cac:TaxScheme>
-					<cbc:ID>UK VAT</cbc:ID>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:PartyTaxScheme>
-			<cac:Contact>
-				<cbc:Name>Mr Fred Churchill</cbc:Name>
-				<cbc:Telephone>0127 2653214</cbc:Telephone>
-				<cbc:Telefax>0127 2653215</cbc:Telefax>
-				<cbc:ElectronicMail>fred@iytcorporation.gov.uk</cbc:ElectronicMail>
-			</cac:Contact>
-		</cac:Party>
-	</cac:AccountingCustomerParty>
-	<cac:TaxTotal>
-		<cbc:TaxAmount currencyID="GBP">17.50</cbc:TaxAmount>
-		<cbc:TaxEvidenceIndicator>true</cbc:TaxEvidenceIndicator>
-		<cac:TaxSubtotal>
-			<cbc:TaxableAmount currencyID="GBP">100.00</cbc:TaxableAmount>
-			<cbc:TaxAmount currencyID="GBP">17.50</cbc:TaxAmount>
-			<cac:TaxCategory>
-				<cbc:ID>A</cbc:ID>
-				<cac:TaxScheme>
-					<cbc:ID>UK VAT</cbc:ID>
-					<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-				</cac:TaxScheme>
-			</cac:TaxCategory>
-		</cac:TaxSubtotal>
-	</cac:TaxTotal>
-	<cac:LegalMonetaryTotal>
-		<cbc:LineExtensionAmount currencyID="GBP">100.00</cbc:LineExtensionAmount>
-		<cbc:TaxExclusiveAmount currencyID="GBP">90.00</cbc:TaxExclusiveAmount>
-		<cbc:PayableAmount currencyID="GBP">107.50</cbc:PayableAmount>
-	</cac:LegalMonetaryTotal>
-	<cac:CreditNoteLine>
-		<cbc:ID>1</cbc:ID>
-		<cbc:Note>as agreed on phone, the invoice should have been cancelled earlier, apologies</cbc:Note>
-		<cbc:CreditedQuantity unitCode="KGM">100</cbc:CreditedQuantity>
-		<cbc:LineExtensionAmount currencyID="GBP">100.00</cbc:LineExtensionAmount>
-		<cbc:TaxPointDate>2005-06-21</cbc:TaxPointDate>
-		<cac:DiscrepancyResponse>
-			<cbc:ReferenceID>A00095678</cbc:ReferenceID>
-			<cbc:Description>invoice cancelation</cbc:Description>
-		</cac:DiscrepancyResponse>
-		<cac:BillingReference>
-			<cac:InvoiceDocumentReference>
-				<cbc:ID>A00095678</cbc:ID>
-				<cbc:UUID>849FBBCE-E081-40B4-906C-94C5FF9D1AC3</cbc:UUID>
-				<cbc:IssueDate>2005-06-21</cbc:IssueDate>
-			</cac:InvoiceDocumentReference>
-		</cac:BillingReference>
-		<cac:TaxTotal>
-			<cbc:TaxAmount currencyID="GBP">17.50</cbc:TaxAmount>
-			<cbc:TaxEvidenceIndicator>true</cbc:TaxEvidenceIndicator>
-			<cac:TaxSubtotal>
-				<cbc:TaxableAmount currencyID="GBP">100.00</cbc:TaxableAmount>
-				<cbc:TaxAmount currencyID="GBP">17.50</cbc:TaxAmount>
-				<cac:TaxCategory>
-					<cbc:ID>A</cbc:ID>
-					<cac:TaxScheme>
-						<cbc:ID>UK VAT</cbc:ID>
-						<cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
-					</cac:TaxScheme>
-				</cac:TaxCategory>
-			</cac:TaxSubtotal>
-		</cac:TaxTotal>
-		<cac:Item>
-			<cbc:Description>Acme beeswax</cbc:Description>
-			<cbc:Name>beeswax</cbc:Name>
-			<cac:BuyersItemIdentification>
-				<cbc:ID>6578489</cbc:ID>
-			</cac:BuyersItemIdentification>
-			<cac:SellersItemIdentification>
-				<cbc:ID>17589683</cbc:ID>
-			</cac:SellersItemIdentification>
-			<cac:ItemInstance>
-				<cac:LotIdentification>
-					<cbc:LotNumberID>546378239</cbc:LotNumberID>
-					<cbc:ExpiryDate>2010-01-01</cbc:ExpiryDate>
-				</cac:LotIdentification>
-			</cac:ItemInstance>
-		</cac:Item>
-		<cac:Price>
-			<cbc:PriceAmount currencyID="GBP">1.00</cbc:PriceAmount>
-			<cbc:BaseQuantity unitCode="KGM">1</cbc:BaseQuantity>
-		</cac:Price>
-	</cac:CreditNoteLine>
+  <cac:CreditNoteLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:CreditedQuantity unitCode="DAY">7</cbc:CreditedQuantity>
+    <cbc:LineExtensionAmount currencyID= "EUR">2800</cbc:LineExtensionAmount>
+    <cbc:AccountingCost>Konteringsstreng</cbc:AccountingCost>
+    <cac:OrderLineReference>
+      <cbc:LineID>123</cbc:LineID>
+    </cac:OrderLineReference>
+    <cac:Item>
+      <cbc:Description>Description of item</cbc:Description>
+      <cbc:Name>item name</cbc:Name>
+      <cac:StandardItemIdentification>
+        <cbc:ID schemeID="0088">21382183120983</cbc:ID>
+      </cac:StandardItemIdentification>
+      <cac:OriginCountry>
+        <cbc:IdentificationCode>NO</cbc:IdentificationCode>
+      </cac:OriginCountry>
+      <cac:CommodityClassification>
+        <cbc:ItemClassificationCode listID="SRV">09348023</cbc:ItemClassificationCode>
+      </cac:CommodityClassification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>25.0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">400</cbc:PriceAmount>
+    </cac:Price>
+  </cac:CreditNoteLine>
+  <cac:CreditNoteLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:CreditedQuantity unitCode="DAY">-3</cbc:CreditedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">-1500</cbc:LineExtensionAmount>
+    <cac:OrderLineReference>
+      <cbc:LineID>123</cbc:LineID>
+    </cac:OrderLineReference>
+    <cac:Item>
+      <cbc:Description>Description 2</cbc:Description>
+      <cbc:Name>item name 2</cbc:Name>
+      <cac:StandardItemIdentification>
+        <cbc:ID schemeID="0088">21382183120983</cbc:ID>
+      </cac:StandardItemIdentification>
+      <cac:OriginCountry>
+        <cbc:IdentificationCode>NO</cbc:IdentificationCode>
+      </cac:OriginCountry>
+      <cac:CommodityClassification>
+        <cbc:ItemClassificationCode listID="SRV">09348023</cbc:ItemClassificationCode>
+      </cac:CommodityClassification>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>25.0</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">500</cbc:PriceAmount>
+    </cac:Price>
+  </cac:CreditNoteLine>
 </CreditNote>
