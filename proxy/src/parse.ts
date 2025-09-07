@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 
-export function parseDocument(documentXml: string): { sender: string | undefined; recipient: string | undefined; } {
+export function parseDocument(documentXml: string): { sender: string | undefined; recipient: string | undefined; docType: string | undefined } {
   const parserOptions = {
     ignoreAttributes: false,
     numberParseOptions: {
@@ -29,6 +29,7 @@ export function parseDocument(documentXml: string): { sender: string | undefined
   console.log(sender, recipient);
   return {
     sender: `${sender['@_schemeID']}:${sender['#text']}`,
-    recipient: `${recipient['@_schemeID']}:${recipient['#text']}`
+    recipient: `${recipient['@_schemeID']}:${recipient['#text']}`,
+    docType: docType === 'Invoice' ? 'Invoice' : docType === 'CreditNote' ? 'CreditNote' : undefined,
   };
 }

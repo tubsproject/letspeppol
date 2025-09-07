@@ -28,7 +28,7 @@ function getAuthMiddleware(secretKey: string) {
 export type ServerOptions = {
   PORT: string;
   ACUBE_TOKEN: string;
-  ACCESS_TOKEN_KEY: string;
+  ACCESS_TOKEN_KEY: string
 };
 
 const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'ACCESS_TOKEN_KEY'];
