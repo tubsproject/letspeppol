@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendInvoice, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
+import { sendDocument, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
 
@@ -28,12 +28,10 @@ function getAuthMiddleware(secretKey: string) {
 export type ServerOptions = {
   PORT: string;
   ACUBE_TOKEN: string;
-  DATABASE_URL: string;
-  PASS_HASH_SALT: string;
-  ACCESS_TOKEN_KEY: string;
+  ACCESS_TOKEN_KEY: string
 };
 
-const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'DATABASE_URL', 'PASS_HASH_SALT', 'ACCESS_TOKEN_KEY'];
+const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'ACCESS_TOKEN_KEY'];
 export async function startServer(env: ServerOptions): Promise<number> {
   const checkAuth = getAuthMiddleware(env.ACCESS_TOKEN_KEY);
   // console.error('checking', env);
@@ -77,7 +75,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
       console.log('Received XML:', req.body.length);
-      const responseCode = await sendInvoice(req.body, sendingEntity);
+      const responseCode = await sendDocument(req.body, sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 201 || responseCode === 202) {

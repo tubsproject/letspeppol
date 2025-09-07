@@ -1,8 +1,14 @@
-import { parseInvoice } from './parse.js';
+import { parseDocument } from './parse.js';
 
-const CAPABILITIES = {
+const INVOICES = {
   "documentTypeScheme": "busdox-docid-qns",
   "documentType": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
+  "processScheme": "cenbii-procid-ubl",
+  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+};
+const CREDIT_NOTES = {
+  "documentTypeScheme": "busdox-docid-qns",
+  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
   "processScheme": "cenbii-procid-ubl",
   "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
 };
@@ -28,7 +34,10 @@ async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
     },
     body: JSON.stringify({
       enabled,
-      capabilities: [CAPABILITIES],
+      capabilities: [
+        INVOICES,
+        CREDIT_NOTES,
+      ],
     }),
   });
   console.log('Response from A-Cube', response.status, response.headers);
@@ -37,20 +46,28 @@ async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
   return responseBody;
 }
 
-export async function sendInvoice(invoiceXml: string, sendingEntity: string): Promise<number> {
-  const { sender, recipient } = parseInvoice(invoiceXml);
+export async function sendDocument(documentXml: string, sendingEntity: string): Promise<number> {
+  const { sender, recipient, docType } = parseDocument(documentXml);
   if (sender !== sendingEntity) {
     console.error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
     return 400;
   }
-  console.log(`Parsed invoice, sender OK: ${sender}, recipient: ${recipient}`);
-  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl', {
+  console.log(`Parsed document, docType: ${docType}, sender OK: ${sender}, recipient: ${recipient}`);
+  const endPoint: Record<string, string> = {
+    'Invoice': 'https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl',
+    'CreditNote': 'https://peppol-sandbox.api.acubeapi.com/credit-notes/outgoing/ubl',
+  };
+  if (!docType || !endPoint[docType]) {
+    console.error('Could not determine document type or unsupported document type', docType);
+    return 400;
+  }
+  const response = await fetch(endPoint[docType], {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
       'Content-Type': 'application/xml'
     },
-    body: invoiceXml
+    body: documentXml
   });
   const responseBody = await response.text();
   console.log('Response from A-Cube', response.status, response.headers, responseBody);

@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 
-export function parseInvoice(invoiceXml: string): { sender: string | undefined; recipient: string | undefined; } {
+export function parseDocument(documentXml: string): { sender: string | undefined; recipient: string | undefined; docType: string | undefined } {
   const parserOptions = {
     ignoreAttributes: false,
     numberParseOptions: {
@@ -10,12 +10,26 @@ export function parseInvoice(invoiceXml: string): { sender: string | undefined; 
     }
   };
   const parser = new XMLParser(parserOptions);
-  const jObj = parser.parse(invoiceXml);
-  const sender = jObj['Invoice']?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cbc:EndpointID'];
-  const recipient = jObj['Invoice']?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cbc:EndpointID'];
-
+  const jObj = parser.parse(documentXml);
+  if (!jObj) {
+    throw new Error('Failed to parse XML document');
+  }
+  if (Object.keys(jObj)[0] !== '?xml') {
+    throw new Error('Missing top level ?xml declaration');
+  }
+  const docType = Object.keys(jObj)[1];
+  if (!docType) {
+    throw new Error('Could not determine document type from XML');
+  }
+  console.log('Document type:', docType);
+  console.log('supplier', JSON.stringify(jObj[docType]?.['cac:AccountingSupplierParty'], null, 2));
+  console.log('customer', JSON.stringify(jObj[docType]?.['cac:AccountingCustomerParty'], null, 2));
+  const sender = jObj[docType]?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cbc:EndpointID'];
+  const recipient = jObj[docType]?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cbc:EndpointID'];
+  console.log(sender, recipient);
   return {
     sender: `${sender['@_schemeID']}:${sender['#text']}`,
-    recipient: `${recipient['@_schemeID']}:${recipient['#text']}`
+    recipient: `${recipient['@_schemeID']}:${recipient['#text']}`,
+    docType: docType === 'Invoice' ? 'Invoice' : docType === 'CreditNote' ? 'CreditNote' : undefined,
   };
 }

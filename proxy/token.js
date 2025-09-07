@@ -7,10 +7,10 @@ const peppolId = process.argv[2];
 if (!peppolId) {
   throw new Error('Usage: node token.js 0208:1023290711');
 }
-const secretKey = process.env.ACCESS_TOKEN_KEY;
-if (!secretKey) {
+const accessTokenKey = process.env.ACCESS_TOKEN_KEY;
+if (!accessTokenKey) {
   throw new Error('Please set the ACCESS_TOKEN_KEY environment variable');
 }
 const payload = { peppolId };
-const token = jsonwebtoken.sign(payload, secretKey, options);
+const token = jsonwebtoken.sign(payload, accessTokenKey, options);
 console.log(token);
