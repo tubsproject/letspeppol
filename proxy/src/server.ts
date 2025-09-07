@@ -28,12 +28,10 @@ function getAuthMiddleware(secretKey: string) {
 export type ServerOptions = {
   PORT: string;
   ACUBE_TOKEN: string;
-  DATABASE_URL: string;
-  PASS_HASH_SALT: string;
   ACCESS_TOKEN_KEY: string;
 };
 
-const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'DATABASE_URL', 'PASS_HASH_SALT', 'ACCESS_TOKEN_KEY'];
+const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'ACCESS_TOKEN_KEY'];
 export async function startServer(env: ServerOptions): Promise<number> {
   const checkAuth = getAuthMiddleware(env.ACCESS_TOKEN_KEY);
   // console.error('checking', env);
