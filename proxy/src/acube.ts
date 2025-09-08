@@ -20,9 +20,9 @@ async function fetchSmpRecord(uuid: string): Promise<any> {
     },
   });
   console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  return responseBody;
+  const responseObj = await response.json();
+  console.log('SMP record fetched', uuid, responseObj);
+  return responseObj;
 }
 
 async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
@@ -41,9 +41,9 @@ async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
     }),
   });
   console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  return responseBody;
+  const responseObj = await response.json();
+  console.log('PUT SMP', uuid, enabled, responseObj);
+  return responseObj;
 }
 
 export async function sendDocument(documentXml: string, sendingEntity: string): Promise<number> {
@@ -76,16 +76,21 @@ export async function sendDocument(documentXml: string, sendingEntity: string): 
 
 export async function getUuid(identifier: string): Promise<string | null> {
   const identifierValue = identifier.split(':')[1];
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities`/*?identifierValue=${identifierValue}`*/, {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities?identifierValue=${identifierValue}`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
     },
   });
   console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  void identifierValue;
-  return responseBody['hydra:member']?.[0]?.uuid || null;
+  const responseObj = await response.json();
+  console.log('Fetched legal entity', identifierValue, responseObj);
+  if (responseObj['hydra:totalItems'] === 0) {
+    return null;
+  }
+  if (responseObj['hydra:totalItems'] > 1) {
+    console.warn('Warning: multiple legal entities found for identifier', identifierValue);
+  }
+  return responseObj['hydra:member']?.[0]?.uuid || null;
 }
 
 export async function createLegalEntity(identifier: string): Promise<number> {
@@ -110,12 +115,12 @@ export async function createLegalEntity(identifier: string): Promise<number> {
     })
   });
   console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  return response.status;  
+  const responseObj = await response.json();
+  console.log('Legal entity creation result', identifier, responseObj);
+  return response.status;
 }
 
-export async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
+async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
     console.log('Fetching UUID');
     const uuid = await getUuid(identifier);
     if (!uuid) {
@@ -126,10 +131,10 @@ export async function setSmpRecord(identifier: string, enabled: boolean): Promis
     console.log('Fetched SMP record, now updating', smpRecord);
     const response = await putSmpRecord(uuid, enabled);
     console.log('Updated SMP record', response);
-    return 200;
+    return response.status;
 }
 
-export async function register(identifier: string): Promise<number> {
+export async function reg(identifier: string): Promise<number> {
   const createResult = await createLegalEntity(identifier);
   if (createResult === 201 || createResult === 202) {
     return setSmpRecord(identifier, true);
@@ -143,8 +148,12 @@ export async function register(identifier: string): Promise<number> {
 
 export async function unreg(identifier: string): Promise<number> {
   const uuid = await getUuid(identifier);
-  console.log('deleting legal entity', uuid);
-  const response = await putSmpRecord(uuid!, false);
+  if (uuid === null) {
+    console.log('Could not fetch UUID', uuid);
+    return 500;
+  }
+  console.log('unreg', identifier, uuid);
+  const response = await putSmpRecord(uuid, false);
   console.log('Updated SMP record', response);
   return 200;  
 }

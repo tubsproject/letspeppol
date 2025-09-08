@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendDocument, setSmpRecord, getUuid, listEntityDocuments, unreg, getDocumentXml } from './acube.js';
+import { sendDocument, reg, unreg, getUuid, listEntityDocuments, getDocumentXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
 
@@ -87,9 +87,8 @@ export async function startServer(env: ServerOptions): Promise<number> {
     app.post('/reg', checkAuth, async (req, res) => {
       console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('sending entity', sendingEntity);
-      // const responseCode = await createLegalEntity(sendingEntity);
-      const responseCode =await setSmpRecord(sendingEntity, true);
+      console.log('/reg', sendingEntity);
+      const responseCode = await reg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       if (responseCode === 200) {
@@ -101,7 +100,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
     app.post('/unreg', checkAuth, async (req, res) => {
       console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('sending entity', sendingEntity);
+      console.log('/unreg', sendingEntity);
       const responseCode = await unreg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
