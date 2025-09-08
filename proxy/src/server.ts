@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendDocument, setSmpRecord, getUuid, listOurInvoices, unreg, getInvoiceXml } from './acube.js';
+import { sendDocument, setSmpRecord, getUuid, listEntityDocuments, unreg, getDocumentXml } from './acube.js';
 import rateLimit from 'express-rate-limit';
 void getUuid;
 
@@ -55,18 +55,18 @@ export async function startServer(env: ServerOptions): Promise<number> {
   return new Promise((resolve, reject) => {
     app.get('/', async (_req, res) => {
       // await getUuid('1023290711');
-      await listOurInvoices(1, '1023290711');
-      await listOurInvoices(1, '0705969661');
+      // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
+      // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
     });
-    app.get('/incoming', checkAuth, async (req, res) => {
-      const invoices = await listOurInvoices(1, req.peppolId);
+    app.get('/documents/:direction/:docType', checkAuth, async (req, res) => {
+      const documents = await listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
       res.setHeader('Content-Type', 'application/json');
-      res.json(invoices);
+      res.json(documents);
     });
-    app.get('/incoming/:uuid', checkAuth, async (req, res) => {
-      const xml = await getInvoiceXml(req.peppolId, req.params.uuid);
+    app.get('/documents/:direction/:docType/:uuid', checkAuth, async (req, res) => {
+      const xml = await getDocumentXml({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, uuid: req.params.uuid });
       res.setHeader('Content-Type', 'text/xml');
       res.send(xml);
     });

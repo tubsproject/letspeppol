@@ -38,13 +38,16 @@ curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/js
 ```
 
 ### Read invoices
-To list invoices you have received (coming soon: paging, filtering and sorting):
+To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming). Other than this filtering, all query parameters from A-Cube are exposed.
+
 ```sh
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/incoming | json
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/documents/outgoing/invoices?page=1&recipientName=Jones | json
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/documents/incoming/credit-notes?recipientName=Jones&page=2 | json
 ```
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/documents/invoices/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/documents/credit-notes/9ad589b3-e533-4767-b62a-ea33219d3a57
 ```
 
 ## On the host system of your laptop
