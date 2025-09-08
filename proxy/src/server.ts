@@ -75,39 +75,39 @@ export async function startServer(env: ServerOptions): Promise<number> {
       const sendingEntity = req.peppolId;
       console.log('sending entity', sendingEntity);
       console.log('Received XML:', req.body.length);
-      const responseCode = await sendDocument(req.body, sendingEntity);
+      const response = await sendDocument(req.body, sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 201 || responseCode === 202) {
-        res.end(`Success (${responseCode} response from A-Cube component)\n`);
+      if (response.status === 201 || response.status === 202) {
+        res.end(`Success (${response.status} response from A-Cube component)\n`);
       } else {
-        res.end(`Failure (${responseCode} response from A-Cube component)\n`);
+        res.end(`Failure (${response.status} response from A-Cube component)\n`);
       }
     });
     app.post('/reg', checkAuth, async (req, res) => {
       console.log(req.headers);
       const sendingEntity = req.peppolId;
       console.log('/reg', sendingEntity);
-      const responseCode = await reg(sendingEntity);
+      const response = await reg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 200) {
-        res.end(`Success (${responseCode} response from A-Cube)\n`);
+      if (response.status === 200) {
+        res.end(`Success (${response.status} response from A-Cube)\n`);
       } else {
-        res.end(`Failure (${responseCode} response from A-Cube)\n`);
+        res.end(`Failure (${response.status} response from A-Cube)\n`);
       }
     });
     app.post('/unreg', checkAuth, async (req, res) => {
       console.log(req.headers);
       const sendingEntity = req.peppolId;
       console.log('/unreg', sendingEntity);
-      const responseCode = await unreg(sendingEntity);
+      const response = await unreg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 200) {
-        res.end(`Success (${responseCode} response from A-Cube)\n`);
+      if (response.status === 200) {
+        res.end(`Success (${response.status} response from A-Cube)\n`);
       } else {
-        res.end(`Failure (${responseCode} response from A-Cube)\n`);
+        res.end(`Failure (${response.status} response from A-Cube)\n`);
       }
     });
     app.listen(port, (error) => {
