@@ -9,6 +9,7 @@ describe('parseInvoice function', () => {
     expect(parsed).toEqual({
       recipient: "0208:0705969661",
       sender: "0208:1023290711",
+      docType: "Invoice",
     });
   });
 });

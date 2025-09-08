@@ -149,27 +149,58 @@ export async function unreg(identifier: string): Promise<number> {
   return 200;  
 }
 
-export async function listOurInvoices(page: number, recipientId: string): Promise<object[]> {
-  void page;
-  void recipientId;
-  console.log('filtering on recipientId', recipientId);
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices?recipientId=${recipientId.split(':')[1]}&direction=incoming`, {
+export type ListEntityDocumentsParams = {
+  peppolId: string;
+  direction: 'incoming' | 'outgoing';
+  type: 'invoices' | 'credit-notes';
+  query: Record<string, string | string[] | undefined>;
+};
+export async function listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
+  const { peppolId, direction, type, query } = options;
+  if (!peppolId.startsWith('0208:')) {
+    throw new Error('Only organization number (scheme 0208) is supported as peppolId');
+  }
+  console.log('listing entity documents', peppolId, direction, type, query);
+  const params = { direction };
+  if (direction === 'outgoing') {
+    params['senderId'] = peppolId.substring('0208:'.length);
+    if (query['recipientId']) {
+      params['recipientId'] = query['recipientId'];
+    }
+  } else {
+    params['recipientId'] = peppolId.substring('0208:'.length);
+    if (query['senderId']) {
+      params['senderId'] = query['senderId'];
+    }
+  }
+  // preserve the order of the other allowed query parameters as much as possible
+  Object.keys(query).forEach(queryKey => {
+    if (['page', 'itemsPerPage', 'senderName', 'recipientName', 'documentNumber', 'sortBy[createdAt]', 'sortBy[documentDate]', 'sortBy[senderName]', 'sortBy[recipientName]', 'createdAt[before]', 'documentDate[before]', 'downloaded'].includes(queryKey)) {
+      params[queryKey] = query[queryKey];
+    }
+  });
+  const queryString = new URLSearchParams(params).toString();
+  console.log('Query string', options.query, queryString);
+  console.log(`https://peppol-sandbox.api.acubeapi.com/${type}?${queryString}`);
+  // const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}?createdAt[after]=2025-01-01&documentDate[after]=2025-01-01`, {
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}?${queryString}`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
     },
   });
   console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.json();
-  console.log('Response body from A-Cube', responseBody);
-  const list = responseBody['hydra:member'].map(item => item.uuid);
+  const responseObj = await response.json();
+  console.log('Response body from A-Cube', JSON.stringify(responseObj, null, 2));
+  const list = responseObj['hydra:member'].map(item => item.uuid);
   console.log('Invoice UUIDs', JSON.stringify(list, null, 2));
   return list;
 }
 
 
-export async function getInvoiceXml(peppolId: string, uuid: string): Promise<string | null> {
-  console.log('fetching invoice xml', peppolId, uuid);
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/invoices/${uuid}/source`, {
+export async function getDocumentXml({ peppolId, direction, type, uuid }: { peppolId: string; direction: string; type: string; uuid: string }): Promise<string | null> {
+  console.log('fetching document xml', peppolId, direction, type, uuid);
+  // FIXME: check that the document with this uuid is actually associated with this peppolId
+  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}/${uuid}/source`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
       'Accept': 'application/xml',

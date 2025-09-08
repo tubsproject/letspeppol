@@ -18,8 +18,6 @@ describe('startServer function', () => {
     await startServer({
         PORT: '3000',
         ACUBE_TOKEN: 'test-token',
-        DATABASE_URL: 'test-database-url',
-        PASS_HASH_SALT: 'test-pass-hash-salt',
         ACCESS_TOKEN_KEY: 'test-access-token-key'
     });
 
