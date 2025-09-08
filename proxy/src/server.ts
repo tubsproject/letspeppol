@@ -7,14 +7,12 @@ void getUuid;
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
     const authorization = req.headers['authorization'];
-    console.log(`Authorization string: "${authorization}"`);
     if (!authorization) {
       res.status(401).json({ error: 'Unauthorized' });
     } else {
       const token = authorization.replace('Bearer ', '');
       try {
         const peppolId = await checkBearerToken(token, secretKey);
-        console.log('looked up token', token, peppolId);
         req.peppolId = peppolId;
         next();
       } catch (err: { message: string } | any) {
@@ -71,10 +69,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.send(xml);
     });
     app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('sending entity', sendingEntity);
-      console.log('Received XML:', req.body.length);
       const response = await sendDocument(req.body, sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
@@ -85,9 +80,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       }
     });
     app.post('/reg', checkAuth, async (req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('/reg', sendingEntity);
       const response = await reg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
@@ -98,9 +91,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       }
     });
     app.post('/unreg', checkAuth, async (req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('/unreg', sendingEntity);
       const response = await unreg(sendingEntity);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
