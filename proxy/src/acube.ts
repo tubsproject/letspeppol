@@ -13,7 +13,7 @@ const CREDIT_NOTES = {
   "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
 };
 
-async function fetchSmpRecord(uuid: string): Promise<any> {
+async function fetchSmpRecord(uuid: string): Promise<Response> {
   const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
     headers: {
       'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
@@ -25,7 +25,7 @@ async function fetchSmpRecord(uuid: string): Promise<any> {
   return responseObj;
 }
 
-async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
+async function putSmpRecord(uuid: string, enabled: boolean): Promise<Response> {
   const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
     method: 'PUT',
     headers: {
