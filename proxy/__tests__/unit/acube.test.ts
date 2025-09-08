@@ -1,0 +1,27 @@
+import { readFileSync } from 'fs';
+import { test, vi, expect, MockedFunction } from 'vitest';
+import { sendDocument } from '../../src/acube.js';
+
+test('sends document successfully', async () => {
+  global.fetch = vi.fn(() =>
+    Promise.resolve({
+      status: 201,
+    }),
+  ) as unknown as MockedFunction<typeof fetch>;
+
+  // Call the function and assert the result
+  const invoiceXml = readFileSync('__tests__/fixtures/invoice.xml', 'utf-8');
+  const response = await sendDocument(invoiceXml, '0208:1023290711');
+  expect(response.status).toEqual(201);
+
+  // Check that fetch was called exactly once
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(fetch).toHaveBeenCalledWith('https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/xml',
+      Authorization: 'Bearer undefined',
+    },
+    body: invoiceXml,
+  });
+});
