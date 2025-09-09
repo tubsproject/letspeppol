@@ -1,8 +1,7 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendDocument, reg, unreg, getUuid, listEntityDocuments, getDocumentXml } from './acube.js';
+import { Acube } from './acube.js';
 import rateLimit from 'express-rate-limit';
-void getUuid;
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -20,7 +19,7 @@ function getAuthMiddleware(secretKey: string) {
         res.status(401).json({ error: err.message });
       }
     }
-}
+  }
 }
 
 export type ServerOptions = {
@@ -38,6 +37,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       throw new Error(`${option} is not set`);
     }
   }
+  const backend = new Acube();
   const port = parseInt(env.PORT);
   const app = express();
   app.use(rateLimit({
@@ -59,47 +59,34 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.end('Let\'s Peppol!\n');
     });
     app.get('/documents/:direction/:docType', checkAuth, async (req, res) => {
-      const documents = await listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
+      const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
       res.setHeader('Content-Type', 'application/json');
       res.json(documents);
     });
-    app.get('/documents/:direction/:docType/:uuid', checkAuth, async (req, res) => {
-      const xml = await getDocumentXml({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, uuid: req.params.uuid });
+    app.get('/invoice/:uuid', checkAuth, async (req, res) => {
+      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: 'invoices', uuid: req.params.uuid });
+      res.setHeader('Content-Type', 'text/xml');
+      res.send(xml);
+    });
+    app.get('/credit-note/:uuid', checkAuth, async (req, res) => {
+      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: 'credit-notes', uuid: req.params.uuid });
       res.setHeader('Content-Type', 'text/xml');
       res.send(xml);
     });
     app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
       const sendingEntity = req.peppolId;
-      const response = await sendDocument(req.body, sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (response.status === 201 || response.status === 202) {
-        res.end(`Success (${response.status} response from A-Cube component)\n`);
-      } else {
-        res.end(`Failure (${response.status} response from A-Cube component)\n`);
-      }
+      await backend.sendDocument(req.body, sendingEntity);
+      res.end('OK\n');
     });
     app.post('/reg', checkAuth, async (req, res) => {
       const sendingEntity = req.peppolId;
-      const response = await reg(sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (response.status === 200) {
-        res.end(`Success (${response.status} response from A-Cube)\n`);
-      } else {
-        res.end(`Failure (${response.status} response from A-Cube)\n`);
-      }
+      await backend.reg(sendingEntity);
+      res.end('OK\n');
     });
     app.post('/unreg', checkAuth, async (req, res) => {
       const sendingEntity = req.peppolId;
-      const response = await unreg(sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (response.status === 200) {
-        res.end(`Success (${response.status} response from A-Cube)\n`);
-      } else {
-        res.end(`Failure (${response.status} response from A-Cube)\n`);
-      }
+      await backend.unreg(sendingEntity);
+      res.end('OK\n');
     });
     app.listen(port, (error) => {
       if (error) {
