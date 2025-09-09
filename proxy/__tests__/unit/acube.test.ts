@@ -5,7 +5,7 @@ import { Acube } from '../../src/acube.js';
 test('sends document successfully', async () => {
   global.fetch = vi.fn(() =>
     Promise.resolve({
-      status: 201,
+      status: 202,
     }),
   ) as unknown as MockedFunction<typeof fetch>;
 
