@@ -20,7 +20,7 @@ test('sends document successfully', async () => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/xml',
-      Authorization: 'Bearer undefined',
+      Authorization: `Bearer ${process.env.ACUBE_TOKEN}`,
     },
     body: invoiceXml,
   });
