@@ -58,18 +58,13 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
     });
-    app.get('/documents/:direction/:docType', checkAuth, async (req, res) => {
+    app.get('/:docType/:direction', checkAuth, async (req, res) => {
       const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
       res.setHeader('Content-Type', 'application/json');
       res.json(documents);
     });
-    app.get('/invoice/:uuid', checkAuth, async (req, res) => {
-      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: 'invoices', uuid: req.params.uuid });
-      res.setHeader('Content-Type', 'text/xml');
-      res.send(xml);
-    });
-    app.get('/credit-note/:uuid', checkAuth, async (req, res) => {
-      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: 'credit-notes', uuid: req.params.uuid });
+    app.get('/:docType/:direction/:uuid', checkAuth, async (req, res) => {
+      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
       res.setHeader('Content-Type', 'text/xml');
       res.send(xml);
     });

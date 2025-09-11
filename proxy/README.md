@@ -41,14 +41,19 @@ curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/js
 To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming). Other than this filtering, all query parameters from A-Cube are exposed.
 
 ```sh
-curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/documents/outgoing/invoices?page=1" | json
-curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/documents/incoming/credit-notes" | json
+curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/invoices/outgoing?page=1" | json
+curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/credit-notes/incoming" | json
 ```
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/invoice/9ad589b3-e533-4767-b62a-ea33219d3a57
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/credit-note/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/invoices/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/credit-notes/outgoing/9ad589b3-e533-4767-b62a-ea33219d3a57
 ```
+
+FIXME: you would probably want to retrieve metadata about the sending/receiving status as well as (especially in the incoming case)
+the actual XML doc contents. So far the list just gives UUIDs and the individual fetch calls only give the XML, so there's now way
+to check the delivery status of a document. Also, a client might want to store some custom data such as "downloaded" or "paid" per
+invoice, not sure whether we should offer storing that for them.
 
 ## On the host system of your laptop
 Ask @michielbdejong if you need to run this code in development, because the current instructions require A-Cube API credentials.
