@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { Acube } from './acube.js';
+import { Peppyrus } from './peppyrus.js';
 import rateLimit from 'express-rate-limit';
 
 function getAuthMiddleware(secretKey: string) {
@@ -37,7 +37,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       throw new Error(`${option} is not set`);
     }
   }
-  const backend = new Acube();
+  const backend = new Peppyrus();
   const port = parseInt(env.PORT);
   const app = express();
   app.use(rateLimit({
