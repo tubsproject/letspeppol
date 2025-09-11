@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { checkBearerToken } from './auth.js';
 import { Acube } from './acube.js';
 import { Peppyrus } from './peppyrus.js';
@@ -49,6 +50,8 @@ export async function startServer(env: ServerOptions): Promise<number> {
   const backend = getBackend();
   const port = parseInt(env.PORT);
   const app = express();
+  app.use(cors());
+  // Apply rate limiting to all requests
   app.use(rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
