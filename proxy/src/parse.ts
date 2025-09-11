@@ -21,12 +21,8 @@ export function parseDocument(documentXml: string): { sender: string | undefined
   if (!docType) {
     throw new Error('Could not determine document type from XML');
   }
-  console.log('Document type:', docType);
-  console.log('supplier', JSON.stringify(jObj[docType]?.['cac:AccountingSupplierParty'], null, 2));
-  console.log('customer', JSON.stringify(jObj[docType]?.['cac:AccountingCustomerParty'], null, 2));
   const sender = jObj[docType]?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cbc:EndpointID'];
   const recipient = jObj[docType]?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cbc:EndpointID'];
-  console.log(sender, recipient);
   return {
     sender: `${sender['@_schemeID']}:${sender['#text']}`,
     recipient: `${recipient['@_schemeID']}:${recipient['#text']}`,

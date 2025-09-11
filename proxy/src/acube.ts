@@ -1,222 +1,114 @@
+import {
+  doSendDocument,
+  doGetUuid,
+  doCreateLegalEntity,
+  doSetSmpRecord,
+  doListEntityDocuments,
+  doGetDocumentXml
+} from './acubeClient.js';
 import { parseDocument } from './parse.js';
+import { Backend, ListEntityDocumentsParams } from './Backend.js';
 
-const INVOICES = {
-  "documentTypeScheme": "busdox-docid-qns",
-  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
-  "processScheme": "cenbii-procid-ubl",
-  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-};
-const CREDIT_NOTES = {
-  "documentTypeScheme": "busdox-docid-qns",
-  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
-  "processScheme": "cenbii-procid-ubl",
-  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-};
-
-async function fetchSmpRecord(uuid: string): Promise<any> {
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-    },
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseObj = await response.json();
-  console.log('SMP record fetched', uuid, responseObj);
-  return responseObj;
-}
-
-async function putSmpRecord(uuid: string, enabled: boolean): Promise<any> {
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities/${uuid}/smp`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      enabled,
-      capabilities: [
-        INVOICES,
-        CREDIT_NOTES,
-      ],
-    }),
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseObj = await response.json();
-  console.log('PUT SMP', uuid, enabled, responseObj);
-  return responseObj;
-}
-
-export async function sendDocument(documentXml: string, sendingEntity: string): Promise<number> {
-  const { sender, recipient, docType } = parseDocument(documentXml);
-  if (sender !== sendingEntity) {
-    console.error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
-    return 400;
-  }
-  console.log(`Parsed document, docType: ${docType}, sender OK: ${sender}, recipient: ${recipient}`);
-  const endPoint: Record<string, string> = {
-    'Invoice': 'https://peppol-sandbox.api.acubeapi.com/invoices/outgoing/ubl',
-    'CreditNote': 'https://peppol-sandbox.api.acubeapi.com/credit-notes/outgoing/ubl',
-  };
-  if (!docType || !endPoint[docType]) {
-    console.error('Could not determine document type or unsupported document type', docType);
-    return 400;
-  }
-  const response = await fetch(endPoint[docType], {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-      'Content-Type': 'application/xml'
-    },
-    body: documentXml
-  });
-  const responseBody = await response.text();
-  console.log('Response from A-Cube', response.status, response.headers, responseBody);
-  return response.status;
-}
-
-export async function getUuid(identifier: string): Promise<string | null> {
-  const identifierValue = identifier.split(':')[1];
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/legal-entities?identifierValue=${identifierValue}`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-    },
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseObj = await response.json();
-  console.log('Fetched legal entity', identifierValue, responseObj);
-  if (responseObj['hydra:totalItems'] === 0) {
-    return null;
-  }
-  if (responseObj['hydra:totalItems'] > 1) {
-    console.warn('Warning: multiple legal entities found for identifier', identifierValue);
-  }
-  return responseObj['hydra:member']?.[0]?.uuid || null;
-}
-
-export async function createLegalEntity(identifier: string): Promise<number> {
-  const response = await fetch('https://peppol-sandbox.api.acubeapi.com/legal-entities', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-      'Content-Type': 'application/ld+json'
-    },
-    body: JSON.stringify({
-      "registeredName": "Ponder Source",
-      "country": "SE",
-      "address": "string",
-      "city": "string",
-      "stateOrProvince": "string",
-      "zipCode": "string",
-      "identifierScheme": "iso6523-actorid-upis",
-      "identifierValue": identifier,
-      "receivedDocumentNotificationEmails": [
-        "notif@pondersource.com"
-      ]
-    })
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseObj = await response.json();
-  console.log('Legal entity creation result', identifier, responseObj);
-  return response.status;
-}
-
-async function setSmpRecord(identifier: string, enabled: boolean): Promise<number> {
-    console.log('Fetching UUID');
-    const uuid = await getUuid(identifier);
-    if (!uuid) {
-      console.log('Could not fetch UUID', uuid);
-      return 500;
+export class Acube implements Backend {
+  async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
+    const { sender, docType } = parseDocument(documentXml);
+    if (sender !== sendingEntity) {
+      throw new Error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
     }
-    const smpRecord = await fetchSmpRecord(uuid);
-    console.log('Fetched SMP record, now updating', smpRecord);
-    const response = await putSmpRecord(uuid, enabled);
-    console.log('Updated SMP record', response);
-    return response.status;
-}
-
-export async function reg(identifier: string): Promise<number> {
-  const createResult = await createLegalEntity(identifier);
-  if (createResult === 201 || createResult === 202) {
-    return setSmpRecord(identifier, true);
-  }
-  if (createResult === 500) {
-    console.log('Assuming legal entity already exists, trying to set SMP record', identifier);
-    return setSmpRecord(identifier, true);
-  }
-  return 400;
-}
-
-export async function unreg(identifier: string): Promise<number> {
-  const uuid = await getUuid(identifier);
-  if (uuid === null) {
-    console.log('Could not fetch UUID', uuid);
-    return 500;
-  }
-  console.log('unreg', identifier, uuid);
-  const response = await putSmpRecord(uuid, false);
-  console.log('Updated SMP record', response);
-  return 200;  
-}
-
-export type ListEntityDocumentsParams = {
-  peppolId: string;
-  direction: 'incoming' | 'outgoing';
-  type: 'invoices' | 'credit-notes';
-  query: Record<string, string | string[] | undefined>;
-};
-export async function listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
-  const { peppolId, direction, type, query } = options;
-  if (!peppolId.startsWith('0208:')) {
-    throw new Error('Only organization number (scheme 0208) is supported as peppolId');
-  }
-  console.log('listing entity documents', peppolId, direction, type, query);
-  const params = { direction };
-  if (direction === 'outgoing') {
-    params['senderId'] = peppolId.substring('0208:'.length);
-    if (query['recipientId']) {
-      params['recipientId'] = query['recipientId'];
-    }
-  } else {
-    params['recipientId'] = peppolId.substring('0208:'.length);
-    if (query['senderId']) {
-      params['senderId'] = query['senderId'];
+    const result = await doSendDocument(documentXml, docType!);
+    if (result.status !== 200 && result.status !== 202) {
+      throw new Error(`Failed to send document, status code ${result.status}`);
     }
   }
-  // preserve the order of the other allowed query parameters as much as possible
-  Object.keys(query).forEach(queryKey => {
-    if (['page', 'itemsPerPage', 'senderName', 'recipientName', 'documentNumber', 'sortBy[createdAt]', 'sortBy[documentDate]', 'sortBy[senderName]', 'sortBy[recipientName]', 'createdAt[before]', 'documentDate[before]', 'downloaded'].includes(queryKey)) {
-      params[queryKey] = query[queryKey];
+  
+  async getUuid(identifier: string): Promise<string> {
+    const identifierValue = identifier.split(':')[1];
+    const response = await doGetUuid(identifierValue);
+    if (response.status !== 200) {
+      throw new Error(`Failed to get UUID, status code ${response.status}`);
     }
-  });
-  const queryString = new URLSearchParams(params).toString();
-  console.log('Query string', options.query, queryString);
-  console.log(`https://peppol-sandbox.api.acubeapi.com/${type}?${queryString}`);
-  // const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}?createdAt[after]=2025-01-01&documentDate[after]=2025-01-01`, {
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}?${queryString}`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-    },
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseObj = await response.json();
-  console.log('Response body from A-Cube', JSON.stringify(responseObj, null, 2));
-  const list = responseObj['hydra:member'].map(item => item.uuid);
-  console.log('Invoice UUIDs', JSON.stringify(list, null, 2));
-  return list;
-}
+    const responseObj = await response.json();
+    if (responseObj['hydra:member'].length === 0) {
+      throw new Error(`Legal entity ${identifierValue} not found`);
+    }
+    if (responseObj['hydra:member'].length > 1) {
+      throw new Error(`Multiple legal entities found for identifier ${identifierValue}`);
+    }
+    if (typeof responseObj['hydra:member'][0].uuid !== 'string') {
+      throw new Error(`Invalid UUID format for legal entity ${identifierValue}`);
+    }
+    return responseObj['hydra:member'][0].uuid;
+  }
+  
+  async createLegalEntity(identifier: string): Promise<void> {
+    const response = await doCreateLegalEntity(identifier);
+    if (response.status !== 201 && response.status !== 202 && response.status !== 500) {
+      throw new Error(`Failed to create legal entity, status code ${response.status}`);
+    }
+  }
+  
+  async setSmpRecord(identifier: string, enabled: boolean): Promise<void> {
+    const uuid = await this.getUuid(identifier);
+    const response = await doSetSmpRecord(uuid, enabled);
+    if (response.status !== 200) {
+      throw new Error(`Failed to ${enabled ? 'set' : 'remove'} SMP record, status code ${response.status}`);
+    }
+  }
+  
+  async reg(identifier: string): Promise<void> {
+    await this.createLegalEntity(identifier);
+    await this.setSmpRecord(identifier, true);
+  }
+  
+  async unreg(identifier: string): Promise<void> {
+    await this.setSmpRecord(identifier, false);
+  }
 
+  async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
+    const { peppolId, direction, type, query } = options;
+    if (!peppolId.startsWith('0208:')) {
+      throw new Error('Only organization number (scheme 0208) is supported as peppolId');
+    }
+    const params = { direction };
+    if (direction === 'outgoing') {
+      params['senderId'] = peppolId.substring('0208:'.length);
+      if (query['recipientId']) {
+        params['recipientId'] = query['recipientId'];
+      }
+    } else {
+      params['recipientId'] = peppolId.substring('0208:'.length);
+      if (query['senderId']) {
+        params['senderId'] = query['senderId'];
+      }
+    }
+    // preserve the order of the other allowed query parameters as much as possible
+    Object.keys(query).forEach(queryKey => {
+      if (['page', 'itemsPerPage', 'senderName', 'recipientName', 'documentNumber', 'sortBy[createdAt]', 'sortBy[documentDate]', 'sortBy[senderName]', 'sortBy[recipientName]', 'createdAt[before]', 'documentDate[before]', 'downloaded'].includes(queryKey)) {
+        params[queryKey] = query[queryKey];
+      }
+    });
+    const queryString = new URLSearchParams(params).toString();
+    const response = await doListEntityDocuments(type, queryString);
+    if (response.status !== 200) {
+      throw new Error(`Failed to list documents, status code ${response.status}`);
+    }
+    const responseObj = await response.json();
+    const list = responseObj['hydra:member'].map(item => item.uuid);
+    return list;
+  }
 
-export async function getDocumentXml({ peppolId, direction, type, uuid }: { peppolId: string; direction: string; type: string; uuid: string }): Promise<string | null> {
-  console.log('fetching document xml', peppolId, direction, type, uuid);
-  // FIXME: check that the document with this uuid is actually associated with this peppolId
-  const response = await fetch(`https://peppol-sandbox.api.acubeapi.com/${type}/${uuid}/source`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-      'Accept': 'application/xml',
-    },
-  });
-  console.log('Response from A-Cube', response.status, response.headers);
-  const responseBody = await response.text();
-  console.log('Response body from A-Cube', responseBody);
-  return responseBody;
+  async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {
+    // FIXME: check that the document with this uuid is actually associated with this peppolId
+    const response = await doGetDocumentXml({ type, uuid });
+    if (response.status !== 200) {
+      throw new Error(`Failed to get document XML, status code ${response.status}`);
+    }
+    const responseBody = await response.text();
+    console.log('Fetched document XML:', responseBody);
+    const { sender, recipient } = parseDocument(`<?xml version="1.0" encoding="UTF-8"?>\n${responseBody}`);
+    if ((sender !== peppolId) && (recipient !== peppolId)) {
+      throw new Error(`Document sender ${sender} and recipient ${recipient} do not match peppolId ${peppolId}`);
+    }
+    return responseBody;
+  }
 }

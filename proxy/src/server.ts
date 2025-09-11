@@ -1,20 +1,17 @@
 import express from 'express';
 import { checkBearerToken } from './auth.js';
-import { sendDocument, reg, unreg, getUuid, listEntityDocuments, getDocumentXml } from './acube.js';
+import { Acube } from './acube.js';
 import rateLimit from 'express-rate-limit';
-void getUuid;
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
     const authorization = req.headers['authorization'];
-    console.log(`Authorization string: "${authorization}"`);
     if (!authorization) {
       res.status(401).json({ error: 'Unauthorized' });
     } else {
       const token = authorization.replace('Bearer ', '');
       try {
         const peppolId = await checkBearerToken(token, secretKey);
-        console.log('looked up token', token, peppolId);
         req.peppolId = peppolId;
         next();
       } catch (err: { message: string } | any) {
@@ -22,7 +19,7 @@ function getAuthMiddleware(secretKey: string) {
         res.status(401).json({ error: err.message });
       }
     }
-}
+  }
 }
 
 export type ServerOptions = {
@@ -40,6 +37,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
       throw new Error(`${option} is not set`);
     }
   }
+  const backend = new Acube();
   const port = parseInt(env.PORT);
   const app = express();
   app.use(rateLimit({
@@ -60,55 +58,30 @@ export async function startServer(env: ServerOptions): Promise<number> {
       res.setHeader('Content-Type', 'text/plain');
       res.end('Let\'s Peppol!\n');
     });
-    app.get('/documents/:direction/:docType', checkAuth, async (req, res) => {
-      const documents = await listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
+    app.get('/:docType/:direction', checkAuth, async (req, res) => {
+      const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
       res.setHeader('Content-Type', 'application/json');
       res.json(documents);
     });
-    app.get('/documents/:direction/:docType/:uuid', checkAuth, async (req, res) => {
-      const xml = await getDocumentXml({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, uuid: req.params.uuid });
+    app.get('/:docType/:direction/:uuid', checkAuth, async (req, res) => {
+      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
       res.setHeader('Content-Type', 'text/xml');
       res.send(xml);
     });
     app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('sending entity', sendingEntity);
-      console.log('Received XML:', req.body.length);
-      const responseCode = await sendDocument(req.body, sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 201 || responseCode === 202) {
-        res.end(`Success (${responseCode} response from A-Cube component)\n`);
-      } else {
-        res.end(`Failure (${responseCode} response from A-Cube component)\n`);
-      }
+      await backend.sendDocument(req.body, sendingEntity);
+      res.end('OK\n');
     });
     app.post('/reg', checkAuth, async (req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('/reg', sendingEntity);
-      const responseCode = await reg(sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 200) {
-        res.end(`Success (${responseCode} response from A-Cube)\n`);
-      } else {
-        res.end(`Failure (${responseCode} response from A-Cube)\n`);
-      }
+      await backend.reg(sendingEntity);
+      res.end('OK\n');
     });
     app.post('/unreg', checkAuth, async (req, res) => {
-      console.log(req.headers);
       const sendingEntity = req.peppolId;
-      console.log('/unreg', sendingEntity);
-      const responseCode = await unreg(sendingEntity);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      if (responseCode === 200) {
-        res.end(`Success (${responseCode} response from A-Cube)\n`);
-      } else {
-        res.end(`Failure (${responseCode} response from A-Cube)\n`);
-      }
+      await backend.unreg(sendingEntity);
+      res.end('OK\n');
     });
     app.listen(port, (error) => {
       if (error) {
