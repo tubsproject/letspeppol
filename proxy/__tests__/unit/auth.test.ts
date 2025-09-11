@@ -14,7 +14,7 @@ describe('checkBearerToken function', () => {
   });
 
   it('should throw for invalid token', async () => {
-   const promise = checkBearerToken(invalidToken, 'wrong');
+   const promise = checkBearerToken(invalidToken, 'secret-string');
    await expect(promise).rejects.toThrowError();
   });
 });
