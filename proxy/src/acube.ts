@@ -51,7 +51,7 @@ export class Acube implements Backend {
     const uuid = await this.getUuid(identifier);
     const response = await doSetSmpRecord(uuid, enabled);
     if (response.status !== 200) {
-      throw new Error(`Failed to ${enabled ? 'set' : 'remove'} SMP record, status code ${response.status}`);
+      throw new Error(`Failed to ${enabled ? 'set' : 'remove'} SMP record, status code ${response.status}: ${await response.text()}`);
     }
   }
   
