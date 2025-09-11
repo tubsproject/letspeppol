@@ -50,7 +50,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   const backend = getBackend();
   const port = parseInt(env.PORT);
   const app = express();
-  app.use(cors());
+  app.use(cors({ origin: true })); // Reflect (enable) the requested origin in the CORS response
   // Apply rate limiting to all requests
   app.use(rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -87,6 +87,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
     });
     app.post('/reg', checkAuth, async (req, res) => {
       const sendingEntity = req.peppolId;
+      console.log('Registering', sendingEntity);
       await backend.reg(sendingEntity);
       res.end('OK\n');
     });
