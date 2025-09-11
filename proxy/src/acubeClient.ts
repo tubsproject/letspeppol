@@ -1,15 +1,4 @@
-const INVOICES = {
-  "documentTypeScheme": "busdox-docid-qns",
-  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
-  "processScheme": "cenbii-procid-ubl",
-  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-};
-const CREDIT_NOTES = {
-  "documentTypeScheme": "busdox-docid-qns",
-  "documentType": "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1",
-  "processScheme": "cenbii-procid-ubl",
-  "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
-};
+import { INVOICES, CREDIT_NOTES } from './constants.js';
 
 export async function doSendDocument(documentXml: string, docType: string): Promise<Response> {
   const endPoint: Record<string, string> = {
