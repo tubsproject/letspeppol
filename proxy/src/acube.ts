@@ -17,7 +17,7 @@ export class Acube implements Backend {
     }
     const result = await doSendDocument(documentXml, docType!);
     if (result.status !== 200 && result.status !== 202) {
-      throw new Error(`Failed to send document, status code ${result.status}`);
+      throw new Error(`Failed to send document, status code ${result.status}: ${await result.text()}`);
     }
   }
   
@@ -25,7 +25,7 @@ export class Acube implements Backend {
     const identifierValue = identifier.split(':')[1];
     const response = await doGetUuid(identifierValue);
     if (response.status !== 200) {
-      throw new Error(`Failed to get UUID, status code ${response.status}`);
+      throw new Error(`Failed to get UUID, status code ${response.status}: ${await response.text()}`);
     }
     const responseObj = await response.json();
     if (responseObj['hydra:member'].length === 0) {
@@ -43,7 +43,7 @@ export class Acube implements Backend {
   async createLegalEntity(identifier: string): Promise<void> {
     const response = await doCreateLegalEntity(identifier);
     if (response.status !== 201 && response.status !== 202 && response.status !== 500) {
-      throw new Error(`Failed to create legal entity, status code ${response.status}`);
+      throw new Error(`Failed to create legal entity, status code ${response.status}: ${await response.text()}`);
     }
   }
   
@@ -90,7 +90,7 @@ export class Acube implements Backend {
     const queryString = new URLSearchParams(params).toString();
     const response = await doListEntityDocuments(type, queryString);
     if (response.status !== 200) {
-      throw new Error(`Failed to list documents, status code ${response.status}`);
+      throw new Error(`Failed to list documents, status code ${response.status}: ${await response.text()}`);
     }
     const responseObj = await response.json();
     const list = responseObj['hydra:member'].map(item => item.uuid);
@@ -101,7 +101,7 @@ export class Acube implements Backend {
     // FIXME: check that the document with this uuid is actually associated with this peppolId
     const response = await doGetDocumentXml({ type, uuid });
     if (response.status !== 200) {
-      throw new Error(`Failed to get document XML, status code ${response.status}`);
+      throw new Error(`Failed to get document XML, status code ${response.status}: ${await response.text()}`);
     }
     const responseBody = await response.text();
     console.log('Fetched document XML:', responseBody);
