@@ -78,7 +78,7 @@
   <cac:AllowanceCharge>
     <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
     <cbc:AllowanceChargeReason>Insurance</cbc:AllowanceChargeReason>
-    <cbc:Amount currencyID="EUR">0</cbc:Amount>
+    <cbc:Amount currencyID="EUR">25</cbc:Amount>
     <cac:TaxCategory>
       <cbc:ID>S</cbc:ID>
       <cbc:Percent>25.0</cbc:Percent>
@@ -88,10 +88,10 @@
     </cac:TaxCategory>
   </cac:AllowanceCharge>
   <cac:TaxTotal>
-    <cbc:TaxAmount currencyID="EUR">0</cbc:TaxAmount>
+    <cbc:TaxAmount currencyID="EUR">331.25</cbc:TaxAmount>
     <cac:TaxSubtotal>
-      <cbc:TaxableAmount currencyID="EUR">0</cbc:TaxableAmount>
-      <cbc:TaxAmount currencyID="EUR">0</cbc:TaxAmount>
+      <cbc:TaxableAmount currencyID="EUR">1325</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">331.25</cbc:TaxAmount>
       <cac:TaxCategory>
         <cbc:ID>S</cbc:ID>
         <cbc:Percent>25.0</cbc:Percent>
@@ -102,17 +102,17 @@
     </cac:TaxSubtotal>
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount currencyID="EUR">0</cbc:LineExtensionAmount>
-    <cbc:TaxExclusiveAmount currencyID="EUR">0</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount currencyID="EUR">0</cbc:TaxInclusiveAmount>
-    <cbc:ChargeTotalAmount currencyID="EUR">0</cbc:ChargeTotalAmount>
-    <cbc:PayableAmount currencyID="EUR">0</cbc:PayableAmount>
+    <cbc:LineExtensionAmount currencyID="EUR">1300</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">1325</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">1656.25</cbc:TaxInclusiveAmount>
+    <cbc:ChargeTotalAmount currencyID="EUR">25</cbc:ChargeTotalAmount>
+    <cbc:PayableAmount currencyID="EUR">1656.25</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
 
   <cac:CreditNoteLine>
     <cbc:ID>1</cbc:ID>
     <cbc:CreditedQuantity unitCode="DAY">7</cbc:CreditedQuantity>
-    <cbc:LineExtensionAmount currencyID= "EUR">0</cbc:LineExtensionAmount>
+    <cbc:LineExtensionAmount currencyID= "EUR">2800</cbc:LineExtensionAmount>
     <cbc:AccountingCost>Konteringsstreng</cbc:AccountingCost>
     <cac:OrderLineReference>
       <cbc:LineID>123</cbc:LineID>
@@ -138,13 +138,13 @@
       </cac:ClassifiedTaxCategory>
     </cac:Item>
     <cac:Price>
-      <cbc:PriceAmount currencyID="EUR">0</cbc:PriceAmount>
+      <cbc:PriceAmount currencyID="EUR">400</cbc:PriceAmount>
     </cac:Price>
   </cac:CreditNoteLine>
   <cac:CreditNoteLine>
     <cbc:ID>2</cbc:ID>
     <cbc:CreditedQuantity unitCode="DAY">-3</cbc:CreditedQuantity>
-    <cbc:LineExtensionAmount currencyID="EUR">-0</cbc:LineExtensionAmount>
+    <cbc:LineExtensionAmount currencyID="EUR">-1500</cbc:LineExtensionAmount>
     <cac:OrderLineReference>
       <cbc:LineID>123</cbc:LineID>
     </cac:OrderLineReference>
@@ -169,7 +169,7 @@
       </cac:ClassifiedTaxCategory>
     </cac:Item>
     <cac:Price>
-      <cbc:PriceAmount currencyID="EUR">0</cbc:PriceAmount>
+      <cbc:PriceAmount currencyID="EUR">500</cbc:PriceAmount>
     </cac:Price>
   </cac:CreditNoteLine>
 </CreditNote>
