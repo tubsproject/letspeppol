@@ -93,7 +93,7 @@ export class Acube implements Backend {
       throw new Error(`Failed to list documents, status code ${response.status}: ${await response.text()}`);
     }
     const responseObj = await response.json();
-    const list = responseObj['hydra:member'].map(item => item.uuid);
+    const list = responseObj['hydra:member'];
     return list;
   }
 
