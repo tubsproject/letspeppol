@@ -28,10 +28,11 @@ function getAuthMiddleware(secretKey: string) {
 export type ServerOptions = {
   PORT: string;
   ACUBE_TOKEN: string;
-  ACCESS_TOKEN_KEY: string
+  PEPPYRUS_TOKEN_TEST: string;
+  ACCESS_TOKEN_KEY: string;
 };
 
-const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'ACCESS_TOKEN_KEY'];
+const optionsToRequire = ['PORT', 'ACUBE_TOKEN', 'PEPPYRUS_TOKEN_TEST', 'ACCESS_TOKEN_KEY'];
 export async function startServer(env: ServerOptions): Promise<number> {
   const checkAuth = getAuthMiddleware(env.ACCESS_TOKEN_KEY);
   // console.error('checking', env);
@@ -45,7 +46,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
     peppyrus: new Peppyrus()
   };
   function getBackend(): Backend {
-    return backends['acube'];
+    return backends[process.env.BACKEND || 'peppyrus'];
   }
   const backend = getBackend();
   const port = parseInt(env.PORT);

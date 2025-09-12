@@ -2,19 +2,23 @@ import { INVOICES } from "./constants.js";
 import { Backend, ListEntityDocumentsParams } from "./Backend.js";
 
 export class Peppyrus implements Backend {
+  apiUrl = 'https://api.test.peppyrus.be/v1';
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
+    void sendingEntity;
     const body = JSON.stringify({
-      sender: sendingEntity,
-      recipient: "9925:be0123456789",
+      sender: "9944:nl862637223B01",
+      recipient: "9944:nl862637223B01",
       processType: `${INVOICES.processScheme}::${INVOICES.process}`,
       documentType: `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`,
-      "fileContent": documentXml
+      fileName: 'invoice.xml',
+      "fileContent": Buffer.from(documentXml).toString('base64'),
     });
-    const response = await fetch('https://api.peppyrus.com/v1/message', {
+    console.log(`curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: ${process.env.PEPPYRUS_TOKEN_TEST}" -d '${body}' -i ${this.apiUrl}/message`);
+    const response = await fetch(`${this.apiUrl}/message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.PEPPYRUS_TOKEN}`,
+        'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
       },
       body
     });
@@ -30,6 +34,9 @@ export class Peppyrus implements Backend {
   }
   async reg(identifier: string): Promise<void> {
     void identifier;
+
+
+
     throw new Error('Method not implemented.');
   }
   async unreg(identifier: string): Promise<void> {
@@ -38,7 +45,12 @@ export class Peppyrus implements Backend {
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;
-    throw new Error('Method not implemented.');
+    const response = await fetch(`${this.apiUrl}/message/list`, {
+      headers: {
+        'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
+      }
+    });
+    return response.json();
   }
   async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {
     void peppolId; void type; void uuid;

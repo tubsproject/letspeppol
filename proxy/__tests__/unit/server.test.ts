@@ -18,6 +18,7 @@ describe('startServer function', () => {
     await startServer({
         PORT: '3000',
         ACUBE_TOKEN: 'test-token',
+        PEPPYRUS_TOKEN_TEST: 'test-peppyrus-token',
         ACCESS_TOKEN_KEY: 'test-access-token-key'
     });
 

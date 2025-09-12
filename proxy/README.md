@@ -66,6 +66,7 @@ PORT=3000
 ACUBE_USR="your-acube-username"
 ACUBE_PWD="your-acube-passwords"
 ACCESS_TOKEN_KEY="some-other-secret"
+PEPPYRUS_TOKEN_TEST="see https://customer.test.peppyrus.be/customer/organization/api to create"
 ```
 
 Then run:
