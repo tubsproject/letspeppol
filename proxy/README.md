@@ -47,7 +47,7 @@ curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/credit-notes/incoming" |
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
 curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/invoices/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/credit-notes/outgoing/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $SENDER" $PROXY_HOST/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
 ```
 
 FIXME: you would probably want to retrieve metadata about the sending/receiving status as well as (especially in the incoming case)
