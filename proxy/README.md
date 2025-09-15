@@ -13,7 +13,7 @@ For now you can use for instance `0208:1023290711` or `0208:0705969661` as your 
 First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
 export ACCESS_TOKEN_KEY=...
-export SENDER=`node token.js 0208:1023290711`
+export SENDER=`node token.js 9944:nl862637223B02`
 export RECIPIENT=`node token.js 0208:0705969661`
 echo $SENDER
 echo $RECIPIENT
