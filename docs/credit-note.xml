@@ -12,9 +12,9 @@
   <cbc:BuyerReference>0150abc</cbc:BuyerReference>
   <cac:AccountingSupplierParty>
     <cac:Party>
-      <cbc:EndpointID schemeID="iso6523-actorid-upis">0208:1023290711</cbc:EndpointID>
+      <cbc:EndpointID schemeID="0208">1023290711</cbc:EndpointID>
       <cac:PartyIdentification>
-        <cbc:ID schemeID="iso6523-actorid-upis">0208:1023290711</cbc:ID>
+        <cbc:ID schemeID="0208">1023290711</cbc:ID>
       </cac:PartyIdentification>
       <cac:PartyName>
         <cbc:Name>SupplierTradingName Ltd.</cbc:Name>
@@ -44,7 +44,7 @@
     <cac:Party>
       <cbc:EndpointID schemeID="0208">0705969661</cbc:EndpointID>
       <cac:PartyIdentification>
-        <cbc:ID schemeID="iso6523-actorid-upis">0208:0705969661</cbc:ID>
+        <cbc:ID schemeID="0208">0705969661</cbc:ID>
       </cac:PartyIdentification>
       <cac:PartyName>
         <cbc:Name>BuyerTradingName AS</cbc:Name>
@@ -121,7 +121,7 @@
       <cbc:Description>Description of item</cbc:Description>
       <cbc:Name>item name</cbc:Name>
       <cac:StandardItemIdentification>
-        <cbc:ID schemeID="iso6523-actorid-upis">0088:21382183120983</cbc:ID>
+        <cbc:ID schemeID="0088">21382183120983</cbc:ID>
       </cac:StandardItemIdentification>
       <cac:OriginCountry>
         <cbc:IdentificationCode>NO</cbc:IdentificationCode>
@@ -152,7 +152,7 @@
       <cbc:Description>Description 2</cbc:Description>
       <cbc:Name>item name 2</cbc:Name>
       <cac:StandardItemIdentification>
-        <cbc:ID schemeID="iso6523-actorid-upis">0088:21382183120983</cbc:ID>
+        <cbc:ID schemeID="0088">21382183120983</cbc:ID>
       </cac:StandardItemIdentification>
       <cac:OriginCountry>
         <cbc:IdentificationCode>NO</cbc:IdentificationCode>

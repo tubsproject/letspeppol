@@ -3,9 +3,9 @@ import { readFileSync } from 'fs';
 import { parseDocument } from '../../src/parse.js';
 
 describe('parseDocument function', () => {
-  const invoiceXml = readFileSync('__tests__/fixtures/invoice.xml', 'utf-8');
+  const invoiceXml = readFileSync('__tests__/fixtures/invoice-v1.xml', 'utf-8');
   const invoiceAcubeXml = readFileSync('__tests__/fixtures/invoice-acube.xml', 'utf-8');
-  const creditNoteXml = readFileSync('__tests__/fixtures/credit-note.xml', 'utf-8');
+  const creditNoteXml = readFileSync('__tests__/fixtures/credit-note-v1.xml', 'utf-8');
   const creditNoteAcubeXml = readFileSync('__tests__/fixtures/credit-note-acube.xml', 'utf-8');
 
   it ('should correctly parse sender and recipient from invoice XML', () => {
