@@ -23,10 +23,10 @@ export function parseDocument(documentXml: string): { sender: string | undefined
   }
   const sender = jObj[docType]?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cbc:EndpointID'];
   const recipient = jObj[docType]?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cbc:EndpointID'];
-  if (sender['@_schemeID'] !== 'iso6523-actorid-upis') {
+  if ((sender['@_schemeID'] !== 'iso6523-actorid-upis') && (sender['@_schemeID'] !== '0208')) {
     throw new Error(`Unsupported sender schemeID ${sender['@_schemeID']}, only iso6523-actorid-upis is supported`);
   }
-  if (recipient['@_schemeID'] !== 'iso6523-actorid-upis') {
+  if ((recipient['@_schemeID'] !== 'iso6523-actorid-upis') && (recipient['@_schemeID'] !== '0208')) {
     throw new Error(`Unsupported recipient schemeID ${recipient['@_schemeID']}, only iso6523-actorid-upis is supported`);
   }
   if (!sender['#text']) {
@@ -36,8 +36,8 @@ export function parseDocument(documentXml: string): { sender: string | undefined
     throw new Error('Missing recipient EndpointID text');
   }
   return {
-    sender: sender['#text'],
-    recipient: recipient['#text'],
+    sender: (sender['#text'].includes(':') ? sender['#text'] : `${sender['@_schemeID']}:${sender['#text']}`),
+    recipient: (recipient['#text'].includes(':') ? recipient['#text'] : `${recipient['@_schemeID']}:${recipient['#text']}`),
     docType: docType === 'Invoice' ? 'Invoice' : docType === 'CreditNote' ? 'CreditNote' : undefined,
   };
 }
