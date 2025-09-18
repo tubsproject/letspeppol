@@ -13,7 +13,7 @@ For now you can use for instance `0208:1023290711` or `0208:0705969661` as your 
 First, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
 export ACCESS_TOKEN_KEY=...
-export SENDER=`node token.js 9944:nl862637223B02`
+export SENDER=`node token.js 0208:1023290711`
 export RECIPIENT=`node token.js 0208:0705969661`
 echo $SENDER
 echo $RECIPIENT
@@ -25,10 +25,10 @@ curl $PROXY_HOST
 ```
 
 ### Send a UBL document
-Run this command from the proxy folder (note the relative file path pointing to [../docs/invoice.xml](../docs/invoice.xml)):
+Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
-curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
-curl -X POST --data-binary "@../docs/credit-note.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/invoice-acube.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/credit-note-acube.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
 ```
 
 ### Activate and de-activate SMP records
@@ -79,7 +79,7 @@ export ACUBE_TOKEN=`./auth.sh | json token`
 # run the proxy:
 pnpm install
 pnpm build
-pnpm start
+BACKEND=acube pnpm start
 export PROXY_HOST=http://localhost:3000
 ```
 
@@ -88,7 +88,7 @@ The Docker image takes two environment variables, `ACUBE_TOKEN` and `PORT`.
 ```sh
 docker build -t proxy .
 export ACUBE_TOKEN=`./auth.sh | json token`
-docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e PORT=3000 -p 3000:3000 proxy
+docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e BACKEND=acube -e PORT=3000 -p 3000:3000 proxy
 export PROXY_HOST=http://localhost:3000
 ```
 
