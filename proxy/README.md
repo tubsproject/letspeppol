@@ -27,8 +27,8 @@ curl $PROXY_HOST
 ### Send a UBL document
 Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
-curl -X POST --data-binary "@../docs/invoice-acube.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
-curl -X POST --data-binary "@../docs/credit-note-acube.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
+curl -X POST --data-binary "@../docs/credit-note.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
 ```
 
 ### Activate and de-activate SMP records
