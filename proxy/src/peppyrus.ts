@@ -1,13 +1,17 @@
 import { INVOICES, CREDIT_NOTES } from "./constants.js";
 import { Backend, ListEntityDocumentsParams, ListItemV1 } from "./Backend.js";
+import { parseDocument } from "./parse.js";
 
 export class Peppyrus implements Backend {
   apiUrl = 'https://api.test.peppyrus.be/v1';
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
-    void sendingEntity;
+    const { sender, recipient } = parseDocument(documentXml);
+    if (sender !== sendingEntity) {
+      throw new Error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
+    }
     const body = JSON.stringify({
-      sender: "9944:nl862637223B01",
-      recipient: "9944:nl862637223B01",
+      sender,
+      recipient,
       processType: `${INVOICES.processScheme}::${INVOICES.process}`,
       documentType: `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`,
       fileName: 'invoice.xml',
@@ -22,7 +26,9 @@ export class Peppyrus implements Backend {
       },
       body
     });
-    console.log(response.status, await response.text());
+    if (response.status !== 200 && response.status !== 202) {
+      throw new Error(`Failed to send document, status code ${response.status}: ${await response.text()}`);
+    }
   }
   async getUuid(identifier: string): Promise<string> {
     void identifier;
