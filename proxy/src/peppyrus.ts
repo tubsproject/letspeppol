@@ -78,7 +78,17 @@ export class Peppyrus implements Backend {
     });
   }
   async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {
-    void peppolId; void type; void uuid;
-    throw new Error('Method not implemented.');
+    void peppolId;
+    void type;
+    const response = await fetch(`${this.apiUrl}/message/${uuid}`, {
+      headers: {
+        'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
+      }
+    });
+    if (response.status !== 200) {
+      throw new Error(`Failed to retrieve document XML, status code ${response.status}: ${await response.text()}`);
+    }
+    const { fileContent } = await response.json();
+    return Buffer.from(fileContent, 'base64').toString('utf-8');
   }
 }
