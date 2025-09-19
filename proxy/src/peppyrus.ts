@@ -1,5 +1,5 @@
-import { INVOICES } from "./constants.js";
-import { Backend, ListEntityDocumentsParams } from "./Backend.js";
+import { INVOICES, CREDIT_NOTES } from "./constants.js";
+import { Backend, ListEntityDocumentsParams, ListItemV1 } from "./Backend.js";
 
 export class Peppyrus implements Backend {
   apiUrl = 'https://api.test.peppyrus.be/v1';
@@ -50,7 +50,26 @@ export class Peppyrus implements Backend {
         'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
       }
     });
-    return response.json();
+    const { items } = await response.json();
+    return items.map((item: any): ListItemV1 => {
+      let docType = item.documentType;
+      if (docType === `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`) {
+        docType = 'Invoice';
+      } else if (item.documentType === `${CREDIT_NOTES.documentTypeScheme}::${CREDIT_NOTES.documentType}`) {
+        docType = 'CreditNote';
+      }
+      return {
+        uuid: item.id,
+        type: docType,
+        direction: item.direction == 'OUT' ? 'outgoing' : 'incoming',
+        format: item.format,
+        number: item.number,
+        senderId: item.sender,
+        recipientId: item.recipient,
+        success: item.folder === 'sent',
+        errorCode: null,
+      };
+    });
   }
   async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {
     void peppolId; void type; void uuid;

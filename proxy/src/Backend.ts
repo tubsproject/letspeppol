@@ -6,6 +6,21 @@ export type ListEntityDocumentsParams = {
   apiVersion?: 'v1';
 };
 
+export type ListItemV1 = {
+  uuid: string;
+  type: 'Invoice' | 'CreditNote' | string;
+  direction: 'incoming' | 'outgoing';
+  format: string;
+  number: string;
+  senderId: string;
+  senderName?: string;
+  recipientId: string;
+  recipientName?: string;
+  requestSentAt?: string;
+  responseSentAt?: string;
+  success: boolean;
+  errorCode: string | null;
+}
 
 export abstract class Backend {
   abstract sendDocument(documentXml: string, sendingEntity: string): Promise<void>;  
