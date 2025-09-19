@@ -62,6 +62,11 @@ export async function startServer(env: ServerOptions): Promise<number> {
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
+  async function listV1 (req, res) {
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1' });
+    res.setHeader('Content-Type', 'application/json');
+    res.json(documents);
+  }
   async function get (req, res) {
     const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
     res.setHeader('Content-Type', 'text/xml');
@@ -98,6 +103,12 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }));
   app.use(express.json());
   return new Promise((resolve, reject) => {
+    app.get('/v1/', hello);
+    app.get('/v1/:docType/:direction', checkAuth, listV1);
+    app.get('/v1/:docType/:direction/:uuid', checkAuth, get);
+    app.post('/v1/send', checkAuth, express.text({type: '*/*'}), send);
+    app.post('/v1/reg', checkAuth, reg);
+    app.post('/v1/unreg', checkAuth, unreg);
 
     app.get('/', hello);
     app.get('/:docType/:direction', checkAuth, list);
@@ -106,12 +117,6 @@ export async function startServer(env: ServerOptions): Promise<number> {
     app.post('/reg', checkAuth, reg);
     app.post('/unreg', checkAuth, unreg);
 
-    app.get('/v1/', hello);
-    app.get('/v1/:docType/:direction', checkAuth, list);
-    app.get('/v1/:docType/:direction/:uuid', checkAuth, get);
-    app.post('/v1/send', checkAuth, express.text({type: '*/*'}), send);
-    app.post('/v1/reg', checkAuth, reg);
-    app.post('/v1/unreg', checkAuth, unreg);
 
     app.listen(port, (error) => {
       if (error) {

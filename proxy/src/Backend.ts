@@ -3,6 +3,7 @@ export type ListEntityDocumentsParams = {
   direction: 'incoming' | 'outgoing';
   type: 'invoices' | 'credit-notes';
   query: Record<string, string | string[] | undefined>;
+  apiVersion?: 'v1';
 };
 
 

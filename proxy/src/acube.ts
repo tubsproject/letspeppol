@@ -94,6 +94,31 @@ export class Acube implements Backend {
     }
     const responseObj = await response.json();
     const list = responseObj['hydra:member'];
+    if (options.apiVersion === 'v1') {
+      // map to v1 format
+      return list.map((item: any) => {
+        const ret: { [key: string]: any } = {
+          uuid: item.uuid,
+          direction: item.direction,
+          format: item.format,
+          number: item.number,
+          senderId: `0208:${item.sender.identifier}`,
+          senderName: item.sender.name,
+          recipientId: `0208:${item.recipient.identifier}`,
+          recipientName: item.recipient.name,
+          requestSentAt: item.peppolMessage.requestSentAt,
+          responseSentAt: item.peppolMessage.responseSentAt,
+          success: item.peppolMessage.success,
+          errorCode: item.peppolMessage.errorCode,
+        };
+        if (item['@type'] === 'InvoiceOutput') {
+          ret['type'] = 'Invoice';
+        } else if (item['@type'] === 'CreditNoteOutput') {
+          ret['type'] = 'CreditNote';
+        }
+        return ret;
+      });
+    }
     return list;
   }
 
