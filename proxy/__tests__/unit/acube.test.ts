@@ -11,7 +11,7 @@ test('sends document successfully', async () => {
 
   const acube = new Acube();
   // Call the function and assert the result
-  const invoiceXml = readFileSync('__tests__/fixtures/invoice.xml', 'utf-8');
+  const invoiceXml = readFileSync('__tests__/fixtures/invoice-acube.xml', 'utf-8');
   await acube.sendDocument(invoiceXml, '0208:1023290711');
 
   // Check that fetch was called exactly once
