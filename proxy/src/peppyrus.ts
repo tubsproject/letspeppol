@@ -17,7 +17,6 @@ export class Peppyrus implements Backend {
       fileName: 'invoice.xml',
       "fileContent": Buffer.from(documentXml).toString('base64'),
     });
-    console.log(`curl -X POST -H "Content-Type: application/json" -H "X-Api-Key: ${process.env.PEPPYRUS_TOKEN_TEST}" -d '${body}' -i ${this.apiUrl}/message`);
     const response = await fetch(`${this.apiUrl}/message`, {
       method: 'POST',
       headers: {
@@ -26,6 +25,7 @@ export class Peppyrus implements Backend {
       },
       body
     });
+    console.log(response.status, await response.text());
     if (response.status !== 200 && response.status !== 202) {
       throw new Error(`Failed to send document, status code ${response.status}: ${await response.text()}`);
     }
@@ -57,17 +57,17 @@ export class Peppyrus implements Backend {
       query.folder = 'INBOX';
       query.receiver = options.peppolId;
     } else {
-      query.folder = 'SENT';
+      query.folder = 'outbox';
       query.sender = options.peppolId;
     }
-    const response = await fetch(`${this.apiUrl}/message/list?${new URLSearchParams(query)}`, {
+    const response = await fetch(`${this.apiUrl}/message/list`, {
       headers: {
         'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
       }
     });
-    const responseJson = await response.json();
-    console.log(responseJson);
-    const { items } = responseJson;
+    const responseBody = await response.text();
+    console.log(response.status, responseBody);
+    const { items } = JSON.parse(responseBody);
     return items.map((item: any): ListItemV1 => {
       let docType = item.documentType;
       if (docType === `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`) {

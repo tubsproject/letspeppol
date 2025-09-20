@@ -43,14 +43,13 @@ export async function startServer(env: ServerOptions): Promise<number> {
     }
   }
   const backends = {
-    acube: new Acube(),
-    peppyrus: new Peppyrus(),
-    scrada: new Scrada(),
+    '9944:nl862637223B02': new Peppyrus(),
+    '0208:0705969661': new Scrada(),
+    '0208:1023290711': new Acube(),
   };
-  function getBackend(): Backend {
-    return backends[process.env.BACKEND || 'peppyrus'];
+  function getBackend(peppolId: string): Backend {
+    return backends[peppolId];
   }
-  const backend = getBackend();
 
   async function hello (_req, res) {
     // await getUuid('1023290711');
@@ -60,32 +59,38 @@ export async function startServer(env: ServerOptions): Promise<number> {
     res.end('Let\'s Peppol!\n');
   }
   async function list (req, res) {
+    const backend = getBackend(req.peppolId);
     const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
   async function listV1 (req, res) {
+    const backend = getBackend(req.peppolId);
     const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1' });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
   async function get (req, res) {
+    const backend = getBackend(req.peppolId);
     const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
     res.setHeader('Content-Type', 'text/xml');
     res.send(xml);
   }
   async function send (req, res) {
+    const backend = getBackend(req.peppolId);
     const sendingEntity = req.peppolId;
     await backend.sendDocument(req.body, sendingEntity);
     res.end('OK\n');
   }
   async function reg (req, res) {
+    const backend = getBackend(req.peppolId);
     const sendingEntity = req.peppolId;
     console.log('Registering', sendingEntity);
     await backend.reg(sendingEntity);
     res.end('OK\n');
   }
   async function unreg (req, res) {
+    const backend = getBackend(req.peppolId);
     const sendingEntity = req.peppolId;
     await backend.unreg(sendingEntity);
     res.end('OK\n');
