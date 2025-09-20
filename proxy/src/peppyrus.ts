@@ -51,12 +51,23 @@ export class Peppyrus implements Backend {
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;
-    const response = await fetch(`${this.apiUrl}/message/list`, {
+    const query: { [key: string]: string } = {};
+    
+    if (options.direction === 'incoming') {
+      query.folder = 'INBOX';
+      query.receiver = options.peppolId;
+    } else {
+      query.folder = 'SENT';
+      query.sender = options.peppolId;
+    }
+    const response = await fetch(`${this.apiUrl}/message/list?${new URLSearchParams(query)}`, {
       headers: {
         'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
       }
     });
-    const { items } = await response.json();
+    const responseJson = await response.json();
+    console.log(responseJson);
+    const { items } = responseJson;
     return items.map((item: any): ListItemV1 => {
       let docType = item.documentType;
       if (docType === `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`) {

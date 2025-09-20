@@ -5,6 +5,7 @@ import { Acube } from './acube.js';
 import { Peppyrus } from './peppyrus.js';
 import rateLimit from 'express-rate-limit';
 import { Backend } from './Backend.js';
+import { Scrada } from './scrada.js';
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -43,7 +44,8 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
   const backends = {
     acube: new Acube(),
-    peppyrus: new Peppyrus()
+    peppyrus: new Peppyrus(),
+    scrada: new Scrada(),
   };
   function getBackend(): Backend {
     return backends[process.env.BACKEND || 'peppyrus'];

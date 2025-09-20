@@ -44,7 +44,7 @@ curl -H "Authorization: Bearer $RECIPIENT" "$PROXY_HOST/v1/credit-notes/incoming
 ```
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
-curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/v1/invoices/incoming/9ad589b3-e533-4767-b62a-ea33219d3a57
+curl -H "Authorization: Bearer $RECIPIENT" $PROXY_HOST/v1/invoices/incoming/c40e41fc-c040-4ddc-b35b-4f2a23542e7a
 curl -H "Authorization: Bearer $SENDER" $PROXY_HOST/v1/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
 ```
 

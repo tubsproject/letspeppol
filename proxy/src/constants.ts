@@ -11,3 +11,4 @@ export const CREDIT_NOTES = {
   "processScheme": "cenbii-procid-ubl",
   "process": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
 };
+export const ID_SCHEME = "iso6523-actorid-upis";
