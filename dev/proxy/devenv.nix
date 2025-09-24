@@ -5,7 +5,7 @@
 }: let
   patchedAuth = pkgs.runCommand "patched-auth" {} ''
     mkdir -p $out/bin
-    cp ${../proxy/auth.sh} $out/bin/auth
+    cp ${../../proxy/auth.sh} $out/bin/auth
     chmod +x $out/bin/auth
     patchShebangs $out/bin/auth
   '';
@@ -25,7 +25,7 @@ in {
       exec = ''
         export ACUBE_TOKEN=$(${patchedAuth}/bin/auth | jq -r .token)
         echo "Token exported to ACUBE_TOKEN"
-        cd ../proxy/
+        cd ../../proxy/
         pnpm install
         pnpm build
         pnpm start
@@ -35,8 +35,8 @@ in {
     test-proxy = {
       exec = ''
         export PROXY_HOST=http://localhost:3000
-        export SENDER=`node ../proxy/token.js 0208:1023290711`
-        export RECIPIENT=`node ../proxy/token.js 0208:0705969661`
+        export SENDER=`node ../../proxy/token.js 0208:1023290711`
+        export RECIPIENT=`node ../../proxy/token.js 0208:0705969661`
         echo $SENDER
         echo $RECIPIENT
         curl $PROXY_HOST

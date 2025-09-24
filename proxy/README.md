@@ -93,8 +93,7 @@ export PROXY_HOST=http://localhost:3000
 ```
 
 ## With Nix
-A `devenv` environment is available to host the proxy locally and run a small test.  
-Make sure you have [`devenv`](https://devenv.sh/getting-started/) installed, and optionally install [`direnv`](https://devenv.sh/automatic-shell-activation/) for automatic shell activation. If you don’t use `direnv`, you’ll need to run `devenv shell` manually in the `dev` directory. Next, create a `dev/.env` file with the following contents (without quotes):
+A `devenv` environment is available in the `dev/proxy` directory to host the proxy locally and run a small test. Make sure you have [`devenv`](https://devenv.sh/getting-started/) installed, and optionally install [`direnv`](https://devenv.sh/automatic-shell-activation/) for automatic shell activation. If you don’t use `direnv`, you’ll need to run `devenv shell` manually in the `dev/proxy` directory. Next, create a `dev/.env` file with the following contents (without quotes):
 ```sh
 PORT=3000
 ACUBE_USR=your-acube-username
