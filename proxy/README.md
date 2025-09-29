@@ -141,6 +141,30 @@ docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e BACKEND=acube -e PORT=3000 -p 3000:
 export PROXY_HOST=http://localhost:3000
 ```
 
+## With Nix
+A `devenv` environment is available in the `dev/proxy` directory to host the proxy locally and run a small test. Make sure you have [`devenv`](https://devenv.sh/getting-started/) installed, and optionally install [`direnv`](https://devenv.sh/automatic-shell-activation/) for automatic shell activation. If you don’t use `direnv`, you’ll need to run `devenv shell` manually in the `dev/proxy` directory. Next, create a `dev/.env` file with the following contents (without quotes):
+```sh
+PORT=3000
+ACUBE_USR=your-acube-username
+ACUBE_PWD=your-acube-passwords
+ACCESS_TOKEN_KEY=some-other-secret
+PEPPYRUS_TOKEN_TEST=see https://customer.test.peppyrus.be/customer/organization/api to create
+BACKEND=acube-or-peppyrus
+```
+Then run:
+```sh
+cd dev
+# if the environment is blocked then run `direnv allow` to approve its content
+# if you don't use direnv then run `devenv shell`
+start-proxy
+```
+
+Open a new shell to test the proxy and run:
+```sh
+cd dev
+test-proxy
+```
+
 ## At a Platform-as-a-Service provider like Heroku
 There is a Heroku instance running at api.letspeppol.org.
 You can also deploy staging instances elsewhere.

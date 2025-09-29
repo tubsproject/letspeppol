@@ -2,6 +2,8 @@
 
 ![Let's Peppol](./docs/logo.png)
 
+
+We improve the Peppol network, writing software and letting people sign up for free. We will never run analytics on data that our users generate.
 We are still in the launching phase.
 This repo will contain all the code involved in running the Let's Peppol project:
 * a [docs](./docs/) folder with the website that runs on GitHub Pages at https://letspeppol.org
