@@ -13,7 +13,7 @@ Next, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to
 export ACCESS_TOKEN_KEY=...
 export PEPPYRUS=`node token.js 9944:nl862637223B02`
 export ACUBE=`node token.js 0208:1023290711`
-export SCRADA=`node token.js 0208:0705969661`
+export SCRADA=`node token.js 0208:0000003463`
 
 echo $ACCESS_TOKEN_KEY
 echo $PEPPYRUS
@@ -27,10 +27,11 @@ curl $PROXY_HOST/v1
 ```
 
 ### Send a UBL document
+Not all sender/receiver combinations work yet, but the following ones do.
 Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
 curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
-curl -X POST --data-binary "@../docs/v1/credit-note-peppyrus-to-scrada.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
 ```
 
 ### Activate and de-activate SMP records
