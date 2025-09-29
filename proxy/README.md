@@ -12,8 +12,12 @@ Next, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to
 ```sh
 export ACCESS_TOKEN_KEY=...
 export PEPPYRUS=`node token.js 9944:nl862637223B02`
+export ACUBE=`node token.js 0208:1023290711`
 export SCRADA=`node token.js 0208:0705969661`
+
+echo $ACCESS_TOKEN_KEY
 echo $PEPPYRUS
+echo $ACUBE
 echo $SCRADA
 ```
 
@@ -40,7 +44,7 @@ curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/js
 To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming). Other than this filtering, all query parameters from A-Cube are exposed.
 
 ```sh
-curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/invoices/outgoing?page=1" | json
+curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/incoming" | json
 curl -H "Authorization: Bearer $SCRADA" "$PROXY_HOST/v1/credit-notes/incoming" | json
 ```
 
@@ -128,7 +132,7 @@ export ACUBE_TOKEN=`./auth.sh | json token`
 # run the proxy:
 pnpm install
 pnpm build
-BACKEND=acube pnpm start
+pnpm start
 export PROXY_HOST=http://localhost:3000
 ```
 
