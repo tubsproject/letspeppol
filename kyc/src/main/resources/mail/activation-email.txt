@@ -1,0 +1,12 @@
+Hello,
+
+We received a request to verify an email address for company {{companyNumber}}.
+
+To complete verification, click the link below (valid for 2 hours):
+{{activationLink}}
+
+If you did not request this, you can ignore this message.
+
+Kind regards,
+Let's Peppol Team
+
