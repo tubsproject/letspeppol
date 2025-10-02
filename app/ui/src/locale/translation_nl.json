@@ -1,0 +1,18 @@
+{
+  "label" : {
+    "email" : "E-mail",
+    "password" : "Wachtwoord"
+  },
+  "placeholder" : {
+    "email" : "naam@bedrijf.be"
+  },
+  "login" : {
+    "title" : "Inloggen",
+    "new" : "Nieuw hier?",
+    "register" : "Registreer uw bedrijf",
+    "continue" : "Ga verder"
+  },
+  "error" : {
+    "login-failed" : "Inloggen mislukt"
+  }
+}

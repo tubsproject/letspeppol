@@ -1,0 +1,18 @@
+{
+  "label" : {
+    "email" : "Email",
+    "password" : "Password"
+  },
+  "placeholder" : {
+    "email" : "you@company.com"
+  },
+  "login" : {
+    "title" : "Log in",
+    "new" : "New here?",
+    "register" : "Register your company",
+    "continue" : "Continue"
+  },
+  "error" : {
+    "login-failed" : "Login failed"
+  }
+}
