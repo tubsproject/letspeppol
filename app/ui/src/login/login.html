@@ -1,0 +1,35 @@
+<import from="../lang/language-selector"></import>
+
+<div class="centered">
+    <img src="logo.png" class="logo" alt="LetsPeppol"/>
+    <div class="language">
+        <language-selector></language-selector>
+    </div>
+    <div class="container">
+        <div class="auth-card card">
+            <div class="section-header">
+                <h1 t="login.title">Log in</h1>
+            </div>
+            <form class="auth-form" submit.trigger="check()">
+                <div class="grid">
+                    <label class="field full">
+                        <span t="label.email">Emailasdf</span>
+                        <input name="email" type="email" placeholder="you@company.com" required value.bind="email" t="[placeholder]placeholder.email"/>
+                    </label>
+                    <label class="field full">
+                        <span>Password</span>
+                        <input name="email" type="password" required value.bind="password" />
+                    </label>
+                </div>
+                <p if.bind="error" class="form-error" aria-live="assertive" t="login.failed">Login failed</p>
+                <div class="auth-actions">
+                    <button type="submit" class="btn primary" t="login.continue">Continue</button>
+                </div>
+                <p class="auth-alt">
+                    <span t="login.new">New here?</span>
+                    <a href="../registration"><span t="login.register">Register your company</span></a>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>

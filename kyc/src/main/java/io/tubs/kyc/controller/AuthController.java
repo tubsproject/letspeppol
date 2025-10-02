@@ -40,7 +40,7 @@ public class AuthController {
         String password = values[1];
         Customer customer = customerService.findCustomerWithCredentials(email, password);
 
-        String token = jwtService.generateToken(EAS_ONDERNEMINGSNUMMER + customer.getCompany().getCompanyNumber());
+        String token = jwtService.generateToken(EAS_ONDERNEMINGSNUMMER + ":" + customer.getCompany().getCompanyNumber());
 
         return ResponseEntity.ok(token);
     }
