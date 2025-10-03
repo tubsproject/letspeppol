@@ -3,7 +3,7 @@ import {
     getLines,
     TaxSubtotal,
     UBLDoc,
-} from "../peppol/peppol-ubl";
+} from "../peppol/ubl";
 
 @singleton
 export class InvoiceCalculator {

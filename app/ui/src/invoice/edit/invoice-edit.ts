@@ -7,16 +7,15 @@ import {
     CreditNote,
     Invoice,
     PaymentMeansCode,
-    UBLLine,
-    CreditNoteLine,
-    InvoiceLine
-} from "../../peppol/peppol-ubl";
+    UBLLine
+} from "../../peppol/ubl";
 import {AlertType} from "../../alert/alert";
-import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/peppol-parser";
+import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/ubl-parser";
 import {InvoicePaymentModal} from "./components/invoice-payment-modal";
 import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
 import {InvoiceCalculator} from "../invoice-calculator";
 import {InvoiceComposer} from "../invoice-composer";
+import {downloadInvoicePdf} from "../pdf/invoice-pdf";
 
 export class InvoiceEdit {
     readonly ea: IEventAggregator = resolve(IEventAggregator);
@@ -86,6 +85,11 @@ export class InvoiceEdit {
         }
         console.log(xml);
         console.log(parseInvoice(xml));
+    }
+
+    downloadPdf() {
+        if (!this.invoiceContext.selectedInvoice) return;
+        downloadInvoicePdf(this.invoiceContext.selectedInvoice);
     }
 
     buildXml(): string {
