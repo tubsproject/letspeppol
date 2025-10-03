@@ -58,7 +58,7 @@
         
           <cac:PartyLegalEntity>
               <cbc:RegistrationName>SupplierOfficialName Ltd</cbc:RegistrationName>
-              <cbc:CompanyID>GB983294</cbc:CompanyID>
+              <cbc:CompanyID schemeID="0106">82875715</cbc:CompanyID>
               <cbc:CompanyLegalForm>AdditionalLegalInformation</cbc:CompanyLegalForm>   
           </cac:PartyLegalEntity>
 
@@ -272,10 +272,7 @@
           <cbc:StartDate>2023-12-01</cbc:StartDate>
           <cbc:EndDate>2032-12-05</cbc:EndDate>
       </cac:InvoicePeriod>
-      <cac:OrderLineReference>
-          <cbc:LineID>124</cbc:LineID>
-      </cac:OrderLineReference>
-
+     
       <cac:Item>
           <cbc:Description>Description of item</cbc:Description>
           <cbc:Name>item name</cbc:Name>
@@ -312,9 +309,6 @@
           <cbc:StartDate>2023-12-02</cbc:StartDate>
           <cbc:EndDate>2032-12-04</cbc:EndDate>
       </cac:InvoicePeriod>
-      <cac:OrderLineReference>
-          <cbc:LineID>124</cbc:LineID>
-      </cac:OrderLineReference>
 
       <cac:AllowanceCharge>
           <cbc:ChargeIndicator>true</cbc:ChargeIndicator>

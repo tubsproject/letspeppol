@@ -36,7 +36,7 @@
       <cac:Party>
           <cbc:EndpointID schemeID="9944">nl862637223B02</cbc:EndpointID>
           <cac:PartyIdentification>
-              <cbc:ID schemeID="9944">nl862637223B02</cbc:ID>
+              <cbc:ID>nl862637223B02</cbc:ID>
           </cac:PartyIdentification>
           <cac:PartyName>
               <cbc:Name>Ponder Source Two</cbc:Name>
@@ -58,7 +58,7 @@
         
           <cac:PartyLegalEntity>
               <cbc:RegistrationName>SupplierOfficialName Ltd</cbc:RegistrationName>
-              <cbc:CompanyID>GB983294</cbc:CompanyID>
+              <cbc:CompanyID schemeID="0106">82875715</cbc:CompanyID>
               <cbc:CompanyLegalForm>AdditionalLegalInformation</cbc:CompanyLegalForm>   
           </cac:PartyLegalEntity>
 
@@ -69,7 +69,7 @@
       <cac:Party>
           <cbc:EndpointID schemeID="9944">nl862637223B03</cbc:EndpointID>
           <cac:PartyIdentification>
-              <cbc:ID schemeID="9944">nl862637223B03</cbc:ID>
+              <cbc:ID>nl862637223B02</cbc:ID>
           </cac:PartyIdentification>
           <cac:PartyName>
               <cbc:Name>Ponder Source Three</cbc:Name>
@@ -88,13 +88,15 @@
                   <cbc:ID>VAT</cbc:ID>
               </cac:TaxScheme>
           </cac:PartyTaxScheme>
-        
           <cac:PartyLegalEntity>
-              <cbc:RegistrationName>SupplierOfficialName Ltd</cbc:RegistrationName>
-              <cbc:CompanyID>GB983294</cbc:CompanyID>
-              <cbc:CompanyLegalForm>AdditionalLegalInformation</cbc:CompanyLegalForm>   
+              <cbc:RegistrationName>Buyer Official Name</cbc:RegistrationName>
+              <cbc:CompanyID schemeID="0106">82875715</cbc:CompanyID>
           </cac:PartyLegalEntity>
-
+          <cac:Contact>
+              <cbc:Name>Lisa Johnson</cbc:Name>
+              <cbc:Telephone>23434234</cbc:Telephone>
+              <cbc:ElectronicMail>lj@buyer.se</cbc:ElectronicMail>
+          </cac:Contact>
       </cac:Party>
   </cac:AccountingCustomerParty>
   <cac:Delivery>
@@ -270,9 +272,6 @@
           <cbc:StartDate>2023-12-01</cbc:StartDate>
           <cbc:EndDate>2032-12-05</cbc:EndDate>
       </cac:InvoicePeriod>
-      <cac:OrderLineReference>
-          <cbc:LineID>124</cbc:LineID>
-      </cac:OrderLineReference>
 
       <cac:Item>
           <cbc:Description>Description of item</cbc:Description>
@@ -310,9 +309,6 @@
           <cbc:StartDate>2023-12-02</cbc:StartDate>
           <cbc:EndDate>2032-12-04</cbc:EndDate>
       </cac:InvoicePeriod>
-      <cac:OrderLineReference>
-          <cbc:LineID>124</cbc:LineID>
-      </cac:OrderLineReference>
 
       <cac:AllowanceCharge>
           <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
