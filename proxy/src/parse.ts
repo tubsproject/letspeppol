@@ -23,6 +23,12 @@ export function parseDocument(documentXml: string): { sender: string | undefined
   }
   const sender = jObj[docType]?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cbc:EndpointID'];
   const recipient = jObj[docType]?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cbc:EndpointID'];
+  if (!sender['#text']) {
+    throw new Error('Missing sender EndpointID text');
+  }
+  if (!recipient['#text']) {
+    throw new Error('Missing recipient EndpointID text');
+  }
   return {
     sender: `${sender['@_schemeID']}:${sender['#text']}`,
     recipient: `${recipient['@_schemeID']}:${recipient['#text']}`,

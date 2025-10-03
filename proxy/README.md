@@ -1,7 +1,65 @@
 # LetsPeppol Proxy
 This is what runs on api.letspeppol.org.
 
-## Usage
+## Usage (V1)
+First, set which proxy host you want to use. By default, use:
+```sh
+export PROXY_HOST=https://api.letspeppol.org FIXME: this is not yet running v1, but will as soon as we merge and deploy this branch
+```
+
+### Get an access token
+Next, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
+```sh
+export ACCESS_TOKEN_KEY=...
+export PEPPYRUS=`node token.js 9944:nl862637223B02`
+export ACUBE=`node token.js 0208:1023290711`
+export SCRADA=`node token.js 0208:0000003463`
+
+echo $ACCESS_TOKEN_KEY
+echo $PEPPYRUS
+echo $ACUBE
+echo $SCRADA
+```
+
+### Check connectivity
+```sh
+curl $PROXY_HOST/v1
+```
+
+### Send a UBL document
+Not all sender/receiver combinations work yet, but the following ones do.
+Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
+```sh
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-acube-to-peppyrus.xml" -H "Authorization: Bearer $ACUBE" $PROXY_HOST/v1/send
+```
+
+### Activate and de-activate SMP records
+FIXME: currently only implemented for A-Cube backend
+FIXME: currently exposes the 409 saying legal entity already created
+```sh
+curl -X POST -H "Authorization: Bearer $ACUBE" -H 'Content-Type: application/json' $PROXY_HOST/v1/reg
+curl -X POST -H "Authorization: Bearer $ACUBE" -H 'Content-Type: application/json' $PROXY_HOST/v1/unreg
+```
+
+### Read invoices
+To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming). Other than this filtering, all query parameters from A-Cube are exposed.
+
+```sh
+curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/incoming" | json
+curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/credit-notes/incoming" | json
+```
+FIXME: currently broken for Scrada
+
+This will give an array of uuid string. To fetch the XML of a specific one:
+```sh
+curl -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/invoices/incoming/c40e41fc-c040-4ddc-b35b-4f2a23542e7a
+curl -H "Authorization: Bearer $ACUBE" $PROXY_HOST/v1/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
+```
+FIXME: invoices from Peppyrus are indented but ones from A-Cube are without linebreaks
+
+## Usage (legacy)
 First, set which proxy host you want to use. By default, use:
 ```sh
 export PROXY_HOST=https://api.letspeppol.org
@@ -25,7 +83,7 @@ curl $PROXY_HOST
 ```
 
 ### Send a UBL document
-Run this command from the proxy folder (note the relative file path pointing to [../docs/invoice.xml](../docs/invoice.xml)):
+Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
 curl -X POST --data-binary "@../docs/invoice.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
 curl -X POST --data-binary "@../docs/credit-note.xml" -H "Authorization: Bearer $SENDER" $PROXY_HOST/send
@@ -88,7 +146,7 @@ The Docker image takes two environment variables, `ACUBE_TOKEN` and `PORT`.
 ```sh
 docker build -t proxy .
 export ACUBE_TOKEN=`./auth.sh | json token`
-docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e PORT=3000 -p 3000:3000 proxy
+docker run -d -e ACUBE_TOKEN=$ACUBE_TOKEN -e BACKEND=acube -e PORT=3000 -p 3000:3000 proxy
 export PROXY_HOST=http://localhost:3000
 ```
 
