@@ -1,6 +1,6 @@
 // mapper-ns.ts
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
-import {CreditNote, Invoice} from "./peppol-ubl";
+import {CreditNote, Invoice} from "./ubl";
 
 const parser = new XMLParser({
     ignoreAttributes: false,

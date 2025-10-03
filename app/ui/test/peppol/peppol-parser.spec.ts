@@ -1,9 +1,10 @@
 import { describe, test, expect } from "vitest";
-import {buildInvoice, parseInvoice} from "../../src/peppol/peppol-parser";
-import {buildCreditNote, parseCreditNote} from "../../src/peppol/peppol-parser";
+import {buildInvoice, parseInvoice} from "../../src/peppol/ubl-parser";
+import {buildCreditNote, parseCreditNote} from "../../src/peppol/ubl-parser";
 
 function normalizeXml(xml: string) {
     return xml
+        .replace(/^<\?xml[^>]*\?>\s*/i, "") // strip XML declaration if present
         // remove stray spaces after '=' before quotes
         .replace(/=\s+"/g, '="')
         .replace(/>(\d+)\.0</g, '>$1<')

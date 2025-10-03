@@ -1,14 +1,8 @@
 import {observable, singleton} from "aurelia";
 import {
     Invoice,
-    AccountingParty,
-    Party,
-    MonetaryTotal,
-    TaxSubtotal,
-    Amount,
-    TaxTotal,
-    InvoiceLine, PaymentMeansCode, PaymentTerms, PaymentMeans, CreditNote, UBLBase, CreditNoteLine, UBLDoc, getLines
-} from "../peppol/peppol-ubl";
+    InvoiceLine, PaymentMeansCode, CreditNote, CreditNoteLine, UBLDoc, getLines
+} from "../peppol/ubl";
 import {CompanyService} from "../services/company-service";
 import {resolve} from "@aurelia/kernel";
 import moment from "moment";
@@ -66,6 +60,18 @@ export class InvoiceContext {
         } else {
             this.selectedInvoice = this.invoiceComposer.createCreditNote();
         }
+
+        const line: InvoiceLine = this.invoiceComposer.getInvoiceLine("1");
+        line.LineExtensionAmount.value = 2;
+        line.InvoicedQuantity.value = 2;
+        line.Item.Description = "item";
+        line.Price.PriceAmount.value = 10.55;
+
+        const jop: Invoice = this.selectedInvoice;
+        jop.ID = "INV-2025-0001";
+        jop.BuyerReference = "PO-12345";
+        jop.AccountingCustomerParty.Party.PartyName.Name = "Party Name";
+        jop.InvoiceLine.push(line);
         this.invoiceCalculator.calculateTaxAndTotals(this.selectedInvoice);
     }
 
