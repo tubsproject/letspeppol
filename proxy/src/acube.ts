@@ -7,7 +7,7 @@ import {
   doGetDocumentXml
 } from './acubeClient.js';
 import { parseDocument } from './parse.js';
-import { Backend, ListEntityDocumentsParams } from './Backend.js';
+import { Backend, ListEntityDocumentsParams, ListItemV1 } from './Backend.js';
 
 export class Acube implements Backend {
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
@@ -94,6 +94,34 @@ export class Acube implements Backend {
     }
     const responseObj = await response.json();
     const list = responseObj['hydra:member'];
+    if (options.apiVersion === 'v1') {
+      // map to v1 format
+      return list.map((item: any): ListItemV1 => {
+        let docType: string;
+        if (item['@type'] === 'InvoiceOutput') {
+          docType = 'Invoice';
+        } else if (item['@type'] === 'CreditNoteOutput') {
+          docType = 'CreditNote';
+        } else {
+          docType = item['@type'];
+        }
+        return {
+          uuid: item.uuid,
+          type: docType,
+          direction: item.direction,
+          format: item.format,
+          number: item.number,
+          senderId: `0208:${item.sender.identifier}`,
+          senderName: item.sender.name,
+          recipientId: `0208:${item.recipient.identifier}`,
+          recipientName: item.recipient.name,
+          requestSentAt: item.peppolMessage.requestSentAt,
+          responseSentAt: item.peppolMessage.responseSentAt,
+          success: item.peppolMessage.success,
+          errorCode: item.peppolMessage.errorCode,
+        };
+      });
+    }
     return list;
   }
 

@@ -5,6 +5,7 @@ import { Acube } from './acube.js';
 import { Peppyrus } from './peppyrus.js';
 import rateLimit from 'express-rate-limit';
 import { Backend } from './Backend.js';
+import { Scrada } from './scrada.js';
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -42,13 +43,58 @@ export async function startServer(env: ServerOptions): Promise<number> {
     }
   }
   const backends = {
-    acube: new Acube(),
-    peppyrus: new Peppyrus()
+    '9944:nl862637223B02': new Peppyrus(),
+    '0208:0705969661': new Scrada(),
+    '0208:1023290711': new Acube(),
   };
-  function getBackend(): Backend {
-    return backends[process.env.BACKEND || 'peppyrus'];
+  function getBackend(peppolId: string): Backend {
+    return backends[peppolId];
   }
-  const backend = getBackend();
+
+  async function hello (_req, res) {
+    // await getUuid('1023290711');
+    // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
+    // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Let\'s Peppol!\n');
+  }
+  async function list (req, res) {
+    const backend = getBackend(req.peppolId);
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
+    res.setHeader('Content-Type', 'application/json');
+    res.json(documents);
+  }
+  async function listV1 (req, res) {
+    const backend = getBackend(req.peppolId);
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1' });
+    res.setHeader('Content-Type', 'application/json');
+    res.json(documents);
+  }
+  async function get (req, res) {
+    const backend = getBackend(req.peppolId);
+    const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
+    res.setHeader('Content-Type', 'text/xml');
+    res.send(xml);
+  }
+  async function send (req, res) {
+    const backend = getBackend(req.peppolId);
+    const sendingEntity = req.peppolId;
+    await backend.sendDocument(req.body, sendingEntity);
+    res.end('OK\n');
+  }
+  async function reg (req, res) {
+    const backend = getBackend(req.peppolId);
+    const sendingEntity = req.peppolId;
+    console.log('Registering', sendingEntity);
+    await backend.reg(sendingEntity);
+    res.end('OK\n');
+  }
+  async function unreg (req, res) {
+    const backend = getBackend(req.peppolId);
+    const sendingEntity = req.peppolId;
+    await backend.unreg(sendingEntity);
+    res.end('OK\n');
+  }
   const port = parseInt(env.PORT);
   const app = express();
   app.use(cors({ origin: true })); // Reflect (enable) the requested origin in the CORS response
@@ -64,39 +110,21 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }));
   app.use(express.json());
   return new Promise((resolve, reject) => {
-    app.get('/', async (_req, res) => {
-      // await getUuid('1023290711');
-      // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
-      // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('Let\'s Peppol!\n');
-    });
-    app.get('/:docType/:direction', checkAuth, async (req, res) => {
-      const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
-      res.setHeader('Content-Type', 'application/json');
-      res.json(documents);
-    });
-    app.get('/:docType/:direction/:uuid', checkAuth, async (req, res) => {
-      const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
-      res.setHeader('Content-Type', 'text/xml');
-      res.send(xml);
-    });
-    app.post('/send', checkAuth, express.text({type: '*/*'}), async(req, res) => {
-      const sendingEntity = req.peppolId;
-      await backend.sendDocument(req.body, sendingEntity);
-      res.end('OK\n');
-    });
-    app.post('/reg', checkAuth, async (req, res) => {
-      const sendingEntity = req.peppolId;
-      console.log('Registering', sendingEntity);
-      await backend.reg(sendingEntity);
-      res.end('OK\n');
-    });
-    app.post('/unreg', checkAuth, async (req, res) => {
-      const sendingEntity = req.peppolId;
-      await backend.unreg(sendingEntity);
-      res.end('OK\n');
-    });
+    app.get('/v1/', hello);
+    app.get('/v1/:docType/:direction', checkAuth, listV1);
+    app.get('/v1/:docType/:direction/:uuid', checkAuth, get);
+    app.post('/v1/send', checkAuth, express.text({type: '*/*'}), send);
+    app.post('/v1/reg', checkAuth, reg);
+    app.post('/v1/unreg', checkAuth, unreg);
+
+    app.get('/', hello);
+    app.get('/:docType/:direction', checkAuth, list);
+    app.get('/:docType/:direction/:uuid', checkAuth, get);
+    app.post('/send', checkAuth, express.text({type: '*/*'}), send);
+    app.post('/reg', checkAuth, reg);
+    app.post('/unreg', checkAuth, unreg);
+
+
     app.listen(port, (error) => {
       if (error) {
         reject(error);
