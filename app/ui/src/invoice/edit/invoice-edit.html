@@ -3,7 +3,7 @@
 <import from="./components/invoice-customer-modal"></import>
 
 <main class="container">
-    <section class="section active" aria-labelledby="invoices-title">
+    <section class="section active">
         <div class="invoices-main">
             <div class="section-header">
                 <div style="display:flex;align-items:center;gap:.5rem">
@@ -114,7 +114,8 @@
                                 <th>Description</th>
                                 <th class="num" style="width:120px">Amount</th>
                                 <th class="num" style="width:140px">Unit price</th>
-                                <th class="num" style="width:160px">Total</th>
+                                <th class="num" style="width:140px">Tax</th>
+                                <th class="num" style="width:140px">Total</th>
                                 <th class="actions-col" style="width:1%">Actions</th>
                             </tr>
                             </thead>
@@ -132,6 +133,11 @@
                                         </template>
                                     </td>
                                     <td class="num"><input class="unitPrice" type="number" min="0" step="0.01" value.bind="line.Price.PriceAmount.value" change.trigger="calcLineTotal(line)"/></td>
+                                    <td class="num">
+                                        <select value.bind="line.Item.ClassifiedTaxCategory" change.trigger="calcLineTotal(line)">
+                                            <option repeat.for="taxCategory of taxCategories" model.bind="taxCategory">${taxCategory.Percent}%</option>
+                                        </select>
+                                    </td>
                                     <td class="num"><span class="lineTotal">€&nbsp;${line.LineExtensionAmount.value}</span></td>
                                     <td class="actions-col">
                                         <button class="icon-btn" data-action="remove-line" title="Remove" click.trigger="deleteLine(line)">

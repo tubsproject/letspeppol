@@ -7,13 +7,13 @@ import {
     CreditNote,
     Invoice,
     PaymentMeansCode,
-    UBLLine
+    UBLLine, ClassifiedTaxCategory
 } from "../../peppol/ubl";
 import {AlertType} from "../../alert/alert";
 import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/ubl-parser";
 import {InvoicePaymentModal} from "./components/invoice-payment-modal";
 import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
-import {InvoiceCalculator} from "../invoice-calculator";
+import {InvoiceCalculator, roundTwoDecimals} from "../invoice-calculator";
 import {InvoiceComposer} from "../invoice-composer";
 import {downloadInvoicePdf} from "../pdf/invoice-pdf";
 
@@ -30,6 +30,13 @@ export class InvoiceEdit {
     @bindable invoicePaymentModal: InvoicePaymentModal;
     @bindable invoiceCustomerModal: InvoiceCustomerModal;
 
+    taxCategories: ClassifiedTaxCategory[] = [
+        { ID: "S", Percent: 21, TaxScheme: { ID: 'VAT' } },
+        { ID: "S", Percent: 12, TaxScheme: { ID: 'VAT' } },
+        { ID: "S", Percent: 6, TaxScheme: { ID: 'VAT' } },
+        { ID: "Z", Percent: 0, TaxScheme: { ID: 'VAT' } },
+    ];
+
     paymentMeanCodeMatcher = (a: PaymentMeansCode, b: PaymentMeansCode) => {
         return a?.value === b?.value;
     };
@@ -43,7 +50,7 @@ export class InvoiceEdit {
 
     calcLineTotal(line: UBLLine) {
         const quantity = getAmount(line);
-        line.LineExtensionAmount.value = line.Price.PriceAmount.value * quantity.value;
+        line.LineExtensionAmount.value = roundTwoDecimals(line.Price.PriceAmount.value * quantity.value);
         this.invoiceCalculator.calculateTaxAndTotals(this.invoiceContext.selectedInvoice);
     }
 
@@ -101,10 +108,10 @@ export class InvoiceEdit {
     }
 
     showPaymentModal() {
-        this.invoicePaymentModal.open = true;
+        this.invoicePaymentModal.showModal();
     }
 
     showCustomerModal() {
-        this.invoiceCustomerModal.open = true;
+        this.invoiceCustomerModal.showModal();
     }
 }

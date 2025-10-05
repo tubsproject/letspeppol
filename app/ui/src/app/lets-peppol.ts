@@ -6,6 +6,7 @@ import {Customers} from "../customer/customers";
 import {EmailConfirmation} from "../registration/email-confirmation";
 import {resolve} from "@aurelia/kernel";
 import {Alert} from "../alert/alert";
+import {Account} from "../account/account";
 
 @route({
     routes: [
@@ -14,6 +15,7 @@ import {Alert} from "../alert/alert";
         { path: '/email-confirmation', component: EmailConfirmation,    title: 'Email Confirmation',    data: { allowEveryone: true }},
         { path: '/invoices',           component: Invoices,             title: 'Invoice',               },
         { path: '/customers',          component: Customers,            title: 'Customers',             },
+        { path: '/account',            component: Account,              title: 'Account',               },
     ],
 })
 export class LetsPeppol {

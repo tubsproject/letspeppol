@@ -62,16 +62,19 @@ export class InvoiceContext {
         }
 
         const line: InvoiceLine = this.invoiceComposer.getInvoiceLine("1");
-        line.LineExtensionAmount.value = 2;
         line.InvoicedQuantity.value = 2;
         line.Item.Description = "item";
-        line.Price.PriceAmount.value = 10.55;
+        line.Price.PriceAmount.value = 5.33;
+        line.LineExtensionAmount.value = 10.66;
 
-        const jop: Invoice = this.selectedInvoice;
+        const jop = this.selectedInvoice as Invoice;
         jop.ID = "INV-2025-0001";
         jop.BuyerReference = "PO-12345";
-        jop.AccountingCustomerParty.Party.PartyName.Name = "Party Name";
+        jop.AccountingCustomerParty.Party.EndpointID.value = "0705969661";
+        jop.AccountingCustomerParty.Party.PartyName.Name = "Ponder Source";
         jop.InvoiceLine.push(line);
+        jop.PaymentMeans.PayeeFinancialAccount.Name = "Software Oplossing";
+        jop.PaymentMeans.PayeeFinancialAccount.ID = "BE123457807";
         this.invoiceCalculator.calculateTaxAndTotals(this.selectedInvoice);
     }
 
