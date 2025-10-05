@@ -1,18 +1,20 @@
+<import from="../value-converters/date-format.ts"></import>
+
 <main class="container">
-    <section class="section active" aria-labelledby="invoices-title">
+    <section class="section active">
         <div class="invoices-layout">
             <aside class="mailbox" aria-label="Invoice inboxes">
-                <div class="mailbox-title">Inboxes</div>
+                <div class="mailbox-title">Boxes</div>
                 <nav>
-                    <button class="mail-item active" data-inbox="all" aria-current="page">
+                    <button active.class="box === 'all'" class="mail-item" click.trigger="setActiveItems('all')">
                         <span class="label">All</span>
                         <span class="badge">0</span>
                     </button>
-                    <button class="mail-item" data-inbox="outgoing">
+                    <button active.class="box === 'outgoing'" class="mail-item" click.trigger="setActiveItems('outgoing')">
                         <span class="label">Outgoing</span>
                         <span class="badge">0</span>
                     </button>
-                    <button class="mail-item" data-inbox="incoming">
+                    <button active.class="box === 'incoming'" class="mail-item" click.trigger="setActiveItems('incoming')">
                         <span class="label">Incoming</span>
                         <span class="badge">0</span>
                     </button>
@@ -35,10 +37,10 @@
                         <div class="actions">
                             <div class="filters">
                                 <label class="select" style="position: relative">
-                                    <select aria-label="Filter by direction">
+                                    <select aria-label="Filter by document type">
                                         <option value="all" selected>All</option>
-                                        <option value="outgoing">Outgoing</option>
-                                        <option value="incoming">Incoming</option>
+                                        <option value="invoice">Invoice</option>
+                                        <option value="credit-note">Credit note</option>
                                     </select>
                                 </label>
                                 <label class="search">
@@ -63,8 +65,9 @@
                             <table class="data-table" aria-describedby="invoices-title">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Doc</th>
-                                    <th scope="col" class="th-filter">
+                                    <th>Type</th>
+                                    <th>Doc</th>
+                                    <th class="th-filter">
                                         <div class="th-inner">
                                             <span>Date</span>
                                             <button class="icon-btn filter-toggle" aria-expanded="false" aria-controls="dateFilterPanel" title="Filter by date">▾</button>
@@ -84,9 +87,9 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th scope="col" class="th-filter">
+                                    <th class="th-filter">
                                         <div class="th-inner">
-                                            <span>End date</span>
+                                            <span>Due date</span>
                                             <button class="icon-btn filter-toggle" aria-expanded="false" aria-controls="endDateFilterPanel" title="Filter by end date">▾</button>
                                         </div>
                                         <div class="filter-panel" hidden>
@@ -104,18 +107,24 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col" class="num">Total amount</th>
-                                    <th scope="col">Reference</th>
-                                    <th scope="col" class="actions-col">Actions</th>
+                                    <th>Customer</th>
+                                    <th class="num">Total amount</th>
+                                    <th>Reference</th>
+                                    <th class="actions-col">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!-- Rows injected by JS -->
+                                    <tr repeat.for="item of activeItems" click.trigger="selectItem(item)">
+                                        <td><span class="pill" class.bind="item.type === 'invoice' ? 'sent' : 'incoming' ">${item.type}</span></td>
+                                        <td>${item.number}</td>
+                                        <td>${item.requestSentAt | dateFormat}</td>
+                                        <td></td>
+                                        <td>${item.recipientName}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="empty-state" hidden>
+                        <div if.bind="!activeItems || activeItems.length === 0" class="empty-state" >
                             <div class="empty-icon" aria-hidden="true">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>

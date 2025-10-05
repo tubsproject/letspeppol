@@ -3,13 +3,12 @@ import {
     CreditNoteLine,
     Invoice,
     InvoiceLine,
-    AccountingParty,
-    UBLBase, UBLBaseLine,
-} from "../peppol/peppol-ubl";
+    AccountingParty, UBLBaseLine,
+} from "../peppol/ubl";
 import moment from "moment/moment";
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {CompanyResponse, CompanyService, Director} from "../services/company-service";
+import {CompanyResponse, CompanyService} from "../services/company-service";
 import { omit } from 'lodash';
 
 @singleton()
@@ -17,7 +16,7 @@ export class InvoiceComposer {
     private companyService = resolve(CompanyService);
     private customer: CompanyResponse = {
         id: 1,
-        companyNumber: "BE0705969661",
+        companyNumber: "0705969661",
         name: "Ponder Source",
         street: "Da street",
         city: "Amstel",
@@ -36,15 +35,6 @@ export class InvoiceComposer {
             BuyerReference: undefined,
             AccountingSupplierParty: this.getAccountingSupplierParty(),
             AccountingCustomerParty: this.getAccountingCustomerParty(),
-            LegalMonetaryTotal: {
-                PayableAmount: {
-                    __currencyID: 'EUR',
-                    value: 0
-                }
-            },
-            PaymentTerms: {
-                Note: "Payment within 10 days, 2% discount"
-            },
             PaymentMeans : {
                 PaymentMeansCode: {
                     __name: "Credit transfer",
@@ -58,7 +48,16 @@ export class InvoiceComposer {
                     }
                 },
             },
+            PaymentTerms: {
+                Note: "Payment within 10 days, 2% discount"
+            },
             TaxTotal: undefined,
+            LegalMonetaryTotal: {
+                PayableAmount: {
+                    __currencyID: 'EUR',
+                    value: 0
+                }
+            },
             InvoiceLine: []
         } as Invoice;
     }
@@ -109,8 +108,7 @@ export class InvoiceComposer {
                 },
                 PartyTaxScheme: {
                     CompanyID: {
-                        __schemeID: "0208",
-                        value: this.customer.companyNumber
+                        value: `BE${this.customer.companyNumber}`
                     },
                     TaxScheme: {
                         ID: "VAT"
@@ -124,7 +122,7 @@ export class InvoiceComposer {
     }
 
     getCompanyNumber() {
-        return `BE${this.companyService.myCompany.companyNumber}`;
+        return `${this.companyService.myCompany.companyNumber}`; // TODO BE prefix?
     }
 
     getAccountingSupplierParty(): AccountingParty {
@@ -151,8 +149,7 @@ export class InvoiceComposer {
                 },
                 PartyTaxScheme: {
                     CompanyID: {
-                        __schemeID: "0208",
-                        value: this.getCompanyNumber()
+                        value: `BE${this.getCompanyNumber()}`
                     },
                     TaxScheme: {
                         ID: "VAT"
@@ -187,7 +184,7 @@ export class InvoiceComposer {
         }
     }
 
-    private getLine(): any {
+    private getLine(): UBLBaseLine {
         return {
             LineExtensionAmount: {
                 __currencyID: "EUR",
@@ -210,7 +207,7 @@ export class InvoiceComposer {
                     value: 0
                 }
             },
-        };
+        } as UBLBaseLine;
     }
 
     /*

@@ -9,12 +9,12 @@ import {
 export class InvoiceCalculator {
 
     public calculateTaxAndTotals(doc: UBLDoc) {
-        let lines = getLines(doc);
+        const lines = getLines(doc);
 
         let taxTotal = 0;
         let totalWithoutTax = 0;
-        let taxSubtotals: TaxSubtotal[] = [];
-        for (let line of lines) {
+        const taxSubtotals: TaxSubtotal[] = [];
+        for (const line of lines) {
             let taxSubtotal = taxSubtotals.find(item => item.TaxCategory.ID === line.Item.ClassifiedTaxCategory.ID);
             if (!taxSubtotal) {
                 taxSubtotal = {
@@ -38,7 +38,7 @@ export class InvoiceCalculator {
             }
             taxSubtotal.TaxableAmount.value += line.LineExtensionAmount.value;
             totalWithoutTax += line.LineExtensionAmount.value;
-            const tax = this.roundTwoDecimals(line.LineExtensionAmount.value * (line.Item.ClassifiedTaxCategory.Percent / 100.0));
+            const tax = roundTwoDecimals(line.LineExtensionAmount.value * (line.Item.ClassifiedTaxCategory.Percent / 100.0));
             taxSubtotal.TaxAmount.value += tax;
             taxTotal += tax;
         }
@@ -70,8 +70,8 @@ export class InvoiceCalculator {
             }
         };
     }
+}
 
-    roundTwoDecimals(value: number): number {
-        return Math.round((value + Number.EPSILON) * 100) / 100;
-    }
+export function roundTwoDecimals(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
 }
