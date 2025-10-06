@@ -50,7 +50,7 @@ export class Scrada implements Backend {
     throw new Error('Method not implemented.');
   }
   async reg(identifier: string): Promise<void> {
-    const response = await fetch(`${this.apiUrl}/v1/company/${identifier}/peppol/register`, {
+    const response = await fetch(`${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/register`, {
       method: 'POST',
       headers: {
         'X-Api-Key': process.env.SCRADA_API_KEY!,
@@ -75,8 +75,16 @@ export class Scrada implements Backend {
     }
   }
   async unreg(identifier: string): Promise<void> {
-    void identifier;
-    throw new Error('Method not implemented.');
+    const response = await fetch(`${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/deregister/${ID_SCHEME}//${identifier}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Api-Key': process.env.SCRADA_API_KEY!,
+        'X-Password': process.env.SCRADA_API_PASSWORD!,
+      },
+    });
+    if (response.status !== 200 && response.status !== 202) {
+      throw new Error(`Failed to deregister company, status code ${response.status}: ${await response.text()}`);
+    }
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;

@@ -90,6 +90,7 @@ curl -X POST --data-binary "@../docs/credit-note.xml" -H "Authorization: Bearer 
 ```
 
 ### Activate and de-activate SMP records
+FIXME: this currently errors for A-Cube.
 ```sh
 curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/json' $PROXY_HOST/reg
 curl -X POST -H "Authorization: Bearer $SENDER" -H 'Content-Type: application/json' $PROXY_HOST/unreg
