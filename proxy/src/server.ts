@@ -44,8 +44,10 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
   const backends = {
     '9944:nl862637223B02': new Peppyrus(),
-    '0208:0705969661': new Scrada(),
     '0208:1023290711': new Acube(),
+    '0208:0705969661': new Scrada(),
+    '0208:0541911284': new Scrada(),
+    '0208:0433221497': new Scrada(),
   };
   function getBackend(peppolId: string): Backend {
     return backends[peppolId];
