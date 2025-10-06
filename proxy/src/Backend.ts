@@ -4,14 +4,16 @@ export type ListEntityDocumentsParams = {
   type: 'invoices' | 'credit-notes';
   query: Record<string, string | string[] | undefined>;
   apiVersion?: 'v1';
+  page: number;
+  pageSize: number;
 };
 
 export type ListItemV1 = {
   uuid: string;
   type: 'Invoice' | 'CreditNote' | string;
   direction: 'incoming' | 'outgoing';
-  format: string;
-  number: string;
+  format?: string;
+  number?: string;
   senderId: string;
   senderName?: string;
   recipientId: string;

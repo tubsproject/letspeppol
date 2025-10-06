@@ -72,13 +72,13 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
   async function list (req, res) {
     const backend = getBackend(req.peppolId);
-    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
   async function listV1 (req, res) {
     const backend = getBackend(req.peppolId);
-    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1' });
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1', page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }

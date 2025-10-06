@@ -51,13 +51,18 @@ curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json'
 ```
 
 ### Read invoices
-To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming).
+To list invoices and credit notes you have sent and received. There are 4 collections, each filtered for the authenticated legal entity:
+* /v1/invoices/outging
+* /v1/invoices/incoming
+* /v1/credit-notes/outging
+* /v1/credit-notes/incoming
+
+Default page size is 20.
 ```sh
 curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/outgoing" | json
-curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/credit-notes/incoming" | json
+curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/credit-notes/incoming?page=2&pageSize=2" | json
 curl -H "Authorization: Bearer $ONE" "$PROXY_HOST/v1/invoices/incoming?page=1" | json
 ```
-FIXME: currently broken for Scrada
 
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
