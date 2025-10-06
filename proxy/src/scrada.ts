@@ -33,7 +33,7 @@ export class Scrada implements Backend {
       headers: {
         'Content-Type': 'application/json',
         'X-Api-Key': process.env.SCRADA_API_KEY!,
-        'X-Password': process.env.SCRADA_API_PASSWORD!,
+        'X-Password': process.env.SCRADA_API_PWD!,
       },
       body
     });
@@ -54,7 +54,7 @@ export class Scrada implements Backend {
       method: 'POST',
       headers: {
         'X-Api-Key': process.env.SCRADA_API_KEY!,
-        'X-Password': process.env.SCRADA_API_PASSWORD!,
+        'X-Password': process.env.SCRADA_API_PWD!,
       },
       body: JSON.stringify({
         participantIdentifier: {
@@ -79,7 +79,7 @@ export class Scrada implements Backend {
       method: 'DELETE',
       headers: {
         'X-Api-Key': process.env.SCRADA_API_KEY!,
-        'X-Password': process.env.SCRADA_API_PASSWORD!,
+        'X-Password': process.env.SCRADA_API_PWD!,
       },
     });
     if (response.status !== 200 && response.status !== 202) {
@@ -91,7 +91,7 @@ export class Scrada implements Backend {
     const response = await fetch(`${this.apiUrl}/v1/company/${options.peppolId}/peppol/inbound/document/unconfirmed`, {
       headers: {        
         'X-Api-Key': process.env.SCRADA_API_KEY!,
-        'X-Password': process.env.SCRADA_API_PASSWORD!,
+        'X-Password': process.env.SCRADA_API_PWD!,
       }
     });
     return [ response.text() ];

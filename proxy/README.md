@@ -36,17 +36,18 @@ curl $PROXY_HOST/v1
 Not all sender/receiver combinations work yet, but the following ones do.
 Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
-curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-scrada-to-scrada.xml" -H "Authorization: Bearer $TWO" $PROXY_HOST/v1/send
 curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
 curl -X POST --data-binary "@../docs/v1/invoice-acube-to-peppyrus.xml" -H "Authorization: Bearer $ACUBE" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
 ```
 
 ### Activate and de-activate SMP records
 FIXME: currently only implemented for A-Cube backend
 FIXME: currently exposes the 409 saying legal entity already created
 ```sh
-curl -X POST -H "Authorization: Bearer $ACUBE" -H 'Content-Type: application/json' $PROXY_HOST/v1/reg
-curl -X POST -H "Authorization: Bearer $ACUBE" -H 'Content-Type: application/json' $PROXY_HOST/v1/unreg
+curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json' $PROXY_HOST/v1/reg
+curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json' $PROXY_HOST/v1/unreg
 ```
 
 ### Read invoices
