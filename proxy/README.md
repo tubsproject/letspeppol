@@ -51,11 +51,11 @@ curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json'
 ```
 
 ### Read invoices
-To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming). Other than this filtering, all query parameters from A-Cube are exposed.
-
+To list invoices and credit notes you have sent and received. This currently proxies [A-Cube invoices list]() and [A-Cube credit notes list](https://docs.acubeapi.com/documentation/peppol/peppol/tag/CreditNote/#tag/CreditNote/operation/api_credit-notes_get_collection) and filters it to documents where the currently authenticated entity is either the sender (for outgoing) or the recipient (for incoming).
 ```sh
-curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/incoming" | json
+curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/outgoing" | json
 curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/credit-notes/incoming" | json
+curl -H "Authorization: Bearer $ONE" "$PROXY_HOST/v1/invoices/incoming?page=1" | json
 ```
 FIXME: currently broken for Scrada
 

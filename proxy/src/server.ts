@@ -43,14 +43,24 @@ export async function startServer(env: ServerOptions): Promise<number> {
     }
   }
   const backends = {
-    '9944:nl862637223B02': new Peppyrus(),
-    '0208:1023290711': new Acube(),
-    '0208:0705969661': new Scrada(),
-    '0208:0541911284': new Scrada(),
-    '0208:0433221497': new Scrada(),
+    peppyrus: new Peppyrus(),
+    acube: new Acube(),
+    scrada: new Scrada(),
+  };
+  const users = {
+    '9944:nl862637223B02': 'peppyrus',
+    '0208:1023290711': 'acube',
+    '0208:0705969661': 'scrada',
+    '0208:0541911284': 'scrada',
+    '0208:0433221497': 'scrada',
   };
   function getBackend(peppolId: string): Backend {
-    return backends[peppolId];
+    let backendName = users[peppolId];
+    if (!backendName) {
+      backendName = 'scrada';
+    }
+    console.log('Using backend', backendName, 'for', peppolId);
+    return backends[backendName];
   }
 
   async function hello (_req, res) {
@@ -74,7 +84,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
   async function get (req, res) {
     const backend = getBackend(req.peppolId);
-    const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
+    const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid, direction: req.params.direction });
     res.setHeader('Content-Type', 'text/xml');
     res.send(xml);
   }

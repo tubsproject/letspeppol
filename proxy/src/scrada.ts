@@ -20,26 +20,50 @@ export class Scrada implements Backend {
     if (sender !== sendingEntity) {
       throw new Error(`Sender ${sender} does not match sending entity ${sendingEntity}`);
     }
-    const body = JSON.stringify({
-      sender,
-      recipient,
-      processType: `${INVOICES.processScheme}::${INVOICES.process}`,
-      documentType: `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`,
-      fileName: 'invoice.xml',
-      "fileContent": Buffer.from(documentXml).toString('base64'),
-    });
-    const response = await fetch(`${this.apiUrl}/message`, {
+    const body = Buffer.from(documentXml).toString('utf-8');
+    //   sender,
+    //   recipient,
+    //   processType: `${INVOICES.processScheme}::${INVOICES.process}`,
+    //   documentType: `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`,
+    //   fileName: 'invoice.xml',
+    //   "fileContent": Buffer.from(documentXml).toString('base64'),
+    // });
+    const response = await fetch(`${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/outbound/document`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/xml',
         'X-Api-Key': process.env.SCRADA_API_KEY!,
         'X-Password': process.env.SCRADA_API_PWD!,
+        'X-Scrada-Peppol-Sender-Scheme': ID_SCHEME,
+        'X-Scrada-Peppol-Sender-Id': sender!,
+        'X-Scrada-Peppol-Receiver-Scheme': ID_SCHEME,
+        'X-Scrada-Peppol-Receiver-Id': recipient!,
+        'X-Scrada-Peppol-C1-Country-Code': 'BE',
+        'X-Scrada-Peppol-Document-Type-Scheme': INVOICES.documentTypeScheme,
+        'X-Scrada-Peppol-Document-Type-Value': INVOICES.documentType,
+        'X-Scrada-Peppol-Process-Scheme': INVOICES.processScheme,
+        'X-Scrada-Peppol-Process-Value': INVOICES.process,
       },
       body
     });
     if (response.status !== 200 && response.status !== 202) {
       throw new Error(`Failed to send document, status code ${response.status}: ${await response.text()}`);
     }
+    const docUuid = await response.json();
+    console.log('Sent document, got UUID', docUuid);
+    // console.log();
+    // console.log(`curl -H "Authorization: Bearer $TWO" $PROXY_HOST/v1/invoices/outgoing/${docUuid}`);
+    // console.log();
+    // await new Promise(resolve => setTimeout(resolve, 20000));
+    const statusCheck = await fetch(`${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/outbound/document/${docUuid}/info`, {
+      headers: {
+        'X-Api-Key': process.env.SCRADA_API_KEY!,
+        'X-Password': process.env.SCRADA_API_PWD!,
+      }
+    });
+    console.log('Status check', await statusCheck.text(), statusCheck.status);
+    const readBack = await this.getDocumentXml({ peppolId: sender!, type: 'invoices', uuid: docUuid, direction: 'outgoing' });
+    console.log('ReadBack Check', readBack);
   }
   async getUuid(identifier: string): Promise<string> {
     void identifier;
@@ -89,13 +113,16 @@ export class Scrada implements Backend {
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;
-    const response = await fetch(`${this.apiUrl}/v1/company/${options.peppolId}/peppol/inbound/document/unconfirmed`, {
+    const url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}peppol/inbound/document/unconfirmed`;
+    console.log('Fetching', url);
+    const response = await fetch(url, {
       headers: {        
         'X-Api-Key': process.env.SCRADA_API_KEY!,
         'X-Password': process.env.SCRADA_API_PWD!,
       }
     });
-    return [ response.text() ];
+    console.log('Fetched', await response.text());
+    return [ ];
     // const { items } = await response.json();
     // return items.map((item: any): ListItemV1 => {
     //   let docType = item.documentType;
@@ -117,10 +144,17 @@ export class Scrada implements Backend {
     //   };
     // });
   }
-  async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {
+  async getDocumentXml({ peppolId, type, uuid, direction }: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string> {
+    console.log('Getting document XML for', { peppolId, type, uuid, direction });
     void peppolId;
     void type;
-    const response = await fetch(`${this.apiUrl}/message/${uuid}`, {
+    let url;
+    if (direction === 'incoming') {
+      url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/inbound/document/${uuid}`;
+    } else {
+      url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/outbound/document/${uuid}/ubl`;
+    }
+    const response = await fetch(url, {
       headers: {
         'X-Api-Key': process.env.SCRADA_API_KEY!,
         'X-Password': process.env.SCRADA_API_PWD!,
@@ -129,7 +163,6 @@ export class Scrada implements Backend {
     if (response.status !== 200) {
       throw new Error(`Failed to retrieve document XML, status code ${response.status}: ${await response.text()}`);
     }
-    const { fileContent } = await response.json();
-    return Buffer.from(fileContent, 'base64').toString('utf-8');
+    return await response.text();
   }
 }
