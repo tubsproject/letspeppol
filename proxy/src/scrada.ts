@@ -64,9 +64,9 @@ export class Scrada implements Backend {
         },
         migrationKey: null,
         businessEntity: {
-          name: "{{businessEntityName}}",
+          name: "Business Entity Name",
           languageCode: "NL",
-          countryCode: "{{businessEntityCountry}}"
+          countryCode: "BE"
         },
         documentTypes: [ toScrada(INVOICES), toScrada(CREDIT_NOTES) ],
       }),
