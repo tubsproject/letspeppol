@@ -53,6 +53,7 @@ export class Scrada implements Backend {
     const response = await fetch(`${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/register`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'X-Api-Key': process.env.SCRADA_API_KEY!,
         'X-Password': process.env.SCRADA_API_PWD!,
       },
@@ -121,7 +122,8 @@ export class Scrada implements Backend {
     void type;
     const response = await fetch(`${this.apiUrl}/message/${uuid}`, {
       headers: {
-        'X-Api-Key': process.env.PEPPYRUS_TOKEN_TEST!,
+        'X-Api-Key': process.env.SCRADA_API_KEY!,
+        'X-Password': process.env.SCRADA_API_PWD!,
       }
     });
     if (response.status !== 200) {
