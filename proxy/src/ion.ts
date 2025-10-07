@@ -13,7 +13,7 @@ export class Ion implements Backend {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: "Test Company",
+        name: identifier,
         country: "BE",
         publish_in_smp: true,
         reference: "Batch 1",
@@ -44,8 +44,37 @@ export class Ion implements Backend {
     console.log('Created Legal Entity',{ orgId: responseBody1.id, smpRecordId: responseBody2.id });
   }
   async lookupIdentifier(identifier: string): Promise<{ orgId: number, smpRecordId: number }> {
-    void identifier;
-    return { orgId: 122, smpRecordId: 194 };
+    const response1 = await fetch(`${API_BASE}/v2/organizations?filter_name=${identifier}`, {
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response1.ok) {
+      throw new Error(`Error finding organization ${identifier}: ${response1.statusText}`);
+    }
+    const responseBody1 = await response1.json();
+    if (responseBody1.count !== 1) {
+      throw new Error(`Error finding organization ${identifier}: found ${responseBody1.count} results`);
+    }
+    console.log('Looked up organization', responseBody1.results[0]);
+    const orgId = responseBody1.results[0].id;
+    const response2 = await fetch(`${API_BASE}/v2/organizations/${orgId}/identifiers?filter_identifier=${identifier}`, {
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response2.ok) {
+      throw new Error(`Error finding organization ${identifier}: ${response2.statusText}`);
+    }
+    const responseBody2 = await response2.json();
+    if (responseBody2.count !== 1) {
+      throw new Error(`Error finding organization ${identifier}: found ${responseBody2.count} results`);
+    }
+    console.log('Looked up SMP record', responseBody2.results[0]);
+    const smpRecordId = responseBody2.results[0].id;
+    return { orgId, smpRecordId };
   }
   async unreg(identifier: string): Promise<void> {
     const { orgId, smpRecordId } = await this.lookupIdentifier(identifier);
