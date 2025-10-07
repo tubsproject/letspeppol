@@ -1,6 +1,5 @@
-// import { INVOICES, CREDIT_NOTES, ID_SCHEME } from "./constants.js";
 import { Backend, ListEntityDocumentsParams } from "./Backend.js";
-// import { parseDocument } from "./parse.js";
+import { parseDocument } from "./parse.js";
 
 const API_BASE = "https://test.ion-ap.net/api";
 
@@ -100,9 +99,23 @@ export class Ion implements Backend {
     }
   }
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
-    void documentXml;
-    void sendingEntity;
-    throw new Error('Method not implemented.');
+    const { sender } = await parseDocument(documentXml);
+    if (sender !== sendingEntity) {
+      throw new Error(`Sender in document (${sender}) does not match sending entity (${sendingEntity})`);
+    }
+    const response = await fetch(`${API_BASE}/v2/send-document`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/xml',
+      },
+      body: documentXml,
+    });
+    if (!response.ok) {
+      throw new Error(`Error sending document: ${response.statusText}`);
+    }
+    const responseBody = await response.json();
+    console.log('Sent document', responseBody);
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;
