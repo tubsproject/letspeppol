@@ -119,7 +119,8 @@ export class Scrada implements Backend {
     }
     let url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/inbound/document/unconfirmed`;
     if (direction === 'outgoing') {
-      throw new Error('Listing outgoing documents is not supported by Scrada');
+      url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/outbound/document`;
+      // throw new Error('Listing outgoing documents is not supported by Scrada');
     }
     console.log('Fetching', url);
     const response = await fetch(url, {
@@ -128,6 +129,7 @@ export class Scrada implements Backend {
         'X-Password': process.env.SCRADA_API_PWD!,
       }
     });
+    console.log(response.status, await response.text());
     let { results } = await response.json();
     console.log('Fetched', results);
     console.log('Total', results.length, 'results');

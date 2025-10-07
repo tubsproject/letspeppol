@@ -64,9 +64,6 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
 
   async function hello (_req, res) {
-    // await getUuid('1023290711');
-    // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
-    // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
     res.setHeader('Content-Type', 'text/plain');
     res.end('Let\'s Peppol!\n');
   }
