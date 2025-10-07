@@ -1,7 +1,9 @@
+import { INVOICES, CREDIT_NOTES } from "./constants.js";
 import { Backend, ListEntityDocumentsParams } from "./Backend.js";
 import { parseDocument } from "./parse.js";
 
 const API_BASE = "https://test.ion-ap.net/api";
+const FETCH_NUM = 100;
 
 export class Ion implements Backend {
   async reg(identifier: string): Promise<void> {
@@ -114,42 +116,42 @@ export class Ion implements Backend {
     console.log('Sent document', responseBody);
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
-    void options;
-    const response1 = await fetch(`${API_BASE}/v2/send-transactions`, {
-      headers: {
-        Authorization: `Token ${process.env.ION_API_KEY}`,
-      },
-    });
-    if (!response1.ok) {
-      throw new Error(`Error outgoing listing documents: ${response1.statusText}`);
+    let urlPrefix;
+    if (options.direction === 'outgoing'){
+      urlPrefix = `${API_BASE}/v2/send-transactions?filter_sender=${options.peppolId}`;
+    } else if (options.direction === 'incoming') {
+      urlPrefix = `${API_BASE}/v2/receive-transactions?filter_receiver=${options.peppolId}`;
+    } else {
+      throw new Error(`Invalid direction: ${options.direction}`);
     }
-    const responseBody1 = await response1.json();
-    console.log('Listed outgoing documents', responseBody1);
-    const outgoing = responseBody1.results.map((item: any) => ({
-      uuid: item.id,
-      sender: item.sender_identifier,
-      recipient: item.receiver_identifier,
-      direction: 'outgoing',
-      type: item.document_type,
-    }));
-    const response2 = await fetch(`${API_BASE}/v2/receive-transactions`, {
-      headers: {
-        Authorization: `Token ${process.env.ION_API_KEY}`,
-      },
-    });
-    if (!response2.ok) {
-      throw new Error(`Error incoming listing documents: ${response2.statusText}`);
+    urlPrefix += `&filter_document_type=${(options.type === 'credit-notes') ? CREDIT_NOTES.documentType : INVOICES.documentType }`;
+    let found = [];
+    let offset = 0;
+    while (found.length < options.pageSize * options.page) {
+      const response = await fetch(`${urlPrefix}&limit=${FETCH_NUM}&offset=${offset}`, {
+        headers: {
+          Authorization: `Token ${process.env.ION_API_KEY}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error listing documents: ${response.statusText}`);
+      }
+      const responseBody = await response.json();
+      console.log('Listed documents', responseBody);
+      const thisList = responseBody.results.map((item: any) => ({
+        uuid: item.id,
+        sender: item.sender_identifier,
+        recipient: item.receiver_identifier,
+        direction: options.direction,
+        type: item.document_type,
+      }));
+      found = found.concat(thisList);
+      if (thisList.length < FETCH_NUM) {
+        break;
+      }
+      offset += FETCH_NUM;
     }
-    const responseBody2 = await response2.json();
-    console.log('Listed incoming documents', responseBody2);
-    const incoming = responseBody2.results.map((item: any) => ({
-      uuid: item.id,
-      sender: item.sender_identifier,
-      recipient: item.receiver_identifier,
-      direction: 'incoming',
-      type: item.document_type,
-    }));
-    return outgoing.concat(incoming);
+    return found.slice(options.pageSize * (options.page - 1), options.pageSize * options.page);
   }
   async getDocumentXml(query: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string> {
     let url = `${API_BASE}/v2/receive-transactions/${query.uuid}/document`;
