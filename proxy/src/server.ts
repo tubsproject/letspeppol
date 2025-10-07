@@ -6,6 +6,7 @@ import { Peppyrus } from './peppyrus.js';
 import rateLimit from 'express-rate-limit';
 import { Backend } from './Backend.js';
 import { Scrada } from './scrada.js';
+import { Ion } from './ion.js';
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -46,6 +47,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
     peppyrus: new Peppyrus(),
     acube: new Acube(),
     scrada: new Scrada(),
+    ion: new Ion(),
   };
   const users = {
     '9944:nl862637223B02': 'peppyrus',
@@ -53,6 +55,9 @@ export async function startServer(env: ServerOptions): Promise<number> {
     '0208:0705969661': 'scrada',
     '0208:0541911284': 'scrada',
     '0208:0433221497': 'scrada',
+    '0208:0798640887': 'ion',
+    '0208:0734825676': 'ion',
+    '0208:0636984350': 'ion',
   };
   function getBackend(peppolId: string): Backend {
     let backendName = users[peppolId];
@@ -64,9 +69,6 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }
 
   async function hello (_req, res) {
-    // await getUuid('1023290711');
-    // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
-    // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
     res.setHeader('Content-Type', 'text/plain');
     res.end('Let\'s Peppol!\n');
   }
