@@ -2,14 +2,73 @@
 import { Backend, ListEntityDocumentsParams } from "./Backend.js";
 // import { parseDocument } from "./parse.js";
 
+const API_BASE = "https://test.ion-ap.net/api";
+
 export class Ion implements Backend {
   async reg(identifier: string): Promise<void> {
+    const response1 = await fetch(`${API_BASE}/v2/organizations`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: "Test Company",
+        country: "BE",
+        publish_in_smp: true,
+        reference: "Batch 1",
+      }),
+    });
+    if (!response1.ok) {
+      throw new Error(`Error creating organization: ${response1.statusText}`);
+    }
+    const responseBody1 = await response1.json();
+    console.log('Created organization', responseBody1);
+    const response2 = await fetch(`${API_BASE}/v2/organizations/${responseBody1.id}/identifiers`, {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        identifier,
+        verified: true,
+        publish_receive_peppolbis: true,
+      }),
+    });
+    if (!response2.ok) {
+      throw new Error(`Error creating legal entity: ${response2.statusText}`);
+    }
+    const responseBody2 = await response2.json();
+    console.log('Created Identifier', responseBody2);
+    console.log('Created Legal Entity',{ orgId: responseBody1.id, smpRecordId: responseBody2.id });
+  }
+  async lookupIdentifier(identifier: string): Promise<{ orgId: number, smpRecordId: number }> {
     void identifier;
-    throw new Error('Method not implemented.');
+    return { orgId: 122, smpRecordId: 194 };
   }
   async unreg(identifier: string): Promise<void> {
-    void identifier;
-    throw new Error('Method not implemented.');
+    const { orgId, smpRecordId } = await this.lookupIdentifier(identifier);
+    const response1 = await fetch(`${API_BASE}/v2/organizations/${orgId}/identifiers/${smpRecordId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response1.ok) {
+      console.error(`Error deleting SMP record: ${response1.statusText}`);
+    }
+    const response2 = await fetch(`${API_BASE}/v2/organizations/${orgId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response2.ok) {
+      throw new Error(`Error deleting company: ${response2.statusText}`);
+    }
   }
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
     void documentXml;
