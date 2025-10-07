@@ -46,7 +46,6 @@ export class Ion implements Backend {
     const response1 = await fetch(`${API_BASE}/v2/organizations?filter_name=${identifier}`, {
       headers: {
         Authorization: `Token ${process.env.ION_API_KEY}`,
-        'Content-Type': 'application/json',
       },
     });
     if (!response1.ok) {
@@ -61,7 +60,6 @@ export class Ion implements Backend {
     const response2 = await fetch(`${API_BASE}/v2/organizations/${orgId}/identifiers?filter_identifier=${identifier}`, {
       headers: {
         Authorization: `Token ${process.env.ION_API_KEY}`,
-        'Content-Type': 'application/json',
       },
     });
     if (!response2.ok) {
@@ -81,7 +79,6 @@ export class Ion implements Backend {
       method: "DELETE",
       headers: {
         Authorization: `Token ${process.env.ION_API_KEY}`,
-        'Content-Type': 'application/json',
       },
     });
     if (!response1.ok) {
@@ -91,7 +88,6 @@ export class Ion implements Backend {
       method: "DELETE",
       headers: {
         Authorization: `Token ${process.env.ION_API_KEY}`,
-        'Content-Type': 'application/json',
       },
     });
     if (!response2.ok) {
@@ -119,11 +115,57 @@ export class Ion implements Backend {
   }
   async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
     void options;
-    throw new Error('Method not implemented.');
+    const response1 = await fetch(`${API_BASE}/v2/send-transactions`, {
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+      },
+    });
+    if (!response1.ok) {
+      throw new Error(`Error outgoing listing documents: ${response1.statusText}`);
+    }
+    const responseBody1 = await response1.json();
+    console.log('Listed outgoing documents', responseBody1);
+    const outgoing = responseBody1.results.map((item: any) => ({
+      uuid: item.id,
+      sender: item.sender_identifier,
+      recipient: item.receiver_identifier,
+      direction: 'outgoing',
+      type: item.document_type,
+    }));
+    const response2 = await fetch(`${API_BASE}/v2/receive-transactions`, {
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+      },
+    });
+    if (!response2.ok) {
+      throw new Error(`Error incoming listing documents: ${response2.statusText}`);
+    }
+    const responseBody2 = await response2.json();
+    console.log('Listed incoming documents', responseBody2);
+    const incoming = responseBody2.results.map((item: any) => ({
+      uuid: item.id,
+      sender: item.sender_identifier,
+      recipient: item.receiver_identifier,
+      direction: 'incoming',
+      type: item.document_type,
+    }));
+    return outgoing.concat(incoming);
   }
   async getDocumentXml(query: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string> {
-    void query;
-    throw new Error('Method not implemented.');
+    let url = `${API_BASE}/v2/receive-transactions/${query.uuid}/document`;
+    if (query.direction === 'outgoing') {
+      url = `${API_BASE}/v2/send-transactions/${query.uuid}/document`;
+    }
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Token ${process.env.ION_API_KEY}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching document XML: ${response.statusText}`);
+    }
+    const responseBody = await response.text();
+    return responseBody;
   }
 
 }
