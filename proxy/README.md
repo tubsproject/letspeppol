@@ -11,15 +11,11 @@ export PROXY_HOST=https://api.letspeppol.org FIXME: this is not yet running v1, 
 Next, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
 export ACCESS_TOKEN_KEY=...
-export PEPPYRUS=`node token.js 9944:nl862637223B02`
-export ACUBE=`node token.js 0208:1023290711`
-export ONE=`node token.js 0208:0705969661`
-export TWO=`node token.js 0208:0541911284`
-export THREE=`node token.js 0208:0433221497`
+export ONE=`node token.js 0208:0798640887`
+export TWO=`node token.js 0208:0734825676`
+export THREE=`node token.js 0208:0636984350`
 
 echo $ACCESS_TOKEN_KEY
-echo $PEPPYRUS
-echo $ACUBE
 echo $ONE
 echo $TWO
 echo $THREE
@@ -37,9 +33,9 @@ Not all sender/receiver combinations work yet, but the following ones do.
 Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
 curl -X POST --data-binary "@../docs/v1/invoice-scrada-to-scrada.xml" -H "Authorization: Bearer $TWO" $PROXY_HOST/v1/send
-curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
-curl -X POST --data-binary "@../docs/v1/invoice-acube-to-peppyrus.xml" -H "Authorization: Bearer $ACUBE" $PROXY_HOST/v1/send
-curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $ONE" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-acube-to-peppyrus.xml" -H "Authorization: Bearer $THREE" $PROXY_HOST/v1/send
+curl -X POST --data-binary "@../docs/v1/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $ONE" $PROXY_HOST/v1/send
 ```
 
 ### Activate and de-activate SMP records
@@ -59,15 +55,15 @@ To list invoices and credit notes you have sent and received. There are 4 collec
 
 Default page size is 20.
 ```sh
-curl -H "Authorization: Bearer $ACUBE" "$PROXY_HOST/v1/invoices/outgoing" | json
-curl -H "Authorization: Bearer $PEPPYRUS" "$PROXY_HOST/v1/credit-notes/incoming?page=2&pageSize=2" | json
+curl -H "Authorization: Bearer $TWO" "$PROXY_HOST/v1/invoices/outgoing" | json
+curl -H "Authorization: Bearer $THREE" "$PROXY_HOST/v1/credit-notes/incoming?page=2&pageSize=2" | json
 curl -H "Authorization: Bearer $ONE" "$PROXY_HOST/v1/invoices/incoming?page=1" | json
 ```
 
 This will give an array of uuid string. To fetch the XML of a specific one:
 ```sh
-curl -H "Authorization: Bearer $PEPPYRUS" $PROXY_HOST/v1/invoices/incoming/c40e41fc-c040-4ddc-b35b-4f2a23542e7a
-curl -H "Authorization: Bearer $ACUBE" $PROXY_HOST/v1/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
+curl -H "Authorization: Bearer $ONE" $PROXY_HOST/v1/invoices/incoming/c40e41fc-c040-4ddc-b35b-4f2a23542e7a
+curl -H "Authorization: Bearer $THREE" $PROXY_HOST/v1/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
 ```
 FIXME: invoices from Peppyrus are indented but ones from A-Cube are without linebreaks
 
