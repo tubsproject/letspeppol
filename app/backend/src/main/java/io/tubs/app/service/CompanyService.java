@@ -1,11 +1,10 @@
 package io.tubs.app.service;
 
 import io.tubs.app.CompanyRepository;
-import io.tubs.app.dto.AddressDto;
 import io.tubs.app.dto.AppRegistrationRequest;
 import io.tubs.app.dto.CompanyDto;
 import io.tubs.app.exception.NotFoundException;
-import io.tubs.app.model.Address;
+import io.tubs.app.mapper.CompanyMapper;
 import io.tubs.app.model.Company;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,19 +21,19 @@ public class CompanyService {
         Company account = new Company(
                 request.companyNumber(),
                 request.companyName(),
+                request.directorName(),
+                request.directorEmail(),
                 request.city(),
                 request.postalCode(),
                 request.street(),
-                request.houseNumber(),
-                request.directorName(),
-                request.directorEmail()
+                request.houseNumber()
         );
         companyRepository.save(account);
     }
 
     public CompanyDto get(String companyNumber) {
         Company company = companyRepository.findByCompanyNumber(companyNumber).orElseThrow(() -> new NotFoundException("Company does not exist"));
-        return toDto(company);
+        return CompanyMapper.toDto(company);
     }
 
     public CompanyDto update(CompanyDto companyDto) {
@@ -47,28 +46,7 @@ public class CompanyService {
         company.getRegisteredOffice().setStreet(companyDto.registeredOffice().street());
         company.getRegisteredOffice().setHouseNumber(companyDto.registeredOffice().houseNumber());
         companyRepository.save(company);
-        return toDto(company);
+        return CompanyMapper.toDto(company);
     }
 
-    public CompanyDto toDto(Company company) {
-        return new CompanyDto(
-                company.getCompanyNumber(),
-                company.getName(),
-                company.getSubscriber(),
-                company.getSubscriberEmail(),
-                company.getPaymentTerms(),
-                company.getIban(),
-                company.getPaymentAccountName(),
-                toDto(company.getRegisteredOffice())
-        );
-    }
-
-    public AddressDto toDto(Address address) {
-        return new AddressDto(
-                address.getCity(),
-                address.getPostalCode(),
-                address.getStreet(),
-                address.getHouseNumber()
-        );
-    }
 }

@@ -5,14 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "companies", indexes = {
         @Index(name = "uk_company_number", columnList = "companyNumber", unique = true)
@@ -20,10 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Company {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Company extends GenericEntity{
 
     @Column(nullable = false, unique = true)
     private String companyNumber;
@@ -42,7 +31,8 @@ public class Company {
     @JoinColumn(name = "registered_office_id", referencedColumnName = "id")
     private Address registeredOffice;
 
-    public Company(String companyNumber, String name, String street, String houseNumber, String city, String postalCode, String subscriber, String subscriberEmail) {
+    public Company(String companyNumber, String name, String subscriber, String subscriberEmail,
+                   String city, String postalCode, String street, String houseNumber) {
         this.companyNumber = companyNumber;
         this.name = name;
         this.subscriber = subscriber;
