@@ -6,6 +6,7 @@ import { Peppyrus } from './peppyrus.js';
 import rateLimit from 'express-rate-limit';
 import { Backend } from './Backend.js';
 import { Scrada } from './scrada.js';
+import { Ion } from './ion.js';
 
 function getAuthMiddleware(secretKey: string) {
   return async function checkAuth(req, res, next): Promise<void> {
@@ -43,36 +44,49 @@ export async function startServer(env: ServerOptions): Promise<number> {
     }
   }
   const backends = {
-    '9944:nl862637223B02': new Peppyrus(),
-    '0208:0705969661': new Scrada(),
-    '0208:1023290711': new Acube(),
+    peppyrus: new Peppyrus(),
+    acube: new Acube(),
+    scrada: new Scrada(),
+    ion: new Ion(),
+  };
+  const users = {
+    '9944:nl862637223B02': 'peppyrus',
+    '0208:1023290711': 'acube',
+    '0208:0705969661': 'scrada',
+    '0208:0541911284': 'scrada',
+    '0208:0433221497': 'scrada',
+    // '0208:0798640887': 'ion',
+    // '0208:0734825676': 'ion',
+    // '0208:0636984350': 'ion',
   };
   function getBackend(peppolId: string): Backend {
-    return backends[peppolId];
+    let backendName = users[peppolId];
+    if (!backendName) {
+      backendName = 'ion'; // default to ion
+    }
+    console.log('Using backend', backendName, 'for', peppolId);
+    return backends[backendName];
   }
 
   async function hello (_req, res) {
-    // await getUuid('1023290711');
-    // await listEntityDocuments({ peppolId: '1023290711', direction: 'incoming', type: 'invoices', query: {} });
-    // await listEntityDocuments({ peppolId: '0705969661', direction: 'incoming', type: 'credit-notes', query: {} });
     res.setHeader('Content-Type', 'text/plain');
     res.end('Let\'s Peppol!\n');
   }
   async function list (req, res) {
     const backend = getBackend(req.peppolId);
-    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query });
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
   async function listV1 (req, res) {
     const backend = getBackend(req.peppolId);
-    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1' });
+    const documents = await backend.listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1', page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
     res.setHeader('Content-Type', 'application/json');
     res.json(documents);
   }
   async function get (req, res) {
     const backend = getBackend(req.peppolId);
-    const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid });
+    const xml = await backend.getDocumentXml({ peppolId: req.peppolId, type: req.params.docType, uuid: req.params.uuid, direction: req.params.direction });
     res.setHeader('Content-Type', 'text/xml');
     res.send(xml);
   }

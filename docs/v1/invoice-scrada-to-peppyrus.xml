@@ -34,9 +34,9 @@
   </cac:AdditionalDocumentReference>
   <cac:AccountingSupplierParty>
       <cac:Party>
-          <cbc:EndpointID schemeID="9944">nl862637223B02</cbc:EndpointID>
+          <cbc:EndpointID schemeID="0208">0541911284</cbc:EndpointID>
           <cac:PartyIdentification>
-              <cbc:ID>nl862637223B02</cbc:ID>
+              <cbc:ID schemeID="0208">0541911284</cbc:ID>
           </cac:PartyIdentification>
           <cac:PartyName>
               <cbc:Name>Ponder Source Two</cbc:Name>
@@ -67,30 +67,30 @@
 
   <cac:AccountingCustomerParty>
       <cac:Party>
-          <cbc:EndpointID schemeID="0208">0541911284</cbc:EndpointID>
+          <cbc:EndpointID schemeID="9944">nl862637223B03</cbc:EndpointID>
           <cac:PartyIdentification>
-              <cbc:ID schemeID="0208">0541911284</cbc:ID>
+              <cbc:ID>nl862637223B02</cbc:ID>
           </cac:PartyIdentification>
           <cac:PartyName>
-              <cbc:Name>Softwareoplossing.be</cbc:Name>
+              <cbc:Name>Ponder Source Three</cbc:Name>
           </cac:PartyName>
           <cac:PostalAddress>
-              <cbc:StreetName>Koning Filipstraat 5</cbc:StreetName>
-              <cbc:CityName> Riemst</cbc:CityName>
-              <cbc:PostalZone>3770</cbc:PostalZone>
+              <cbc:StreetName>Torenlaan 5A</cbc:StreetName>
+              <cbc:CityName>Bussum</cbc:CityName>
+              <cbc:PostalZone>1402 AT</cbc:PostalZone>
               <cac:Country>
-              <cbc:IdentificationCode>BE</cbc:IdentificationCode>
+              <cbc:IdentificationCode>NL</cbc:IdentificationCode>
               </cac:Country>
           </cac:PostalAddress>
           <cac:PartyTaxScheme>
-              <cbc:CompanyID>SE4598375937</cbc:CompanyID>
+              <cbc:CompanyID>GB1232434</cbc:CompanyID>
               <cac:TaxScheme>
                   <cbc:ID>VAT</cbc:ID>
               </cac:TaxScheme>
           </cac:PartyTaxScheme>
           <cac:PartyLegalEntity>
               <cbc:RegistrationName>Buyer Official Name</cbc:RegistrationName>
-              <cbc:CompanyID schemeID="0183">39937423947</cbc:CompanyID>
+              <cbc:CompanyID schemeID="0106">82875715</cbc:CompanyID>
           </cac:PartyLegalEntity>
           <cac:Contact>
               <cbc:Name>Lisa Johnson</cbc:Name>
@@ -272,7 +272,7 @@
           <cbc:StartDate>2023-12-01</cbc:StartDate>
           <cbc:EndDate>2032-12-05</cbc:EndDate>
       </cac:InvoicePeriod>
-     
+
       <cac:Item>
           <cbc:Description>Description of item</cbc:Description>
           <cbc:Name>item name</cbc:Name>
