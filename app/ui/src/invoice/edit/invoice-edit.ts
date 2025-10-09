@@ -16,10 +16,12 @@ import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
 import {InvoiceCalculator, roundTwoDecimals} from "../invoice-calculator";
 import {InvoiceComposer} from "../invoice-composer";
 import {downloadInvoicePdf} from "../pdf/invoice-pdf";
+import {InvoiceService} from "../../services/invoice-service";
 
 export class InvoiceEdit {
     readonly ea: IEventAggregator = resolve(IEventAggregator);
     private proxyService = resolve(ProxyService);
+    private invoiceService = resolve(InvoiceService);
     private invoiceContext = resolve(InvoiceContext);
     private invoiceCalculator = resolve(InvoiceCalculator);
     private invoiceComposer = resolve(InvoiceComposer);
@@ -83,15 +85,20 @@ export class InvoiceEdit {
     }
 
     async sendInvoice() {
-        console.log(JSON.stringify(this.invoiceContext.selectedInvoice));
-        let xml = this.buildXml();
         try {
+            this.ea.publish('showOverlay', "Sending invoice");
+            console.log(JSON.stringify(this.invoiceContext.selectedInvoice));
+            let xml = this.buildXml();
             await this.proxyService.sendDocument(xml);
+            // await this.invoiceService.validate(xml);
+            console.log(xml);
+            console.log(parseInvoice(xml));
         } catch(e) {
-            console.log(e);
+            console.error(e);
+            this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to update account"});
+        } finally {
+            this.ea.publish('hideOverlay');
         }
-        console.log(xml);
-        console.log(parseInvoice(xml));
     }
 
     downloadPdf() {

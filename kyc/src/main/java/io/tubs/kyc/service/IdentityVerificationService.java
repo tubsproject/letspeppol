@@ -1,6 +1,7 @@
 package io.tubs.kyc.service;
 
 import io.tubs.kyc.dto.IdentityVerificationRequest;
+import io.tubs.kyc.exception.KycErrorCodes;
 import io.tubs.kyc.exception.KycException;
 import io.tubs.kyc.model.Customer;
 import io.tubs.kyc.model.CustomerIdentityVerification;
@@ -36,7 +37,7 @@ public class IdentityVerificationService {
 
     public void verifyNotRegistered(String email) {
         if (customerRepository.existsByEmail(email)) {
-            throw new KycException("Customer already linked to company");
+            throw new KycException(KycErrorCodes.CUSTOMER_ALREADY_LINKED);
         }
     }
 

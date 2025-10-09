@@ -22,8 +22,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<SimpleMessage> handleKycException(AppException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleMessage(ex.getMessage()));
+    public ResponseEntity<Map<String, Object>> handleKycException(AppException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("errorCode", ex.getCode());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<SimpleMessage> handleSecurityException(AppException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new SimpleMessage(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

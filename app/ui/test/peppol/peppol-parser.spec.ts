@@ -4,7 +4,6 @@ import {buildCreditNote, parseCreditNote} from "../../src/peppol/ubl-parser";
 
 function normalizeXml(xml: string) {
     return xml
-        .replace(/^<\?xml[^>]*\?>\s*/i, "") // strip XML declaration if present
         // remove stray spaces after '=' before quotes
         .replace(/=\s+"/g, '="')
         .replace(/>(\d+)\.0</g, '>$1<')

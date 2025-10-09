@@ -1,6 +1,7 @@
 package io.tubs.kyc.service;
 
 import io.tubs.kyc.exception.KycException;
+import io.tubs.kyc.exception.KycErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +34,7 @@ public class LetsPeppolProxyService {
                     .block();
         } catch (Exception ex) {
             log.error("Registering company to proxy failed", ex);
-            throw new KycException("Registering company to proxy failed");
+            throw new KycException(KycErrorCodes.PROXY_REGISTRATION_FAILED);
         }
     }
 

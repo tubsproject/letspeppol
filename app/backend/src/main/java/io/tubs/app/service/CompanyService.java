@@ -37,6 +37,19 @@ public class CompanyService {
         return toDto(company);
     }
 
+    public CompanyDto update(CompanyDto companyDto) {
+        Company company = companyRepository.findByCompanyNumber(companyDto.companyNumber()).orElseThrow(() -> new NotFoundException("Company does not exist"));
+        company.setPaymentAccountName(companyDto.paymentAccountName());
+        company.setPaymentTerms(companyDto.paymentTerms());
+        company.setIban(companyDto.iban());
+        company.getRegisteredOffice().setCity(companyDto.registeredOffice().city());
+        company.getRegisteredOffice().setPostalCode(companyDto.registeredOffice().postalCode());
+        company.getRegisteredOffice().setStreet(companyDto.registeredOffice().street());
+        company.getRegisteredOffice().setHouseNumber(companyDto.registeredOffice().houseNumber());
+        companyRepository.save(company);
+        return toDto(company);
+    }
+
     public CompanyDto toDto(Company company) {
         return new CompanyDto(
                 company.getCompanyNumber(),

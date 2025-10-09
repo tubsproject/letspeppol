@@ -9,7 +9,8 @@
     --primary: #2563eb;
     --primary-strong: #1d4ed8;
     --accent: #14b8a6;
-    --border-soft: #e5e7eb;
+    --border-soft: #e5e7ebdd;
+    --border-softer: #e5e7eb44;
     --backdrop: #ffffffab;
     --border-input: #ccc;
 
@@ -372,6 +373,9 @@ main.container .data-table tbody td { color: var(--text); }
 /* Footer removed; actions now in top-right */
 
 .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-09); }
+.grid-col-73 {
+    grid-template-columns: 7fr 3fr;
+}
 .field { display: grid; gap: var(--space-035); }
 .field.full { grid-column: 1 / -1; }
 .field span { color: var(--muted); font-size: .85rem; }
@@ -391,7 +395,7 @@ main.container .data-table tbody td { color: var(--text); }
 }
 .field textarea { border: 1px solid var(--border-soft); background: var(--bg); color: var(--text); border-radius: .6rem; padding: var(--space-06) var(--space-07); min-height: 72px; resize: vertical; }
 .field input:focus, .field select:focus { outline: 2px solid color-mix(in hsl, var(--primary) 40%, var(--border-soft)); outline-offset: 1px; }
-.field input:disabled, .field textarea:disabled, .field input:read-only, .field textarea:read-only { border: 1px solid var(--border-soft) }
+.field input:disabled, .field textarea:disabled, .field input:read-only, .field textarea:read-only { border: 1px solid var(--border-softer) }
 
 /* Auth */
 .auth-card { max-width: 640px; margin: 0 auto; }

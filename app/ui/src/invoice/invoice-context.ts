@@ -1,4 +1,4 @@
-import {observable, singleton} from "aurelia";
+import {IEventAggregator, observable, singleton} from "aurelia";
 import {
     Invoice,
     InvoiceLine, PaymentMeansCode, CreditNote, CreditNoteLine, UBLDoc, getLines
@@ -8,6 +8,7 @@ import {resolve} from "@aurelia/kernel";
 import moment from "moment";
 import {InvoiceComposer} from "./invoice-composer";
 import {InvoiceCalculator} from "./invoice-calculator";
+import {AlertType} from "../alert/alert";
 
 export enum DocumentType {
     Invoice = "Invoice",
@@ -21,9 +22,10 @@ export enum DocumentType {
 
 @singleton()
 export class InvoiceContext {
-    private companyService = resolve(CompanyService);
-    private invoiceComposer = resolve(InvoiceComposer);
-    private invoiceCalculator = resolve(InvoiceCalculator);
+    private readonly ea: IEventAggregator = resolve(IEventAggregator);
+    private readonly companyService = resolve(CompanyService);
+    private readonly invoiceComposer = resolve(InvoiceComposer);
+    private readonly invoiceCalculator = resolve(InvoiceCalculator);
     invoices : undefined | Invoice[] | CreditNote[];
     lines : undefined | InvoiceLine[] | CreditNoteLine[];
     @observable selectedInvoice:  undefined | Invoice | CreditNote;
@@ -41,14 +43,7 @@ export class InvoiceContext {
             try {
                 await this.companyService.getAndSetMyCompanyForToken();
             } catch {
-                this.companyService.myCompany = {
-                    id: 1,
-                    companyNumber: "1234",
-                    postalCode: "3500",
-                    city: "city",
-                    street: "street",
-                    name: "My company"
-                };
+                this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to get company info"});
             }
         }
     }

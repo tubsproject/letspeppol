@@ -1,4 +1,4 @@
-import {EventAggregator, IDisposable, IEventAggregator} from "aurelia";
+import {IDisposable, IEventAggregator} from "aurelia";
 import {resolve} from "@aurelia/kernel";
 
 export enum AlertType {

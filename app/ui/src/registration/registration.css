@@ -1,3 +1,6 @@
-.grid {
-    grid-template-columns: 7fr 3fr;
+.card-header {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--space-035);
+    color:var(--muted);
 }

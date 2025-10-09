@@ -10,17 +10,20 @@ import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
 import {CompanyResponse, CompanyService} from "../services/company-service";
 import { omit } from 'lodash';
+import {CustomerResponse} from "../services/customer-service";
 
 @singleton()
 export class InvoiceComposer {
     private companyService = resolve(CompanyService);
-    private customer: CompanyResponse = {
-        id: 1,
+    private customer: CustomerResponse = {
         companyNumber: "0705969661",
         name: "Ponder Source",
-        street: "Da street",
-        city: "Amstel",
-        postalCode: "33209"
+        registeredOffice: {
+            street: "Da street",
+            houseNumber: "3",
+            city: "Amstel",
+            postalCode: "33209"
+        }
     };
 
     createInvoice(): Invoice {
@@ -99,9 +102,9 @@ export class InvoiceComposer {
                     Name: ""
                 },
                 PostalAddress: {
-                    StreetName: this.customer.street,
-                    CityName: this.customer.city,
-                    PostalZone: this.customer.postalCode,
+                    StreetName: this.customer.registeredOffice.street,
+                    CityName: this.customer.registeredOffice.city,
+                    PostalZone: this.customer.registeredOffice.postalCode,
                     Country: {
                         IdentificationCode: "BE"
                     }
@@ -140,9 +143,9 @@ export class InvoiceComposer {
                     Name: this.companyService.myCompany.name
                 },
                 PostalAddress: {
-                    StreetName: this.companyService.myCompany.street,
-                    CityName: this.companyService.myCompany.city,
-                    PostalZone: this.companyService.myCompany.postalCode,
+                    StreetName: `${this.companyService.myCompany.registeredOffice.street} ${this.companyService.myCompany.registeredOffice.houseNumber}`,
+                    CityName: this.companyService.myCompany.registeredOffice.city,
+                    PostalZone: this.companyService.myCompany.registeredOffice.postalCode,
                     Country: {
                         IdentificationCode: "BE"
                     }

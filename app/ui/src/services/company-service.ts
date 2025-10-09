@@ -3,8 +3,8 @@ import {singleton} from "aurelia";
 import {AppApi} from "./api/app-api";
 
 export interface CompanyResponse {
-    companyNumber: string,
     name: string,
+    companyNumber: string,
     subscriber: string,
     subscriberEmail: string,
     paymentTerms: string,
@@ -22,11 +22,17 @@ export interface Address {
 
 @singleton()
 export class CompanyService {
-    public appApi = resolve(AppApi);
+    private appApi = resolve(AppApi);
     public myCompany: CompanyResponse;
 
     async getAndSetMyCompanyForToken() : Promise<CompanyResponse> {
         this.myCompany = await this.appApi.httpClient.get(`/api/company`).then(response => response.json());
+        return Promise.resolve(this.myCompany);
+    }
+
+    async updateCompany(company: CompanyResponse) {
+        const response = await this.appApi.httpClient.put(`/api/company`, JSON.stringify(company) );
+        this.myCompany = await response.json();
         return Promise.resolve(this.myCompany);
     }
 
