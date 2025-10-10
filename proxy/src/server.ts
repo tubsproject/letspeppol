@@ -62,6 +62,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   };
   function getBackend(peppolId: string): Backend {
     if (process.env.BACKEND) {
+      console.log('Using backend', process.env.BACKEND, ' because of BACKEND env var');
       return backends[process.env.BACKEND];
     }
     let backendName = users[peppolId];
