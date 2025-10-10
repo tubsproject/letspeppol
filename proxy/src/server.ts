@@ -52,6 +52,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   const users = {
     '9944:nl862637223B02': 'peppyrus',
     '0208:1023290711': 'acube',
+    // '0208:0705969661': 'acube',
     '0208:0705969661': 'scrada',
     '0208:0541911284': 'scrada',
     '0208:0433221497': 'scrada',
@@ -60,6 +61,9 @@ export async function startServer(env: ServerOptions): Promise<number> {
     // '0208:0636984350': 'ion',
   };
   function getBackend(peppolId: string): Backend {
+    if (process.env.BACKEND) {
+      return backends[process.env.BACKEND];
+    }
     let backendName = users[peppolId];
     if (!backendName) {
       backendName = 'ion'; // default to ion

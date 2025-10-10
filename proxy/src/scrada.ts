@@ -129,7 +129,7 @@ export class Scrada implements Backend {
         'X-Password': process.env.SCRADA_API_PWD!,
       }
     });
-    console.log(response.status, await response.text());
+    // console.log(response.status, await response.text());
     let { results } = await response.json();
     console.log('Fetched', results);
     console.log('Total', results.length, 'results');
