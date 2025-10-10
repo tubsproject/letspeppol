@@ -1,21 +1,25 @@
 package io.tubs.kyc.service;
 
 import io.tubs.kyc.exception.KycException;
-import lombok.RequiredArgsConstructor;
+import io.tubs.kyc.exception.KycErrorCodes;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class LetsPeppolProxyService {
 
-    @Value("${proxy.enabled:false}")
+    @Value("${proxy.enabled}")
     private boolean proxyEnabled;
-    private final WebClient webClient;
+
+    @Qualifier("ProxyWebClient")
+    @Autowired
+    private  WebClient webClient;
 
     public void registerCompany(String token) {
         if (!proxyEnabled) {
@@ -30,7 +34,7 @@ public class LetsPeppolProxyService {
                     .block();
         } catch (Exception ex) {
             log.error("Registering company to proxy failed", ex);
-            throw new KycException("Registering company to proxy failed");
+            throw new KycException(KycErrorCodes.PROXY_REGISTRATION_FAILED);
         }
     }
 

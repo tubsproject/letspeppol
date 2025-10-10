@@ -18,6 +18,7 @@
                             <input name="email" type="email" placeholder="you@company.com" required value.bind="email"/>
                         </label>
                     </div>
+                    <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
                     <div class="auth-actions">
                         <button type="submit" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="checkCompanyNumber()">
                             <span  class="loader"></span>
@@ -32,7 +33,7 @@
                     <h1>Confirm your company</h1>
                 </div>
                 <form class="auth-form" style="max-width: 400px">
-                    <div class="grid">
+                    <div class="grid grid-col-73">
                         <label class="field full">
                             <span>VAT number</span>
                             <input name="companyNumber" type="text" disabled="disabled" value.to-view="company.companyNumber"/>
@@ -62,6 +63,7 @@
                             <input name="email" type="email" placeholder="you@company.com" disabled="disabled" value.to-view="email"/>
                         </label>
                     </div>
+                    <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
                     <div class="auth-actions">
                         <button type="button" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="confirmCompany()">
                             Confirm

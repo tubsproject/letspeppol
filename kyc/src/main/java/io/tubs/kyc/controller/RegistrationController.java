@@ -3,6 +3,7 @@ package io.tubs.kyc.controller;
 import io.tubs.kyc.dto.ConfirmCompanyRequest;
 import io.tubs.kyc.dto.SimpleMessage;
 import io.tubs.kyc.dto.TokenVerificationResponse;
+import io.tubs.kyc.exception.KycErrorCodes;
 import io.tubs.kyc.exception.KycException;
 import io.tubs.kyc.service.ActivationService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class RegistrationController {
             }
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(inputStream.readAllBytes());
         } catch (IOException e) {
-            throw new KycException("Contract not found");
+            throw new KycException(KycErrorCodes.CONTRACT_NOT_FOUND);
         }
     }
 
