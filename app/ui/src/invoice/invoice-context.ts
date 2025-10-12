@@ -1,11 +1,7 @@
 import {IEventAggregator, observable, singleton} from "aurelia";
-import {
-    Invoice,
-    InvoiceLine, PaymentMeansCode, CreditNote, CreditNoteLine, UBLDoc, getLines
-} from "../peppol/ubl";
+import {CreditNote, CreditNoteLine, getLines, Invoice, InvoiceLine, PaymentMeansCode, UBLDoc} from "../peppol/ubl";
 import {CompanyService} from "../services/company-service";
 import {resolve} from "@aurelia/kernel";
-import moment from "moment";
 import {InvoiceComposer} from "./invoice-composer";
 import {InvoiceCalculator} from "./invoice-calculator";
 import {AlertType} from "../alert/alert";
@@ -49,7 +45,7 @@ export class InvoiceContext {
     }
 
     async newUBLDocument(documentType : DocumentType = DocumentType.Invoice) {
-        await this.initCompany();
+        // await this.initCompany();
         if (documentType === DocumentType.Invoice) {
             this.selectedInvoice = this.invoiceComposer.createInvoice();
         } else {

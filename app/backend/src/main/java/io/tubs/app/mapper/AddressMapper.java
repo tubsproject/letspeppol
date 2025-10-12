@@ -10,6 +10,7 @@ public class AddressMapper {
             return null;
         }
         return new AddressDto(
+                address.getId(),
                 address.getCity(),
                 address.getPostalCode(),
                 address.getStreet(),

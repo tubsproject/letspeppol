@@ -4,7 +4,7 @@
     <section class="section active">
         <div class="invoices-layout">
             <aside class="mailbox" aria-label="Invoice inboxes">
-                <div class="mailbox-title">Boxes</div>
+                <div class="mailbox-title">Categories</div>
                 <nav>
                     <button active.class="box === 'all'" class="mail-item" click.trigger="setActiveItems('all')">
                         <span class="label">All</span>
@@ -21,14 +21,10 @@
                 </nav>
             </aside>
             <div class="invoices-main">
-                <!-- Editor header (visible when creating/editing) -->
                 <div class="section-header" hidden>
                     <div style="display:flex;align-items:center;gap:.5rem">
-<!--                        <button class="btn" aria-label="Back to invoices">← Back</button>-->
                         <h1 style="margin:0" >New invoice</h1>
                     </div>
-<!--                    <div class="editor-header-actions">-->
-<!--                    </div>-->
                 </div>
 
                 <div>
@@ -37,7 +33,7 @@
                         <div class="actions">
                             <div class="filters">
                                 <label class="select" style="position: relative">
-                                    <select aria-label="Filter by document type">
+                                    <select>
                                         <option value="all" selected>All</option>
                                         <option value="invoice">Invoice</option>
                                         <option value="credit-note">Credit note</option>
@@ -48,7 +44,7 @@
                                         <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                         <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
                                     </svg>
-                                    <input type="search" placeholder="Search customer or reference" aria-label="Search" />
+                                    <input type="search" placeholder="Search customer or reference" />
                                 </label>
                             </div>
                             <button class="btn primary" click.trigger="invoiceContext.newUBLDocument()">
@@ -90,7 +86,7 @@
                                     <th class="th-filter">
                                         <div class="th-inner">
                                             <span>Due date</span>
-                                            <button class="icon-btn filter-toggle" aria-expanded="false" aria-controls="endDateFilterPanel" title="Filter by end date">▾</button>
+                                            <button class="icon-btn filter-toggle" title="Filter by end date">▾</button>
                                         </div>
                                         <div class="filter-panel" hidden>
                                             <label class="field">
@@ -139,7 +135,7 @@
                             <button type="button" class="btn ghost">Next →</button>
                         </div>
                     </div>
-                </div> <!-- /#invoicesOverview -->
+                </div>
             </div>
         </div>
     </section>

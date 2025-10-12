@@ -57,5 +57,6 @@ export class LoginService {
         this.proxyApi.httpClient.configure(config => config.withDefaults({ headers: {'Authorization': ''} }));
         this.appApi.httpClient.configure(config => config.withDefaults({ headers: {'Authorization': ''} }));
         localStorage.removeItem('token');
+        this.authenticated = false;
     }
 }

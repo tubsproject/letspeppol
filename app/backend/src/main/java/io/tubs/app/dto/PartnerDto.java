@@ -1,6 +1,7 @@
 package io.tubs.app.dto;
 
-public record PartyDto(
+public record PartnerDto(
+    Long id,
     String companyNumber,
     String name,
     String email,

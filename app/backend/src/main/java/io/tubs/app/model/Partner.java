@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Party extends GenericEntity{
+public class Partner extends GenericEntity{
 
     private String companyNumber;
     private String name;
@@ -23,14 +23,14 @@ public class Party extends GenericEntity{
     private String paymentAccountName;
 
     @ManyToOne
-    @JoinColumn(name = "company_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_party_company"))
+    @JoinColumn(name = "company_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_partner_company"))
     private Company company;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "registered_office_id", referencedColumnName = "id")
     private Address registeredOffice;
 
-    public Party(String companyNumber, String name, String email, Boolean customer, Boolean supplier, String paymentTerms, String iban, String paymentAccountName,
+    public Partner(String companyNumber, String name, String email, Boolean customer, Boolean supplier, String paymentTerms, String iban, String paymentAccountName,
                  String city, String postalCode, String street, String houseNumber) {
         this.companyNumber = companyNumber;
         this.name = name;
@@ -40,7 +40,7 @@ public class Party extends GenericEntity{
         this.paymentTerms = paymentTerms;
         this.iban = iban;
         this.paymentAccountName = paymentAccountName;
-        this.registeredOffice = new Address(street, houseNumber, city, postalCode);
+        this.registeredOffice = new Address(city, postalCode, street, houseNumber);
     }
 
 }

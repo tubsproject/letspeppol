@@ -2,7 +2,6 @@ package io.tubs.kyc.service;
 
 import io.tubs.kyc.dto.CompanyResponse;
 import io.tubs.kyc.dto.DirectorDto;
-
 import io.tubs.kyc.exception.KycErrorCodes;
 import io.tubs.kyc.exception.KycException;
 import io.tubs.kyc.util.CompanyNumberUtil;

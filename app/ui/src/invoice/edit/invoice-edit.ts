@@ -79,11 +79,6 @@ export class InvoiceEdit {
         }
     }
 
-    paymentMeansCodeChanged() {
-        const paymentMeansCode = this.invoiceContext.paymentMeansCodes.find(item => item.value === this.invoiceContext.selectedInvoice.PaymentMeans.PaymentMeansCode.value);
-        this.invoiceContext.selectedInvoice.PaymentMeans.PaymentMeansCode.__name = paymentMeansCode.__name;
-    }
-
     async sendInvoice() {
         try {
             this.ea.publish('showOverlay', "Sending invoice");

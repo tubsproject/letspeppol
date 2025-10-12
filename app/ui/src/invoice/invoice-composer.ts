@@ -1,21 +1,15 @@
-import {
-    CreditNote,
-    CreditNoteLine,
-    Invoice,
-    InvoiceLine,
-    AccountingParty, UBLBaseLine,
-} from "../peppol/ubl";
+import {AccountingParty, CreditNote, CreditNoteLine, Invoice, InvoiceLine, UBLBaseLine,} from "../peppol/ubl";
 import moment from "moment/moment";
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {CompanyResponse, CompanyService} from "../services/company-service";
-import { omit } from 'lodash';
-import {CustomerResponse} from "../services/customer-service";
+import {CompanyService} from "../services/company-service";
+import {omit} from 'lodash';
+import {PartnerResponse} from "../services/partner-service";
 
 @singleton()
 export class InvoiceComposer {
     private companyService = resolve(CompanyService);
-    private customer: CustomerResponse = {
+    private customer: PartnerResponse = {
         companyNumber: "0705969661",
         name: "Ponder Source",
         registeredOffice: {

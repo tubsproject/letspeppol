@@ -1,3 +1,5 @@
+<import from="./customer-search"></import>
+
 <div class="modal" role="dialog" aria-modal="true" show.bind="open">
     <div class="modal-backdrop"></div>
     <div class="modal-card" role="document">
@@ -7,6 +9,8 @@
         </header>
         <div class="modal-body">
             <div style="display: inline-grid; gap: var(--space-1)">
+                <h3 style="margin-bottom: 0px">Search Customer</h3>
+                <customer-search component.ref="customerSearch" select-customer-function.bind="(c) => selectCustomer(c)" ></customer-search>
                 <h3 class="field full" style="margin-bottom: 0px">Customer</h3>
                 <label class="field">
                     <span>VAT Number</span>
@@ -39,3 +43,4 @@
             </footer>
         </div>
     </div>
+</div>

@@ -1,4 +1,4 @@
-import { resolve } from '@aurelia/kernel';
+import {resolve} from '@aurelia/kernel';
 import {singleton} from "aurelia";
 import {AppApi} from "./api/app-api";
 
@@ -14,10 +14,10 @@ export interface CompanyResponse {
 }
 
 export interface Address {
-    city: string,
-    postalCode: string,
-    street: string,
-    houseNumber: string
+    city?: string,
+    postalCode?: string,
+    street?: string,
+    houseNumber?: string
 }
 
 @singleton()

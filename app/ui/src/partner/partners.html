@@ -1,0 +1,7 @@
+<import from="../heading/heading"></import>
+<import from="partner-overview.ts"></import>
+<import from="partner-edit.ts"></import>
+
+<heading></heading>
+<partner-overview show.bind="!partnerContext.selectedPartner"></partner-overview>
+<partner-edit show.bind="partnerContext.selectedPartner"></partner-edit>

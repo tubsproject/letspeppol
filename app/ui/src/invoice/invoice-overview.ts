@@ -43,7 +43,8 @@ export class InvoiceOverview {
 
     selectItem(item: ListItemV1) {
         this.letsPeppolService.getDocument(item.type, item.direction, item.uuid).then((doc) => {
-            console.log(parseInvoice(doc));
+            const invoice = parseInvoice(doc);
+            this.invoiceContext.selectedInvoice = invoice;
         });
     }
 }

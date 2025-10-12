@@ -33,7 +33,11 @@ export class ProxyService {
     }
 
     async getDocument(docType: string, direction: string, uuid: string) {
-        return await this.letsPeppolApi.httpClient.get(`/v1/${docType}/${direction}/${uuid}`).then(response => response.json());
+        let type = 'invoices';
+        if (docType === 'Credit-note') {
+            type = 'credit-notes';
+        }
+        return await this.letsPeppolApi.httpClient.get(`/v1/${type}/${direction}/${uuid}`).then(response => response.text());
     }
 
 }
