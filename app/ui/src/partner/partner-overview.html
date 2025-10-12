@@ -43,7 +43,7 @@
                                         <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                         <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
                                     </svg>
-                                    <input type="search" placeholder="Search partner" />
+                                    <input type="search" placeholder="Search partner" value.bind="searchQuery"/>
                                 </label>
                             </div>
                             <button class="btn primary" click.trigger="partnerContext.newPartner()">
@@ -71,7 +71,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr repeat.for="item of partnerContext.filteredPartners" click.trigger="selectItem(item)">
+                                <tr repeat.for="item of partnerContext.filteredPartners.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))" click.trigger="selectItem(item)">
                                     <td>
                                         <span if.bind="item.customer" class="pill sent">C</span>
                                         <span if.bind="item.supplier" class="pill incoming">S</span>

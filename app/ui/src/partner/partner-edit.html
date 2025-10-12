@@ -7,7 +7,7 @@
                 </div>
                 <div class="editor-header-actions">
                     <button type="button" class="btn" click.trigger="partnerContext.clearSelectedPartner()">Discard</button>
-                    <button type="button" class="btn primary" click.trigger="savePartner()">Save partner</button>
+                    <button type="button" class="btn primary" click.trigger="savePartner()" disabled.bind="!partnerContext.selectedPartner.name">Save partner</button>
                 </div>
             </div>
         </div>

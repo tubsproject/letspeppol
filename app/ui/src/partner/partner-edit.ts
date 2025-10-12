@@ -11,7 +11,6 @@ export class PartnerEdit {
 
     async savePartner() {
         try {
-            this.ea.publish('showOverlay', "Saving...");
             let successMessage = "Partner updated successfully";
             if (this.partnerContext.selectedPartner.id) {
                 await this.partnerService.updatePartner(this.partnerContext.selectedPartner.id, this.partnerContext.selectedPartner);
@@ -25,8 +24,6 @@ export class PartnerEdit {
         } catch(e) {
             console.error(e);
             this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to update account"});
-        } finally {
-            this.ea.publish('hideOverlay');
         }
     }
 

@@ -8,6 +8,7 @@ export class PartnerOverview {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
     private partnerContext = resolve(PartnerContext);
     private partnerService = resolve(PartnerService);
+    searchQuery = '';
     category = 'all'
 
     attached() {

@@ -40,7 +40,6 @@ export class PartnerContext {
 
     addPartner(partner) {
         this.partners.unshift(partner);
-        this.filteredPartners.unshift(partner);
     }
 
     deletePartner(partner) {
