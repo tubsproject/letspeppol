@@ -141,6 +141,7 @@ export class InvoiceEdit {
 
     async validate() {
         const xml = this.buildXml();
-        await this.invoiceService.validate(xml);
+        const response = await this.invoiceService.validate(xml);
+        console.log(response);
     }
 }
