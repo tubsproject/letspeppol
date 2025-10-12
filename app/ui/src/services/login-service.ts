@@ -2,7 +2,7 @@ import {resolve} from "@aurelia/kernel";
 import {singleton} from "aurelia";
 import {ProxyApi} from "./api/proxy-api";
 import {KYCApi} from "./api/kyc-api";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 import {AppApi} from "./api/app-api";
 
 @singleton()
@@ -23,12 +23,20 @@ export class LoginService {
         }
     }
 
-    isExpired(token: string): boolean {
+    getTokenExpiryDateInSeconds(token: string): number {
         const decoded = jwt.decode(token) as JwtPayload | null;
-        if (!decoded || !decoded.exp) return true;
+        if (!decoded || !decoded.exp) {
+            return 0;
+        }
+        return decoded.exp;
+    }
 
-        const now = Math.floor(Date.now() / 1000);
-        return decoded.exp < now;
+    isExpired(token: string): boolean {
+        return this.getTokenExpiryDateInSeconds(token) < this.getCurrentDateInSeconds();
+    }
+
+    getCurrentDateInSeconds() {
+        return Math.floor(Date.now() / 1000);
     }
 
     async auth(username: string, password: string) : Promise<void> {

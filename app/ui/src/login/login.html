@@ -10,7 +10,7 @@
             <div class="section-header">
                 <h1 t="login.title">Log in</h1>
             </div>
-            <form class="auth-form" submit.trigger="check()">
+            <form class="auth-form" submit.trigger="verifyLogin()">
                 <div class="grid">
                     <label class="field full">
                         <span t="label.email">Emailasdf</span>
@@ -19,6 +19,10 @@
                     <label class="field full">
                         <span>Password</span>
                         <input name="email" type="password" required value.bind="password" />
+                    </label>
+                    <label class="field full checkbox">
+                        <input type="checkbox" checked.bind="rememberMe" />
+                        <span>Remember me</span>
                     </label>
                 </div>
                 <p if.bind="error" class="form-error" aria-live="assertive" t="error.login-failed">Login failed</p>

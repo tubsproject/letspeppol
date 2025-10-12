@@ -10,6 +10,8 @@ import {PartnerDto} from "../services/partner-service";
 export class InvoiceComposer {
     private companyService = resolve(CompanyService);
     private customer: PartnerDto = {
+        customer: true,
+        supplier: false,
         companyNumber: "0705969661",
         name: "Ponder Source",
         registeredOffice: {
