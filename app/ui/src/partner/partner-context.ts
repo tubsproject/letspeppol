@@ -1,11 +1,11 @@
 import {bindable, singleton} from "aurelia";
-import {PartnerResponse} from "../services/partner-service";
+import {PartnerDto} from "../services/partner-service";
 
 @singleton
 export class PartnerContext {
-    @bindable selectedPartner: PartnerResponse | undefined = undefined;
-    partners: PartnerResponse[] = [];
-    filteredPartners: PartnerResponse[] = [];
+    @bindable selectedPartner: PartnerDto | undefined = undefined;
+    partners: PartnerDto[] = [];
+    filteredPartners: PartnerDto[] = [];
 
     newPartner() {
         this.selectedPartner = {
@@ -27,15 +27,15 @@ export class PartnerContext {
         this.selectedPartner = undefined;
     }
 
-    replacePartner(currentPartner: PartnerResponse, newPartner: PartnerResponse) {
+    replacePartner(currentPartner: PartnerDto, newPartner: PartnerDto) {
         let index = this.partners.findIndex(item => item === currentPartner);
         if (index > -1) {
             this.partners.splice(index, 1, newPartner);
         }
-        index = this.filteredPartners.findIndex(item => item === currentPartner);
-        if (index > -1) {
-            this.filteredPartners.splice(index, 1, newPartner);
-        }
+        // index = this.filteredPartners.findIndex(item => item === currentPartner);
+        // if (index > -1) {
+        //     this.filteredPartners.splice(index, 1, newPartner);
+        // }
     }
 
     addPartner(partner) {

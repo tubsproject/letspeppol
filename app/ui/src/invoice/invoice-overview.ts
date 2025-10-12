@@ -2,20 +2,26 @@ import {resolve} from "@aurelia/kernel";
 import {ListItemV1, ProxyService} from "../services/proxy-service";
 import {InvoiceContext} from "./invoice-context";
 import {parseInvoice} from "../peppol/ubl-parser";
+import {InvoiceDraftDto, InvoiceService} from "../services/invoice-service";
+import {AlertType} from "../alert/alert";
+import {IEventAggregator} from "aurelia";
 
 
 export class InvoiceOverview {
+    readonly ea: IEventAggregator = resolve(IEventAggregator);
     private letsPeppolService = resolve(ProxyService);
+    private invoiceService = resolve(InvoiceService);
     private invoiceContext = resolve(InvoiceContext);
     all: ListItemV1[] = [];
     incoming: ListItemV1[] = [];
     outgoing: ListItemV1[] = [];
-    activeItems: ListItemV1[] = [];
+    activeItems: ListItemV1[] | InvoiceDraftDto[] = [];
     box = 'all'
     page = 1;
 
     attached() {
         this.loadInvoices();
+        this.loadDrafts();
         this.invoiceContext.initCompany();
     }
 
@@ -25,7 +31,11 @@ export class InvoiceOverview {
         Promise.all([ip, op]).then(([incoming, outgoing]) => {
             this.all = [...incoming, ...outgoing].sort((a, b) => Date.parse(b.requestSentAt) - Date.parse(a.requestSentAt));
             this.setActiveItems('all');
-        });
+        }).catch(() => this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to get invoices"}));
+    }
+
+    async loadDrafts() {
+        this.invoiceContext.drafts = await this.invoiceService.getInvoiceDrafts();
     }
 
     setActiveItems(box) {
@@ -40,14 +50,24 @@ export class InvoiceOverview {
             case 'incoming':
                 this.activeItems = this.incoming;
                 break;
+            case 'drafts':
+                this.activeItems = this.invoiceContext.drafts;
+                break;
         }
     }
 
-    selectItem(item: ListItemV1) {
-        this.letsPeppolService.getDocument(item.type, item.direction, item.uuid).then((doc) => {
-            const invoice = parseInvoice(doc);
-            this.invoiceContext.selectedInvoice = invoice;
-        });
+    selectItem(item: ListItemV1 | InvoiceDraftDto) {
+        this.invoiceContext.selectedDraft = undefined;
+        if (this.box === 'drafts') {
+            const doc = item as InvoiceDraftDto;
+            this.invoiceContext.selectedInvoice = parseInvoice(doc.xml);
+            this.invoiceContext.selectedDraft = doc;
+        } else {
+            const doc = item as ListItemV1;
+            this.letsPeppolService.getDocument(doc.type, doc.direction, doc.uuid).then((response) => {
+                this.invoiceContext.selectedInvoice = parseInvoice(response);
+            });
+        }
     }
 
     nextPage() {
@@ -65,4 +85,18 @@ export class InvoiceOverview {
         this.page--;
         this.loadInvoices();
     }
+
+    async deleteDraft(event: Event, draft: InvoiceDraftDto) {
+        event.stopPropagation();
+        try {
+            await this.invoiceService.deleteInvoiceDraft(draft.id)
+            this.invoiceContext.deleteDraft(draft);
+            this.ea.publish('alert', {alertType: AlertType.Success, text: "Draft deleted"});
+        } catch (e) {
+            console.log(e);
+            this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to delete draft"});
+        }
+        return false;
+    }
+
 }

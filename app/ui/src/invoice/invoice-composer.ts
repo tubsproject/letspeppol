@@ -4,12 +4,12 @@ import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
 import {CompanyService} from "../services/company-service";
 import {omit} from 'lodash';
-import {PartnerResponse} from "../services/partner-service";
+import {PartnerDto} from "../services/partner-service";
 
 @singleton()
 export class InvoiceComposer {
     private companyService = resolve(CompanyService);
-    private customer: PartnerResponse = {
+    private customer: PartnerDto = {
         companyNumber: "0705969661",
         name: "Ponder Source",
         registeredOffice: {

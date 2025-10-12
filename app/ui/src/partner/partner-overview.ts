@@ -1,5 +1,5 @@
 import {resolve} from "@aurelia/kernel";
-import {PartnerResponse, PartnerService} from "../services/partner-service";
+import {PartnerDto, PartnerService} from "../services/partner-service";
 import {PartnerContext} from "./partner-context";
 import {IEventAggregator, watch} from "aurelia";
 import {AlertType} from "../alert/alert";
@@ -40,11 +40,11 @@ export class PartnerOverview {
         }
     }
 
-    selectItem(partner: PartnerResponse) {
+    selectItem(partner: PartnerDto) {
         this.partnerContext.selectedPartner = partner;
     }
 
-    async deleteItem(event: Event, partner: PartnerResponse) {
+    async deleteItem(event: Event, partner: PartnerDto) {
         event.stopPropagation();
         try {
             await this.partnerService.deletePartner(partner.id)

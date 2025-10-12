@@ -5,6 +5,7 @@ import {resolve} from "@aurelia/kernel";
 import {InvoiceComposer} from "./invoice-composer";
 import {InvoiceCalculator} from "./invoice-calculator";
 import {AlertType} from "../alert/alert";
+import {InvoiceDraftDto} from "../services/invoice-service";
 
 export enum DocumentType {
     Invoice = "Invoice",
@@ -22,9 +23,10 @@ export class InvoiceContext {
     private readonly companyService = resolve(CompanyService);
     private readonly invoiceComposer = resolve(InvoiceComposer);
     private readonly invoiceCalculator = resolve(InvoiceCalculator);
-    invoices : undefined | Invoice[] | CreditNote[];
     lines : undefined | InvoiceLine[] | CreditNoteLine[];
+    drafts: InvoiceDraftDto[] = [];
     @observable selectedInvoice:  undefined | Invoice | CreditNote;
+    selectedDraft: InvoiceDraftDto;
 
     clearSelectedInvoice() {
         this.selectedInvoice = undefined;
@@ -76,4 +78,17 @@ export class InvoiceContext {
         { value: 10, __name: "In Cash"},
         { value: 30, __name: "Credit Transfer"}
     ];
+
+    // Drafts
+
+    addDraft(draft) {
+        this.drafts.unshift(draft);
+    }
+
+    deleteDraft(draft) {
+        const index = this.drafts.findIndex(item => item === draft);
+        if (index > -1) {
+            this.drafts.splice(index, 1);
+        }
+    }
 }

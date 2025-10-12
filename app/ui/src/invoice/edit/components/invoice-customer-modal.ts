@@ -1,6 +1,6 @@
 import {bindable} from "aurelia";
 import {Party} from "../../../peppol/ubl";
-import {PartnerResponse} from "../../../services/partner-service";
+import {PartnerDto} from "../../../services/partner-service";
 
 export class InvoiceCustomerModal {
     @bindable invoiceContext;
@@ -33,11 +33,11 @@ export class InvoiceCustomerModal {
         this.customerSearch.resetSearch();
     }
 
-    selectCustomer(c: PartnerResponse) {
+    selectCustomer(c: PartnerDto) {
         this.customer = this.toParty(c);
     }
 
-    private toParty(c: PartnerResponse): Party {
+    private toParty(c: PartnerDto): Party {
         const companyNumber = c.companyNumber || '';
         return {
             EndpointID: { value: companyNumber },

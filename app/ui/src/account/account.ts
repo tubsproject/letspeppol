@@ -1,4 +1,4 @@
-import {CompanyResponse, CompanyService} from "../services/company-service";
+import {CompanyDto, CompanyService} from "../services/company-service";
 import {resolve} from "@aurelia/kernel";
 import {AlertType} from "../alert/alert";
 import {IEventAggregator} from "aurelia";
@@ -6,7 +6,7 @@ import {IEventAggregator} from "aurelia";
 export class Account {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
     private readonly companyService = resolve(CompanyService);
-    private company: CompanyResponse;
+    private company: CompanyDto;
 
     attached() {
         this.getCompany().catch(() => {

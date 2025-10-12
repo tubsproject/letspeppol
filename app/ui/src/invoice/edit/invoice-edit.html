@@ -10,6 +10,8 @@
                     <h1 style="margin:0" >New invoice</h1>
                 </div>
                 <div class="editor-header-actions">
+                    <button type="button" class="btn" click.trigger="vali">Validate</button>
+                    <button type="button" class="btn" click.trigger="saveAsDraft()">${invoiceContext.selectedDraft ? 'Update draft' : 'Save draft'}</button>
                     <button type="button" class="btn" click.trigger="invoiceContext.clearSelectedInvoice()">Discard</button>
                     <button type="button" class="btn primary" click.trigger="sendInvoice()">Send invoice</button>
                 </div>

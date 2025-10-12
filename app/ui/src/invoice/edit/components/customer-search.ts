@@ -1,12 +1,12 @@
-import {PartnerResponse, PartnerService} from "../../../services/partner-service";
+import {PartnerDto, PartnerService} from "../../../services/partner-service";
 import {resolve} from "@aurelia/kernel";
 import {bindable} from "aurelia";
 
 export class CustomerSearch {
     private partnerService = resolve(PartnerService);
     searchQuery = '';
-    customers: PartnerResponse[];
-    filteredCustomers: PartnerResponse[] = [];
+    customers: PartnerDto[];
+    filteredCustomers: PartnerDto[] = [];
     showSuggestions = false;
     highlightedIndex = -1;
     @bindable selectCustomerFunction;
@@ -17,7 +17,7 @@ export class CustomerSearch {
 
     async getPartners() {
         await this.partnerService.getPartners().then(response => {
-            this.customers = response.filter((partner: PartnerResponse) => partner.customer);
+            this.customers = response.filter((partner: PartnerDto) => partner.customer);
         });
     }
 
@@ -61,7 +61,7 @@ export class CustomerSearch {
         }, 120);
     }
 
-    selectCustomer(c: PartnerResponse) {
+    selectCustomer(c: PartnerDto) {
         if (this.selectCustomerFunction) {
             this.selectCustomerFunction(c);
         }

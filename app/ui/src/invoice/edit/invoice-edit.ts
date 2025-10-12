@@ -2,13 +2,7 @@ import {resolve} from "@aurelia/kernel";
 import {ProxyService} from "../../services/proxy-service";
 import {DocumentType, InvoiceContext} from "../invoice-context";
 import {bindable, IEventAggregator, observable} from "aurelia";
-import {
-    getAmount,
-    CreditNote,
-    Invoice,
-    PaymentMeansCode,
-    UBLLine, ClassifiedTaxCategory
-} from "../../peppol/ubl";
+import {ClassifiedTaxCategory, CreditNote, getAmount, Invoice, PaymentMeansCode, UBLLine} from "../../peppol/ubl";
 import {AlertType} from "../../alert/alert";
 import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/ubl-parser";
 import {InvoicePaymentModal} from "./components/invoice-payment-modal";
@@ -16,7 +10,7 @@ import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
 import {InvoiceCalculator, roundTwoDecimals} from "../invoice-calculator";
 import {InvoiceComposer} from "../invoice-composer";
 import {downloadInvoicePdf} from "../pdf/invoice-pdf";
-import {InvoiceService} from "../../services/invoice-service";
+import {InvoiceDraftDto, InvoiceService} from "../../services/invoice-service";
 
 export class InvoiceEdit {
     readonly ea: IEventAggregator = resolve(IEventAggregator);
@@ -85,7 +79,6 @@ export class InvoiceEdit {
             console.log(JSON.stringify(this.invoiceContext.selectedInvoice));
             let xml = this.buildXml();
             await this.proxyService.sendDocument(xml);
-            // await this.invoiceService.validate(xml);
             console.log(xml);
             console.log(parseInvoice(xml));
         } catch(e) {
@@ -115,5 +108,39 @@ export class InvoiceEdit {
 
     showCustomerModal() {
         this.invoiceCustomerModal.showModal();
+    }
+
+    async saveAsDraft() {
+        try {
+            const draft = this.convertInvoiceToDraft();
+            if (this.invoiceContext.selectedDraft) {
+                await this.invoiceService.updateInvoiceDraft(draft.id, draft);
+            } else {
+                const invoiceDraftDto = await this.invoiceService.createInvoiceDraft(draft);
+                this.invoiceContext.drafts.unshift(invoiceDraftDto);
+            }
+            this.invoiceContext.selectedInvoice = undefined;
+            this.invoiceContext.selectedDraft = undefined;
+        } catch(e) {
+            console.error(e);
+            this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to save invoice as draft"});
+        }
+    }
+
+    convertInvoiceToDraft() {
+        const xml = this.buildXml();
+        return {
+            id: this.invoiceContext.selectedDraft?.id,
+            type: this.selectedDocumentType,
+            number: this.invoiceContext.selectedInvoice.ID,
+            customer: this.invoiceContext.selectedInvoice.AccountingCustomerParty.Party?.PartyName.Name,
+            date: this.invoiceContext.selectedInvoice.IssueDate,
+            xml: xml
+        } as InvoiceDraftDto;
+    }
+
+    async validate() {
+        const xml = this.buildXml();
+        await this.invoiceService.validate(xml);
     }
 }
