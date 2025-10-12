@@ -12,16 +12,18 @@ export class InvoiceOverview {
     outgoing: ListItemV1[] = [];
     activeItems: ListItemV1[] = [];
     box = 'all'
+    page = 1;
 
     attached() {
         this.loadInvoices();
+        this.invoiceContext.initCompany();
     }
 
     loadInvoices() {
-        const ip = this.letsPeppolService.getIncomingInvoices().then(items => this.incoming = items);
-        const op = this.letsPeppolService.getOutgoingInvoices().then(items => this.outgoing = items);
+        const ip = this.letsPeppolService.getIncomingInvoices(this.page).then(items => this.incoming = items);
+        const op = this.letsPeppolService.getOutgoingInvoices(this.page).then(items => this.outgoing = items);
         Promise.all([ip, op]).then(([incoming, outgoing]) => {
-            this.all = [...incoming, ...outgoing];
+            this.all = [...incoming, ...outgoing].sort((a, b) => Date.parse(b.requestSentAt) - Date.parse(a.requestSentAt));
             this.setActiveItems('all');
         });
     }
@@ -46,5 +48,21 @@ export class InvoiceOverview {
             const invoice = parseInvoice(doc);
             this.invoiceContext.selectedInvoice = invoice;
         });
+    }
+
+    nextPage() {
+        if (this.page > 1 && this.all.length === 0) {
+            return;
+        }
+        this.page++;
+        this.loadInvoices();
+    }
+
+    previousPage() {
+        if (this.page === 1) {
+            return;
+        }
+        this.page--;
+        this.loadInvoices();
     }
 }

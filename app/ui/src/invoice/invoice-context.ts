@@ -45,7 +45,6 @@ export class InvoiceContext {
     }
 
     async newUBLDocument(documentType : DocumentType = DocumentType.Invoice) {
-        // await this.initCompany();
         if (documentType === DocumentType.Invoice) {
             this.selectedInvoice = this.invoiceComposer.createInvoice();
         } else {

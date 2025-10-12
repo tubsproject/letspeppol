@@ -20,12 +20,12 @@ export type ListItemV1 = {
 export class ProxyService {
     private letsPeppolApi = resolve(ProxyApi);
 
-    async getIncomingInvoices() : Promise<ListItemV1[]> {
-        return await this.letsPeppolApi.httpClient.get('/v1/invoices/incoming').then(response => response.json());
+    async getIncomingInvoices(page: number) : Promise<ListItemV1[]> {
+        return await this.letsPeppolApi.httpClient.get(`/v1/invoices/incoming?page=${page}&itemsPerPage=10`).then(response => response.json());
     }
 
-    async getOutgoingInvoices(): Promise<ListItemV1[]> {
-        return await this.letsPeppolApi.httpClient.get('/v1/invoices/outgoing').then(response => response.json());
+    async getOutgoingInvoices(page: number): Promise<ListItemV1[]> {
+        return await this.letsPeppolApi.httpClient.get(`/v1/invoices/outgoing?page=${page}&itemsPerPage=10`).then(response => response.json());
     }
 
     async sendDocument(xml: string) {
