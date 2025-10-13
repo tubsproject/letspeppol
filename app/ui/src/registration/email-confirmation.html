@@ -34,7 +34,7 @@
                         <div class="directors-layout">
                             <div class="directors-table-col">
                                 <template if.bind="tokenVerificationResponse.company.directors.length">
-                                    <div class="table-wrapper">
+                                    <div class="table-wrapper" style="max-height: 230px">
                                         <table class="data-table directors-table">
                                             <thead>
                                             <tr>
@@ -114,7 +114,7 @@
                                         </div>
                                         <div class="check-mark"></div>
                                     </div>
-                                    <div class="card-reader vertical" aria-label="Smart card reader">
+                                    <div class="card-reader vertical">
                                         <div class="reader-slot"></div>
                                         <span class="reader-label">READER</span>
                                         <div class="status-led"></div>

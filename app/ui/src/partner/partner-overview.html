@@ -1,0 +1,113 @@
+<import from="../value-converters/date-format.ts"></import>
+
+<main class="container">
+    <section class="section active">
+        <div class="invoices-layout">
+            <aside class="mailbox">
+                <div class="mailbox-title">Partners</div>
+                <nav>
+                    <button active.class="category === 'all'" class="mail-item" click.trigger="filterItems('all')">
+                        <span class="label">All</span>
+                        <span class="badge">0</span>
+                    </button>
+                    <button active.class="category === 'customers'" class="mail-item" click.trigger="filterItems('customers')">
+                        <span class="label">Customers</span>
+                        <span class="badge">0</span>
+                    </button>
+                    <button active.class="category === 'suppliers'" class="mail-item" click.trigger="filterItems('suppliers')">
+                        <span class="label">Suppliers</span>
+                        <span class="badge">0</span>
+                    </button>
+                </nav>
+            </aside>
+            <div class="invoices-main">
+                <div class="section-header" hidden>
+                    <div style="display:flex;align-items:center;gap:.5rem">
+                        <h1 style="margin:0" >New partner</h1>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-header">
+                        <h1>
+                            <template switch.bind="category">
+                                <span case.bind="'all'">Customers & Suppliers</span>
+                                <span case.bind="'customers'">Customers</span>
+                                <span case.bind="'suppliers'">Suppliers</span>
+                            </template>
+                        </h1>
+                        <div class="actions">
+                            <div class="filters">
+                                <label class="search">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
+                                    </svg>
+                                    <input type="search" placeholder="Search partner" value.bind="searchQuery"/>
+                                </label>
+                            </div>
+                            <button class="btn primary" click.trigger="partnerContext.newPartner()">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                                New Partner
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card table-card">
+                        <div class="table-wrapper">
+                            <table class="data-table" aria-describedby="invoices-title">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Postal code</th>
+                                    <th>City</th>
+                                    <th>Country</th>
+                                    <th>VAT</th>
+                                    <th class="actions-col">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr repeat.for="item of partnerContext.filteredPartners.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))" click.trigger="selectItem(item)">
+                                    <td>
+                                        <span if.bind="item.customer" class="pill sent">C</span>
+                                        <span if.bind="item.supplier" class="pill incoming">S</span>
+                                    </td>
+                                    <td>${item.name}</td>
+                                    <td>${item.registeredOffice.street} ${item.registeredOffice.houseNumber}</td>
+                                    <td>${item.registeredOffice.postalCode}</td>
+                                    <td>${item.registeredOffice.city}</td>
+                                    <td>BE</td>
+                                    <td>${item.companyNumber}</td>
+                                    <td class="actions-col">
+                                        <button class="icon-btn" data-action="remove-line" title="Remove" click.trigger="deleteItem($event, item)">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div if.bind="!partnerContext.filteredPartners || partnerContext.filteredPartners.length === 0" class="empty-state" >
+                            <div class="empty-icon" aria-hidden="true">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                    <path d="M14 3v5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <p>No partners match your filters.</p>
+                        </div>
+                        <div class="table-footer pager" hidden>
+                            <button type="button" class="btn ghost">← Previous</button>
+                            <span class="pager-range"></span>
+                            <button type="button" class="btn ghost">Next →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -13,6 +13,8 @@
     "continue" : "Continue"
   },
   "error" : {
-    "login-failed" : "Login failed"
+    "login-failed" : "Login failed",
+    "registration-company-not-found" : "Company not found",
+    "registration-company-already-registered" : "Company already registered"
   }
 }

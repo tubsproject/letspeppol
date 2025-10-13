@@ -52,7 +52,7 @@ export async function startServer(env: ServerOptions): Promise<number> {
   const users = {
     '9944:nl862637223B02': 'peppyrus',
     '0208:1023290711': 'acube',
-    '0208:0705969661': 'scrada',
+    '0208:0705969661': 'acube',
     '0208:0541911284': 'scrada',
     '0208:0433221497': 'scrada',
     // '0208:0798640887': 'ion',

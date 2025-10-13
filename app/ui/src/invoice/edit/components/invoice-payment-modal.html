@@ -1,0 +1,34 @@
+<div class="modal" role="dialog" aria-modal="true" show.bind="open">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" role="document">
+        <header class="modal-header">
+            <h2>Payment</h2>
+            <button class="icon-btn" click.trigger="closeModal()">×</button>
+        </header>
+        <div class="modal-body">
+            <div style="display: inline-grid; gap: var(--space-1)">
+                <label class="field">
+                    <span>Type</span>
+                    <select name="paymentMeanCode" value.bind="selectedPaymentMeansCode" change.trigger="paymentMeansCodeChanged()" required>
+                        <option value="">None</option>
+                        <option repeat.for="paymentMeanCode of invoiceContext.paymentMeansCodes" model.bind="paymentMeanCode.value">${paymentMeanCode.__name}</option>
+                    </select>
+                </label>
+                <template if.bind="paymentMeans.PaymentMeansCode.value === 30">
+                    <label class="field">
+                        <span>Name</span>
+                        <input type="text" name="payeeFinancialAccountName" placeholder="Acccount name" value.bind="paymentMeans.PayeeFinancialAccount.Name" />
+                    </label>
+                    <label class="field">
+                        <span>IBAN</span>
+                        <input type="text" name="payeeFinancialAccountID" placeholder="IBAN" value.bind="paymentMeans.PayeeFinancialAccount.ID" />
+                    </label>
+                </template>
+            </div>
+        </div>
+        <footer class="modal-footer">
+            <button type="button" class="btn" click.trigger="closeModal()">Cancel</button>
+            <button type="button" class="btn primary" click.trigger="savePaymentMeans()">Confirm</button>
+        </footer>
+    </div>
+</div>

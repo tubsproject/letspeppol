@@ -2,6 +2,7 @@
 :root {
     /* Semantic colors */
     --bg: #f6f7fb;
+    --bg-input: #f9fafb;
     --panel: #fff;
     --muted: #6b7280;
     --text: #1f2937;
@@ -9,7 +10,8 @@
     --primary: #2563eb;
     --primary-strong: #1d4ed8;
     --accent: #14b8a6;
-    --border-soft: #e5e7eb;
+    --border-soft: #e5e7ebdd;
+    --border-softer: #e5e7eb44;
     --backdrop: #ffffffab;
     --border-input: #ccc;
 
@@ -363,7 +365,8 @@ main.container .data-table tbody td { color: var(--text); }
 .line-items-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-025) var(--space-025) 0; }
 .line-items-head h3 { margin: 0; font-size: 1rem; color: var(--muted); }
 .line-table thead th { position: sticky; top: 0; }
-.line-table input, .line-table textarea { width: 100%; border: 1px solid var(--border-soft); background: var(--bg); color: var(--text); border-radius: var(--radius-input); padding: var(--space-045) var(--space-05); font: inherit; }
+.line-table input, .line-table textarea { width: 100%; border: 1px solid var(--border-soft); background: var(--bg-input); color: var(--text); border-radius: var(--radius-input); padding: var(--space-045) var(--space-05); font: inherit; }
+.line-table select { border: 1px solid var(--border-soft); background: var(--bg-input); color: var(--text); border-radius: var(--radius-input); padding: var(--space-045) var(--space-05); font: inherit; }
 .line-table textarea { min-height: 40px; resize: vertical; }
 .line-table .pos { width: var(--pos-col-w); text-align: center; }
 .line-table .num input { text-align: right; }
@@ -371,6 +374,9 @@ main.container .data-table tbody td { color: var(--text); }
 /* Footer removed; actions now in top-right */
 
 .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-09); }
+.grid-col-73 {
+    grid-template-columns: 7fr 3fr;
+}
 .field { display: grid; gap: var(--space-035); }
 .field.full { grid-column: 1 / -1; }
 .field span { color: var(--muted); font-size: .85rem; }
@@ -379,18 +385,37 @@ main.container .data-table tbody td { color: var(--text); }
     min-width: 0;
     border: 1px solid var(--border-input);
     border-radius: var(--radius-input);
-    background: var(--bg);
+    background: var(--bg-input);
     box-shadow: rgb(31 41 55 / 6%) 0 1px 1px 0;
     color: var(--text);
     padding: var(--space-05) var(--space-065);
 }
 
+.field.checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-05); /* space between checkbox and label text */
+}
+
+.field.checkbox input {
+    width: 1rem;
+    height: 1rem;
+    /*accent-color: var(--accent, dodgerblue); !* checkbox color *!*/
+    cursor: pointer;
+}
+
+.field.checkbox span {
+    font-size: .9rem;
+    color: var(--text);
+    cursor: pointer;
+}
+
 .field input::placeholder {
     opacity: 0.6;
 }
-.field textarea { border: 1px solid var(--border-soft); background: var(--bg); color: var(--text); border-radius: .6rem; padding: var(--space-06) var(--space-07); min-height: 72px; resize: vertical; }
+.field textarea { border: 1px solid var(--border-soft); background: var(--bg-input); color: var(--text); border-radius: .6rem; padding: var(--space-06) var(--space-07); min-height: 72px; resize: vertical; }
 .field input:focus, .field select:focus { outline: 2px solid color-mix(in hsl, var(--primary) 40%, var(--border-soft)); outline-offset: 1px; }
-.field input:disabled, .field textarea:disabled, .field input:read-only, .field textarea:read-only { border: 1px solid var(--border-soft) }
+.field input:disabled, .field textarea:disabled, .field input:read-only, .field textarea:read-only { border: 1px solid var(--border-softer); background: var(--bg); }
 
 /* Auth */
 .auth-card { max-width: 640px; margin: 0 auto; }
@@ -402,15 +427,15 @@ main.container .data-table tbody td { color: var(--text); }
 
 /* Inline form error message */
 .form-error {
+    justify-content: start;
     margin: 0;
     font-size: .85rem;
-    font-weight: 600;
     line-height: 1.3;
     color: var(--status-overdue);
     padding: var(--space-05) var(--space-075);
     border-radius: var(--radius-input);
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: .4rem;
     animation: fade-in .5s ease;
     background: #fdeff1;
@@ -418,7 +443,7 @@ main.container .data-table tbody td { color: var(--text); }
 }
 
 .form-error::before {
-    content: "⚠";
+    content: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-triangle-alert-icon lucide-triangle-alert'><path d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg>");
     font-size: .95rem;
     line-height: 1;
 }

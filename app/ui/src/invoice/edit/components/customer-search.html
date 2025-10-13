@@ -1,0 +1,26 @@
+<label class="field" style="position: relative;">
+    <span>Name or VAT Number</span>
+    <input id="customerSearch"
+           type="text"
+           name="customerSearch"
+           placeholder="Search by name or VAT number"
+           value.bind="searchQuery"
+           input.trigger="onSearchInput()"
+           keydown.trigger="onSearchKeydown($event)"
+           blur.trigger="onSearchBlur()"
+           autocomplete="off"
+    />
+    <ul class="autocomplete-list" role="listbox" if.bind="showSuggestions">
+        <li repeat.for="c of filteredCustomers"
+            role="option"
+            class="autocomplete-item"
+            class.bind="$index === highlightedIndex ? 'active' : ''"
+            click.trigger="selectCustomer(c)"
+            mousedown.trigger="$event.preventDefault()">
+                <div class="title">${c.name}</div>
+                <div class="meta">VAT: ${c.companyNumber}</div>
+                <div class="addr" if.bind="c.registeredOffice">${c.registeredOffice.street} ${c.registeredOffice.houseNumber}, ${c.registeredOffice.postalCode} ${c.registeredOffice.city}</div>
+        </li>
+        <li class="autocomplete-empty" if.bind="filteredCustomers.length === 0">No matches</li>
+    </ul>
+</label>

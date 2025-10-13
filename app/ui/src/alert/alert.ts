@@ -1,4 +1,4 @@
-import {EventAggregator, IDisposable, IEventAggregator} from "aurelia";
+import {IDisposable, IEventAggregator} from "aurelia";
 import {resolve} from "@aurelia/kernel";
 
 export enum AlertType {
@@ -41,7 +41,7 @@ export class Alert {
         void element.offsetWidth;
         element.classList.add('alert--animation');
         this.showElement = true;
-        this.timeout = window.setTimeout(() => this.showElement = false, 3000);
+        // this.timeout = window.setTimeout(() => this.showElement = false, 3000);
     }
 
 

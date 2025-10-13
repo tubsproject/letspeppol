@@ -22,8 +22,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(KycException.class)
-    public ResponseEntity<SimpleMessage> handleKycException(KycException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleMessage(ex.getMessage()));
+    public ResponseEntity<Map<String, Object>> handleKycException(KycException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("errorCode", ex.getCode());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -44,4 +46,3 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleMessage("Unexpected error"));
     }
 }
-

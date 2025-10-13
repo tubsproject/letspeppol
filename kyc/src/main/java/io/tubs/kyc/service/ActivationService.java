@@ -2,7 +2,9 @@ package io.tubs.kyc.service;
 
 import io.tubs.kyc.dto.ConfirmCompanyRequest;
 import io.tubs.kyc.dto.TokenVerificationResponse;
+import io.tubs.kyc.exception.KycErrorCodes;
 import io.tubs.kyc.exception.KycException;
+import io.tubs.kyc.exception.NotFoundException;
 import io.tubs.kyc.model.EmailVerification;
 import io.tubs.kyc.repository.EmailVerificationRepository;
 import io.tubs.kyc.service.mail.ActivationEmailTemplateProvider;
@@ -25,6 +27,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ActivationService {
+
     private final EmailVerificationRepository verificationRepository;
     private final JavaMailSender mailSender;
     private final CompanyService companyService;
@@ -41,8 +44,8 @@ public class ActivationService {
     @Transactional
     public void requestActivation(ConfirmCompanyRequest request) {
         if (isVerified(request.companyNumber())) {
-            log.warn("User with email {} tried to register for company {}", request.email(), request.companyNumber());
-            throw new KycException("Company already registered");
+            log.warn("User with email {} tried to register for company {} but company was already registered", request.email(), request.companyNumber());
+            throw new KycException(KycErrorCodes.COMPANY_ALREADY_REGISTERED);
         }
         String token = generateToken();
         EmailVerification verification = new EmailVerification(
@@ -57,21 +60,24 @@ public class ActivationService {
 
     @Transactional
     public TokenVerificationResponse verify(String token) {
-        EmailVerification verification = verificationRepository.findByToken(token).orElseThrow(() -> new KycException("Token not found"));
+        EmailVerification verification = verificationRepository.findByToken(token)
+            .orElseThrow(() -> new KycException(KycErrorCodes.TOKEN_NOT_FOUND));
         if (verification.isVerified()) {
-            throw new KycException("Token already verified");
+            throw new KycException(KycErrorCodes.TOKEN_ALREADY_VERIFIED);
         }
         if (verification.getExpiresAt().isBefore(Instant.now())) {
-            throw new KycException("Token expired");
+            throw new KycException(KycErrorCodes.TOKEN_EXPIRED);
         }
         return new TokenVerificationResponse(
             verification.getEmail(),
             companyService.getByCompanyNumber(verification.getCompanyNumber())
+                .orElseThrow(() -> new NotFoundException("Company not found"))
         );
     }
 
     public void setVerified(String token) {
-        EmailVerification verification = verificationRepository.findByToken(token).orElseThrow(() -> new KycException("Token not found"));
+        EmailVerification verification = verificationRepository.findByToken(token)
+            .orElseThrow(() -> new KycException(KycErrorCodes.TOKEN_NOT_FOUND));
         verification.setVerified(true);
         verificationRepository.save(verification);
     }
