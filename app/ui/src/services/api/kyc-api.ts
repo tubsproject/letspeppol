@@ -9,14 +9,15 @@ export class KYCApi {
     private readonly router = resolve(Router);
 
     constructor() {
+        const baseUrl = import.meta.env.VITE_KYC_BASE_URL || '/kyc';
         this.httpClient.configure(config => config
-            .withBaseUrl('http://localhost:8081')
+            .withBaseUrl(baseUrl)
             .withDefaults({
                 headers: {'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`}
             })
             .rejectErrorResponses()
             .withInterceptor({
-                responseError: (error: Response, request) => {
+                responseError: (error: Response) => {
                     if (error.status === 401) {
                         this.router.load('login');
                     }
