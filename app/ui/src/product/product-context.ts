@@ -38,7 +38,7 @@ export class ProductContext {
 
     addProductCategory(productCategory: ProductCategoryDto) {
         this.productCategories.push(productCategory);
-        this.productCategoryMap[productCategory.id] = productCategory;
+        this.productCategoryMap.set(productCategory.id, productCategory);
     }
 
     deleteProductCategory(productCategory: ProductCategoryDto) {
