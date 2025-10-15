@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Partner extends GenericEntity{
+public class Partner extends GenericEntity {
 
     private String companyNumber;
     private String name;

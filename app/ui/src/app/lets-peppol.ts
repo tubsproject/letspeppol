@@ -7,6 +7,7 @@ import {EmailConfirmation} from "../registration/email-confirmation";
 import {resolve} from "@aurelia/kernel";
 import {Alert} from "../alert/alert";
 import {Account} from "../account/account";
+import {Products} from "../product/products";
 
 @route({
     routes: [
@@ -15,6 +16,7 @@ import {Account} from "../account/account";
         { path: '/email-confirmation', component: EmailConfirmation,    title: 'Email Confirmation',    data: { allowEveryone: true }},
         { path: '/invoices',           component: Invoices,             title: 'Invoice',               },
         { path: '/partners',           component: Partners,             title: 'Partners',              },
+        { path: '/products',           component: Products,             title: 'Products',              },
         { path: '/account',            component: Account,              title: 'Account',               },
     ],
 })

@@ -1,16 +1,18 @@
 package io.tubs.app.config;
 
-import io.tubs.app.CompanyRepository;
-import io.tubs.app.dto.AddressDto;
-import io.tubs.app.dto.AppRegistrationRequest;
-import io.tubs.app.dto.PartnerDto;
+import io.tubs.app.dto.*;
+import io.tubs.app.repository.CompanyRepository;
 import io.tubs.app.service.CompanyService;
 import io.tubs.app.service.PartnerService;
+import io.tubs.app.service.ProductCategoryService;
+import io.tubs.app.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +22,8 @@ public class DataInitializer implements CommandLineRunner {
     private final CompanyRepository companyRepository;
     private final CompanyService companyService;
     private final PartnerService partnerService;
+    private final ProductService productService;
+    private final ProductCategoryService productCategoryService;
 
     @Override
     @Transactional
@@ -63,6 +67,20 @@ public class DataInitializer implements CommandLineRunner {
                     new AddressDto(null,"Genk", "3600", "Stationsstraat", "22")
             );
             partnerService.createPartner(companyNumber, partner2);
+            ProductCategoryDto productCategory = new ProductCategoryDto(null, "Clothes", "#feeffe", null, null);
+            productCategory = productCategoryService.createCategory(companyNumber, productCategory);
+            ProductDto product = new ProductDto(
+                    null,
+                    "T-shirt",
+                    "AB T-Shirt size L",
+                    "465AZ98894",
+                    null,
+                    new BigDecimal("6.99"),
+                    new BigDecimal("14.99"),
+                    new BigDecimal("21"),
+                    productCategory.id()
+            );
+            productService.createProduct(companyNumber, product);
 
         }
         companyNumber = "1023290711";

@@ -36,7 +36,7 @@
 }
 
 .alert--animation {
-    animation: slide-up 4000ms ease-in-out forwards;
+    animation: slide-up 4000ms ease-out forwards;
 }
 
 .alert__icon {
@@ -151,7 +151,7 @@
         transform: translateY(-150px)
     }
 
-    40% {
+    20% {
         opacity: 1;
         transform: translateY(150px)
     }

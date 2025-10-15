@@ -1,0 +1,26 @@
+<div class="modal" role="dialog" aria-modal="true" show.bind="open">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" role="document">
+        <header class="modal-header">
+            <h2>Product Category</h2>
+            <button class="icon-btn" aria-label="Close dialog" click.trigger="closeModal()">×</button>
+        </header>
+        <div class="modal-body">
+            <div style="display: inline-grid; gap: var(--space-1)">
+                <label class="field">
+                    <span>Name</span>
+                    <input type="text" placeholder="Name" value.bind="category.name" required />
+                </label>
+                <label class="field">
+                    <span>Color</span>
+                    <input style="width: 100px; height: 35px; padding: 0" type="color" value.bind="category.color" />
+                </label>
+            </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn" click.trigger="deleteProductCategory()">Delete</button>
+                <button type="button" class="btn" click.trigger="closeModal()">Cancel</button>
+                <button type="button" class="btn primary" click.trigger="saveProductCategory()">Confirm</button>
+            </footer>
+        </div>
+    </div>
+</div>

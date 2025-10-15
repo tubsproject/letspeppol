@@ -1,11 +1,11 @@
 package io.tubs.app.service;
 
-import io.tubs.app.CompanyRepository;
 import io.tubs.app.dto.PartnerDto;
 import io.tubs.app.exception.NotFoundException;
 import io.tubs.app.mapper.PartnerMapper;
 import io.tubs.app.model.Company;
 import io.tubs.app.model.Partner;
+import io.tubs.app.repository.CompanyRepository;
 import io.tubs.app.repository.PartnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

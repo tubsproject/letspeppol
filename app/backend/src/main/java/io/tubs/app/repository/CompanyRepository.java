@@ -1,4 +1,4 @@
-package io.tubs.app;
+package io.tubs.app.repository;
 
 import io.tubs.app.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;

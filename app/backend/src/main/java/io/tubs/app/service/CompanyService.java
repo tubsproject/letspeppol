@@ -1,11 +1,11 @@
 package io.tubs.app.service;
 
-import io.tubs.app.CompanyRepository;
 import io.tubs.app.dto.AppRegistrationRequest;
 import io.tubs.app.dto.CompanyDto;
 import io.tubs.app.exception.NotFoundException;
 import io.tubs.app.mapper.CompanyMapper;
 import io.tubs.app.model.Company;
+import io.tubs.app.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
