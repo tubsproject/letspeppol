@@ -160,20 +160,16 @@ npx openapi-typescript ./openapi/generated/ion.yaml -o ./src/ion.d.ts
 # FIXME  npx openapi-typescript ./openapi/generated/arratech.yaml -o ./src/arratech.d.ts
 npx openapi-typescript ./openapi/generated/maventa.yaml -o ./src/maventa.d.ts
 npx openapi-typescript ./openapi/generated/recommand.yaml -o ./src/recommand.d.ts
+npx openapi-typescript ./openapi/generated/scrada.yaml -o ./src/scrada.d.ts
+
 pnpm build
 docker compose up -d
-export ACUBE_PEPPOL_AUTH_HEADER_NAME="Authorization"
-export ACUBE_PEPPOL_AUTH_HEADER_VALUE="Bearer ${ACUBE_TOKEN}"
-export PEPPYRUS_PEPPOL_AUTH_HEADER_NAME="X-Api-Key"
-export PEPPYRUS_PEPPOL_AUTH_HEADER_VALUE="$PEPPYRUS_TOKEN_TEST"
-export ION_PEPPOL_AUTH_HEADER_NAME="Authorization"
-export ION_PEPPOL_AUTH_HEADER_VALUE="Token $ION_API_KEY"
-export ARRATECH_PEPPOL_AUTH_HEADER_NAME="Authorization"
-export ARRATECH_PEPPOL_AUTH_HEADER_VALUE="Bearer $_BEARER_TOKEN"
-export MAVENTA_PEPPOL_AUTH_HEADER_NAME="Authorization"
-export MAVENTA_PEPPOL_AUTH_HEADER_VALUE="Basic `echo $RECOMMAND_API_KEY:$RECOMMAND_API_SECRET | base64`"
-export RECOMMAND_PEPPOL_AUTH_HEADER_NAME="Authorization"
-export RECOMMAND_PEPPOL_AUTH_HEADER_VALUE="Bearer $RECOMMAND_API_KEY"
+export ACUBE_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Bearer ${ACUBE_TOKEN}\"}"
+export PEPPYRUS_PEPPOL_AUTH_HEADERS="{\"X-Api-Key\":\"$PEPPYRUS_TOKEN_TEST\"}"
+export ION_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Token $ION_API_KEY\"}"
+export ARRATECH_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Bearer $_BEARER_TOKEN\"}"
+export MAVENTA_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Basic `echo $RECOMMAND_API_KEY:$RECOMMAND_API_SECRET | base64`\"}"
+export RECOMMAND_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Bearer $RECOMMAND_API_KEY\"}"
 pnpm build
 pnpm start
 export PROXY_HOST=http://localhost:3000
