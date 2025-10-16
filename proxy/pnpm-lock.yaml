@@ -30,8 +30,8 @@ importers:
         specifier: ^8.16.3
         version: 8.16.3
       syncables:
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       tslib:
         specifier: ~2.8
         version: 2.8.1
@@ -1741,8 +1741,8 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
-  syncables@0.1.1:
-    resolution: {integrity: sha512-sukc/mzwyy9UkQxbPd1xs08jK6bD5Gpk3fILOtPny7ublnZAYwJm6EpThnNKG/ZrOXfv464eea+8B2wZwj8omQ==}
+  syncables@0.1.2:
+    resolution: {integrity: sha512-ppyly8j94Hkeh0Xqn5xXOaxRLKGczFTsrRRPVTH0rd7BZFJv/yKS0jDHxP+cNILAuIQvqc2M183iofYCWikuXg==}
     engines: {node: '>= 22.11 < 23'}
 
   test-exclude@7.0.1:
@@ -3613,7 +3613,7 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  syncables@0.1.1:
+  syncables@0.1.2:
     dependencies:
       express: 5.1.0
       express-session: 1.18.2
