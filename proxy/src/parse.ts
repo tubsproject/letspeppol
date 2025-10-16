@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 
-export function parseDocument(documentXml: string): { sender: string | undefined; recipient: string | undefined; docType: string | undefined } {
+export function parseDocument(documentXml: string): { sender: string | undefined; recipient: string | undefined; docType: string | undefined, senderName?: string, recipientName?: string, amount?: number, docId?: string } {
   const parserOptions = {
     ignoreAttributes: false,
     numberParseOptions: {
@@ -31,7 +31,11 @@ export function parseDocument(documentXml: string): { sender: string | undefined
   }
   return {
     sender: `${sender['@_schemeID']}:${sender['#text']}`,
+    senderName: jObj[docType]?.['cac:AccountingSupplierParty']?.['cac:Party']?.['cac:PartyName']?.['cbc:Name'],
     recipient: `${recipient['@_schemeID']}:${recipient['#text']}`,
+    recipientName: jObj[docType]?.['cac:AccountingCustomerParty']?.['cac:Party']?.['cac:PartyName']?.['cbc:Name'],
+    amount: parseFloat(jObj[docType]?.['cac:LegalMonetaryTotal']?.['cbc:PayableAmount']?.['#text']),
     docType: docType === 'Invoice' ? 'Invoice' : docType === 'CreditNote' ? 'CreditNote' : undefined,
+    docId: jObj[docType]?.['cbc:ID'],
   };
 }

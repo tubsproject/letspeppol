@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import { Client } from 'pg';
-import { ListEntityDocumentsParams, ListItemV1 } from './Backend.js';
+import { ListEntityDocumentsParams, ListItemV1, ListItemV2 } from './Backend.js';
 export { Client } from 'pg';
 
 let client: Client | null = null;
@@ -109,5 +109,17 @@ export async function listEntityDocuments(params: ListEntityDocumentsParams): Pr
   const client = await getPostgresClient();
   const result = await client.query(queryStr, queryParams);
 
-  return result.rows;
+  // map to camelCase and ListItemV1
+  return result.rows.map((row) => ({
+    platformId: row.platformid,
+    docType: row.doctype,
+    direction: row.direction,
+    senderId: row.senderid,
+    senderName: row.sendername,
+    receiverId: row.receiverid,
+    receiverName: row.receivername,
+    createdAt: row.createdat,
+    amount: row.amount,
+    docId: row.docid,
+  } as ListItemV2));
 }

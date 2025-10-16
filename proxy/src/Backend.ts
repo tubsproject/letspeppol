@@ -24,6 +24,15 @@ export type ListItemV1 = {
   errorCode: string | null;
 }
 
+export type ListItemV2 = {
+  platformId: string;
+  docType: 'invoice' | 'credit-note';
+  direction: 'incoming' | 'outgoing';
+  senderId: string;
+  receiverId: string;
+  createdAt: string;
+}
+
 export abstract class Backend {
   abstract reg(identifier: string): Promise<void>;
   abstract unreg(identifier: string): Promise<void>;
