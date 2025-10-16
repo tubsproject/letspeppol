@@ -48,9 +48,9 @@ curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json'
 
 ### Read invoices
 To list invoices and credit notes you have sent and received. There are 4 collections, each filtered for the authenticated legal entity:
-* /v1/invoices/outging
+* /v1/invoices/outgoing
 * /v1/invoices/incoming
-* /v1/credit-notes/outging
+* /v1/credit-notes/outgoing
 * /v1/credit-notes/incoming
 
 Default page size is 20.
