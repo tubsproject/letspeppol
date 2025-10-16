@@ -1,5 +1,5 @@
 import { INVOICES, CREDIT_NOTES, ID_SCHEME } from "./constants.js";
-import { Backend, ListEntityDocumentsParams } from "./Backend.js";
+import { Backend } from "./Backend.js";
 import { parseDocument } from "./parse.js";
 
 function toScrada(docSpec: { documentTypeScheme: string; documentType: string; processScheme: string; process: string }) {
@@ -110,78 +110,6 @@ export class Scrada implements Backend {
     if (response.status !== 200 && response.status !== 202) {
       throw new Error(`Failed to deregister company, status code ${response.status}: ${await response.text()}`);
     }
-  }
-  async listEntityDocuments({ peppolId, direction, type, query, page, pageSize }: ListEntityDocumentsParams): Promise<object[]> {
-    void query;
-    console.log('Listing documents for', { peppolId, direction, type, query });
-    if (type !== 'invoices' && type !== 'credit-notes') {
-      throw new Error(`Unsupported document type: ${type}`);
-    }
-    let url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/inbound/document/unconfirmed`;
-    if (direction === 'outgoing') {
-      url = `${this.apiUrl}/v1/company/${process.env.SCRADA_COMPANY_ID}/peppol/outbound/document`;
-      // throw new Error('Listing outgoing documents is not supported by Scrada');
-    }
-    console.log('Fetching', url);
-    const response = await fetch(url, {
-      headers: {        
-        'X-Api-Key': process.env.SCRADA_API_KEY!,
-        'X-Password': process.env.SCRADA_API_PWD!,
-      }
-    });
-    // console.log(response.status, await response.text());
-    let { results } = await response.json();
-    console.log('Fetched', results);
-    console.log('Total', results.length, 'results');
-    if (direction === 'incoming') {
-      console.log('Filtering for incoming', peppolId);
-      results = results.filter((item: any) => item.peppolReceiverID === peppolId);
-    } else {
-      console.log('Filtering for outgoing', peppolId);
-      results = results.filter((item: any) => item.peppolSenderID === peppolId);
-    }
-    console.log('User filtered', results.length);
-    if (type === 'credit-notes') {
-      results = results.filter((item: any) => item.peppolDocumentTypeValue === CREDIT_NOTES.documentType);
-    } else {
-      results = results.filter((item: any) => item.peppolDocumentTypeValue === INVOICES.documentType);
-    }
-    console.log('Type filtered', results.length);
-    console.log(`Filtering ${results.length} results to page ${page} with page size ${pageSize}`);
-    if (results.length < (page - 1) * pageSize) {
-      return [];
-    }
-    return results.slice((page - 1) * pageSize, page * pageSize).map((item: any) => ({
-      uuid: item.id,
-      type: item.peppolDocumentTypeValue === INVOICES.documentType ? 'Invoice' : (item.peppolDocumentTypeValue === CREDIT_NOTES.documentType ? 'CreditNote' : item.peppolDocumentTypeValue),
-      direction: item.sender === peppolId ? 'outgoing' : 'incoming',
-      senderId: item.peppolSenderID,
-      recipientId: item.peppolReceiverID,
-      requestSentAt: item.peppolC2Timestamp,
-      responseSentAt: item.peppolC3Timestamp,
-      success: true,
-      errorCode: null,
-    }));
-    // const { items } = await response.json();
-    // return items.map((item: any): ListItemV1 => {
-    //   let docType = item.documentType;
-    //   if (docType === `${INVOICES.documentTypeScheme}::${INVOICES.documentType}`) {
-    //     docType = 'Invoice';
-    //   } else if (item.documentType === `${CREDIT_NOTES.documentTypeScheme}::${CREDIT_NOTES.documentType}`) {
-    //     docType = 'CreditNote';
-    //   }
-    //   return {
-    //     uuid: item.id,
-    //     type: docType,
-    //     direction: item.direction == 'OUT' ? 'outgoing' : 'incoming',
-    //     format: item.format,
-    //     number: item.number,
-    //     senderId: item.sender,
-    //     recipientId: item.recipient,
-    //     success: item.folder === 'sent',
-    //     errorCode: null,
-    //   };
-    // });
   }
   async getDocumentXml({ peppolId, type, uuid, direction }: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string> {
     console.log('Getting document XML for', { peppolId, type, uuid, direction });

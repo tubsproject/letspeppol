@@ -3,11 +3,10 @@ import {
   doGetUuid,
   doCreateLegalEntity,
   doSetSmpRecord,
-  doListEntityDocuments,
   doGetDocumentXml
 } from './acubeClient.js';
 import { parseDocument } from './parse.js';
-import { Backend, ListEntityDocumentsParams, ListItemV1 } from './Backend.js';
+import { Backend } from './Backend.js';
 
 export class Acube implements Backend {
   async sendDocument(documentXml: string, sendingEntity: string): Promise<void> {
@@ -62,67 +61,6 @@ export class Acube implements Backend {
   
   async unreg(identifier: string): Promise<void> {
     await this.setSmpRecord(identifier, false);
-  }
-
-  async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
-    const { peppolId, direction, type, query } = options;
-    if (!peppolId.startsWith('0208:')) {
-      throw new Error('Only organization number (scheme 0208) is supported as peppolId');
-    }
-    const params = { direction };
-    if (direction === 'outgoing') {
-      params['senderId'] = peppolId.substring('0208:'.length);
-      if (query['recipientId']) {
-        params['recipientId'] = query['recipientId'];
-      }
-    } else {
-      params['recipientId'] = peppolId.substring('0208:'.length);
-      if (query['senderId']) {
-        params['senderId'] = query['senderId'];
-      }
-    }
-    // preserve the order of the other allowed query parameters as much as possible
-    Object.keys(query).forEach(queryKey => {
-      if (['page', 'itemsPerPage', 'senderName', 'recipientName', 'documentNumber', 'sortBy[createdAt]', 'sortBy[documentDate]', 'sortBy[senderName]', 'sortBy[recipientName]', 'createdAt[before]', 'documentDate[before]', 'downloaded'].includes(queryKey)) {
-        params[queryKey] = query[queryKey];
-      }
-    });
-    const queryString = new URLSearchParams(params).toString();
-    const response = await doListEntityDocuments(type, queryString);
-    if (response.status !== 200) {
-      throw new Error(`Failed to list documents, status code ${response.status}: ${await response.text()}`);
-    }
-    const responseObj = await response.json();
-    const list = responseObj['hydra:member'];
-    if (options.apiVersion === 'v1') {
-      // map to v1 format
-      return list.map((item: any): ListItemV1 => {
-        let docType: string;
-        if (item['@type'] === 'InvoiceOutput') {
-          docType = 'Invoice';
-        } else if (item['@type'] === 'CreditNoteOutput') {
-          docType = 'CreditNote';
-        } else {
-          docType = item['@type'];
-        }
-        return {
-          uuid: item.uuid,
-          type: docType,
-          direction: item.direction,
-          format: item.format,
-          number: item.number,
-          senderId: `0208:${item.sender.identifier}`,
-          senderName: item.sender.name,
-          recipientId: `0208:${item.recipient.identifier}`,
-          recipientName: item.recipient.name,
-          requestSentAt: item.peppolMessage.requestSentAt,
-          responseSentAt: item.peppolMessage.responseSentAt,
-          success: item.peppolMessage.success,
-          errorCode: item.peppolMessage.errorCode,
-        };
-      });
-    }
-    return list;
   }
 
   async getDocumentXml({ peppolId, type, uuid }: { peppolId: string; type: string; uuid: string }): Promise<string> {

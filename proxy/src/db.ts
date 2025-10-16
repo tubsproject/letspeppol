@@ -1,9 +1,15 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import { Client } from 'pg';
+import { ListEntityDocumentsParams, ListItemV1 } from './Backend.js';
 export { Client } from 'pg';
 
+let client: Client | null = null;
+
 export async function getPostgresClient(): Promise<Client> {
-  const client = new Client({
+  if (client) {
+    return client;
+  }
+  client = new Client({
     user: process.env.POSTGRES_APP_USER || 'syncables',
     password: process.env.POSTGRES_APP_PASSWORD || 'syncables',
     host: process.env.POSTGRES_HOST || 'localhost',
@@ -72,4 +78,36 @@ export async function insertData(
       return client.query(insertQuery);
     }),
   );
+}
+
+export async function listEntityDocuments(params: ListEntityDocumentsParams): Promise<ListItemV1[]> {
+  const { peppolId, direction, type, page, pageSize } = params;
+  const offset = (page - 1) * pageSize;
+  let constrainedParty;
+  if (direction === 'incoming') {
+    constrainedParty = 'receiver';
+  } else {
+    constrainedParty = 'sender';
+  }
+  let singularType;
+  if (type === 'invoices') {
+    singularType = 'invoice';
+  } else if (type === 'credit-notes') {
+    singularType = 'credit-note';
+  } else {
+    throw new Error(`Unknown document type: ${type}`);
+  }
+
+  const queryStr = `
+    SELECT * FROM FrontDocs
+    WHERE ${constrainedParty}Id = $1 AND direction = $2 AND docType = $3
+    ORDER BY createdAt DESC
+    LIMIT $4 OFFSET $5
+  `;
+  const queryParams = [peppolId, direction, singularType, pageSize, offset];
+  console.log('Executing query:', queryStr, 'with params:', queryParams);
+  const client = await getPostgresClient();
+  const result = await client.query(queryStr, queryParams);
+
+  return result.rows;
 }

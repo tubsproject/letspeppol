@@ -1,9 +1,8 @@
-import { INVOICES, CREDIT_NOTES } from "./constants.js";
-import { Backend, ListEntityDocumentsParams } from "./Backend.js";
+
+import { Backend } from "./Backend.js";
 import { parseDocument } from "./parse.js";
 
 const API_BASE = "https://test.ion-ap.net/api";
-const FETCH_NUM = 100;
 
 export class Ion implements Backend {
   async reg(identifier: string): Promise<void> {
@@ -114,44 +113,6 @@ export class Ion implements Backend {
     }
     const responseBody = await response.json();
     console.log('Sent document', responseBody);
-  }
-  async listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]> {
-    let urlPrefix;
-    if (options.direction === 'outgoing'){
-      urlPrefix = `${API_BASE}/v2/send-transactions?filter_sender=${options.peppolId}`;
-    } else if (options.direction === 'incoming') {
-      urlPrefix = `${API_BASE}/v2/receive-transactions?filter_receiver=${options.peppolId}`;
-    } else {
-      throw new Error(`Invalid direction: ${options.direction}`);
-    }
-    urlPrefix += `&filter_document_type=${(options.type === 'credit-notes') ? CREDIT_NOTES.documentType : INVOICES.documentType }`;
-    let found = [];
-    let offset = 0;
-    while (found.length < options.pageSize * options.page) {
-      const response = await fetch(`${urlPrefix}&limit=${FETCH_NUM}&offset=${offset}`, {
-        headers: {
-          Authorization: `Token ${process.env.ION_API_KEY}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Error listing documents: ${response.statusText}`);
-      }
-      const responseBody = await response.json();
-      console.log('Listed documents', responseBody);
-      const thisList = responseBody.results.map((item: any) => ({
-        uuid: item.id,
-        sender: item.sender_identifier,
-        recipient: item.receiver_identifier,
-        direction: options.direction,
-        type: item.document_type,
-      }));
-      found = found.concat(thisList);
-      if (thisList.length < FETCH_NUM) {
-        break;
-      }
-      offset += FETCH_NUM;
-    }
-    return found.slice(options.pageSize * (options.page - 1), options.pageSize * options.page);
   }
   async getDocumentXml(query: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string> {
     let url = `${API_BASE}/v2/receive-transactions/${query.uuid}/document`;

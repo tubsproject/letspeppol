@@ -66,15 +66,6 @@ export async function doSetSmpRecord(uuid: string, enabled: boolean): Promise<Re
   });
 }
 
-export async function doListEntityDocuments(type: string, queryString: string): Promise<Response> {
-  return fetch(`https://peppol-sandbox.api.acubeapi.com/${type}?${queryString}`, {
-    headers: {
-      'Authorization': `Bearer ${process.env.ACUBE_TOKEN}`,
-    },
-  });
-}
-
-
 export async function doGetDocumentXml({ type, uuid }: { type: string; uuid: string }): Promise<Response> {
   const endpoint = `https://peppol-sandbox.api.acubeapi.com/${type}/${uuid}/source`;
   console.log('Fetching document XML from', endpoint);

@@ -145,39 +145,16 @@ export $(xargs < .env)
 export ACUBE_TOKEN=`./auth.sh | json token`
 # run the proxy:
 pnpm install
-
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/acube-peppol.yaml --overlay ./openapi/overlay/acube-peppol-overlay.yaml > ./openapi/generated/acube.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/peppyrus-peppol.yaml --overlay ./openapi/overlay/peppyrus-peppol-overlay.yaml > ./openapi/generated/peppyrus.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/ion-peppol.yaml --overlay ./openapi/overlay/ion-peppol-overlay.yaml > ./openapi/generated/ion.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/arratech-peppol.json --overlay ./openapi/overlay/arratech-peppol-overlay.yaml > ./openapi/generated/arratech.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/maventa-peppol.yaml --overlay ./openapi/overlay/maventa-peppol-overlay.yaml > ./openapi/generated/maventa.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/recommand-peppol.yaml --overlay ./openapi/overlay/recommand-peppol-overlay.yaml > ./openapi/generated/recommand.yaml
-./node_modules/.bin/overlayjs --openapi ./openapi/oad/scrada-peppol.json --overlay ./openapi/overlay/scrada-peppol-overlay.yaml > ./openapi/generated/scrada.yaml
-npx openapi-typescript ./openapi/oad/front.yaml -o ./src/front.d.ts
-npx openapi-typescript ./openapi/generated/acube.yaml -o ./src/acube.d.ts
-npx openapi-typescript ./openapi/generated/peppyrus.yaml -o ./src/peppyrus.d.ts
-npx openapi-typescript ./openapi/generated/ion.yaml -o ./src/ion.d.ts
-# FIXME  npx openapi-typescript ./openapi/generated/arratech.yaml -o ./src/arratech.d.ts
-npx openapi-typescript ./openapi/generated/maventa.yaml -o ./src/maventa.d.ts
-npx openapi-typescript ./openapi/generated/recommand.yaml -o ./src/recommand.d.ts
-npx openapi-typescript ./openapi/generated/scrada.yaml -o ./src/scrada.d.ts
-
 pnpm build
 docker compose up -d
-export ACUBE_AUTH_HEADERS="{\"Authorization\":\"Bearer ${ACUBE_TOKEN}\"}"
-export PEPPYRUS_AUTH_HEADERS="{\"X-Api-Key\":\"$PEPPYRUS_TOKEN_TEST\"}"
-export ION_AUTH_HEADERS="{\"Authorization\":\"Token $ION_API_KEY\"}"
-export ARRATECH_AUTH_HEADERS="{\"Authorization\":\"Bearer $_BEARER_TOKEN\"}"
-export MAVENTA_AUTH_HEADERS="{\"Authorization\":\"Basic `echo $RECOMMAND_API_KEY:$RECOMMAND_API_SECRET | base64`\"}"
-export RECOMMAND_AUTH_HEADERS="{\"Authorization\":\"Bearer $RECOMMAND_API_KEY\"}"
 pnpm build
 docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create type direction as enum ('incoming', 'outgoing');"
 docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create type docType as enum ('invoice', 'credit-note');"
 docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create table FrontDocs (senderId text, receiverId text, docType docType, direction direction, platformId text primary key, createdAt timestamp);"
-
 pnpm start
 export PROXY_HOST=http://localhost:3000
 ```
+The db table will be filled up by the [syncables cron job](https://github.com/tubsproject/syncables/blob/main/src/cron.ts).
 
 ## With Docker
 The Docker image takes two environment variables, `ACUBE_TOKEN` and `PORT`.

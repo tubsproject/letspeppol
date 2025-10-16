@@ -28,6 +28,5 @@ export abstract class Backend {
   abstract reg(identifier: string): Promise<void>;
   abstract unreg(identifier: string): Promise<void>;
   abstract sendDocument(documentXml: string, sendingEntity: string): Promise<void>;
-  abstract listEntityDocuments(options: ListEntityDocumentsParams): Promise<object[]>;
   abstract getDocumentXml(query: { peppolId: string; type: string; uuid: string, direction: string }): Promise<string>;
 }
