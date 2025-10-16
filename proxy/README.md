@@ -171,6 +171,10 @@ export ARRATECH_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Bearer $_BEARER_TOKEN\
 export MAVENTA_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Basic `echo $RECOMMAND_API_KEY:$RECOMMAND_API_SECRET | base64`\"}"
 export RECOMMAND_PEPPOL_AUTH_HEADERS="{\"Authorization\":\"Bearer $RECOMMAND_API_KEY\"}"
 pnpm build
+docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create type direction as enum ('incoming', 'outgoing');"
+docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create type docType as enum ('invoice', 'credit-note');"
+docker exec -it db psql postgresql://syncables:syncables@localhost:5432/syncables -c "create table FrontDocs (senderId text, receiverId text, docType docType, direction direction, platformId text primary key, createdAt timestamp);"
+
 pnpm start
 export PROXY_HOST=http://localhost:3000
 ```
