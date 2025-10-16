@@ -80,7 +80,7 @@ export interface components {
             senderId?: string;
             receiverId?: string;
             /** @enum {string} */
-            docType?: "invoice" | "creditnote";
+            docType?: "invoice" | "credit-note";
             /** @enum {string} */
             direction?: "incoming" | "outgoing";
             platformId?: string;
