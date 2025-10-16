@@ -5,7 +5,7 @@ async function createCollections(
   collectionName: string,
   client: Client,
 ): Promise<void> {
-  const openApiSpecFilename = `${collectionName}-generated.yaml`;
+  const openApiSpecFilename = `openapi/generated/${collectionName}.yaml`;
   const authHeaders: { [key: string]: string } = {
     [process.env[
       `${collectionName.toUpperCase().replace('-', '_')}_AUTH_HEADER_NAME`
