@@ -1,0 +1,687 @@
+openapi: 3.0.0
+info:
+  title: Scrada Peppol Only
+  description: >-
+    # Introduction
+
+
+    This Postman collection shows how to use the Peppol API if using the Peppol
+    Only Subscription.
+
+
+    More information about the API can be found at
+    [https://www.scrada.be/api-documentation/](https://www.scrada.be/api-documentation/)
+
+
+    On the overview page you can find more information like difference
+    subscriptions and general information like link to the GUI.
+
+
+    # Peppol Identifiers
+
+
+    ## Participants
+
+
+    When register on Peppol you have to use an ID. All ID's belong to the scheme
+    'iso6523-actorid-upis'. The ID itself exist of 2 parts separated by a colon:
+
+
+    - **Type of identifier**: Sample in Belgium we use 0208 for CBE number or
+    9925 for Belgium VAT number. All type of identifiers can be found on the
+    website
+    [https://docs.peppol.eu/edelivery/codelists/](https://docs.peppol.eu/edelivery/codelists/)
+    in the artifact 'Participant Identifier Schemes'
+        
+    - **Value of the identifier**: the value used. Sample the CBE number of
+    Scrada is 0793904121
+        
+
+    Sample of a Peppol ID: 0208:0793904121
+
+
+    ## Document types
+
+
+    During registration on Peppol you have to define which document types you
+    want to receive using Peppol. All document types can be found at
+    [https://docs.peppol.eu/edelivery/codelists/](https://docs.peppol.eu/edelivery/codelists/)
+
+
+    # Belgium registration
+
+
+    - In Belgium every company must be registered on Peppol using their CBE
+    number (0208).
+        
+    - Registration on Peppol of VAT number (9925) is not required but is
+    recommended.
+        
+    - To meet the Belgium requirement to use Peppol you have to register for at
+    least the following 2 document types to receive purchase invoices:
+        
+        - <u>Peppol BIS Billing UBL Invoice V3</u>:
+            
+            - **Document type scheme**: busdox-docid-qns
+                
+            - **Document type value**: urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1
+                
+            - **Process scheme**: cenbii-procid-ubl
+                
+            - **Process value**: cenbii-procid-ubl::urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+                
+        - <u>Peppol BIS Billing UBL CreditNote V3</u>:
+            
+            - **Document type scheme**: busdox-docid-qns
+                
+            - **Document type value**: urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1
+                
+            - **Process scheme**: cenbii-procid-ubl
+                
+            - **Process value**: cenbii-procid-ubl::urn:fdc:peppol.eu:2017:poacc:billing:01:1.0
+                
+    - If your customers are using self billing then you also have to register
+    for following document types:
+        
+        - <u>Peppol BIS Self-Billing UBL Invoice V3:</u>
+            
+            - **Document type scheme**: busdox-docid-qns
+                
+            - **Document type value**: urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:selfbilling:3.0::2.1
+                
+            - **Process scheme**: cenbii-procid-ubl
+                
+            - **Process value**: urn:fdc:peppol.eu:2017:poacc:selfbilling:01:1.0
+                
+        - <u>Peppol BIS Self-Billing UBL Credit Note V3:</u>
+            
+            - **Document type scheme**: busdox-docid-qns
+                
+            - **Document type value**: urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:selfbilling:3.0::2.1
+                
+            - **Process scheme:** cenbii-procid-ubl
+                
+            - **Process value:** urn:fdc:peppol.eu:2017:poacc:selfbilling:01:1.0
+                
+    - The following document types are recommended because they contain
+    information like payment info, rejection status, ... of sales invoices sent.
+    These document types are returned by the receiving party of the sales
+    invoices :
+        
+        - <u>Peppol Invoice Response transaction 3.0:</u>
+            
+            - **Document type Scheme**: busdox-docid-qns
+                
+            - **Document type value:** urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:invoice_response:3::2.1
+                
+            - **Process scheme**: cenbii-procid-ubl
+                
+            - **Process value**: urn:fdc:peppol.eu:poacc:bis:invoice_response:3
+                
+        - <u>Peppol Message Level Response transaction 3.0:</u>
+            
+            - **Document type scheme**: busdox-docid-qns
+                
+            - **Document type value**: urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:mlr:3::2.1
+                
+            - **Process scheme**: cenbii-procid-ubl
+                
+            - **Process value:** urn:fdc:peppol.eu:poacc:bis:mlr:3
+                
+
+    # Peppol document types
+
+
+    A good website to validate files you want to send over Peppol is:
+    [https://ecosio.com/en/peppol-and-xml-document-validator/](https://ecosio.com/en/peppol-and-xml-document-validator/)
+
+
+    If you want to validate invoice of credit notes in the Peppol BIS 3 format
+    then you have select the type ‘OpenPeppol UBL Invoice ...’ en ‘Open Peppol
+    UBL Credit Note ...’ . On the website you will see a version number and date
+    behind the name. Select the version with the newest date.
+
+
+    # Testing
+
+
+    Send email to [info@scrada.be](https://mailto:info@scrada.be) to request
+    access to the test environment. Data needed in the email: Company name,
+    address, VAT number, email address of the administrator
+
+
+    1. Select the correct environment in Postman. This can be selected in the
+    right top corner of the Postman application. There are 2 environments: Test
+    and Production
+        
+    2. Add a webhook for the several topics in the Scrada GUI:
+    menu>settings>integrations>webhooks
+        
+        1. You can use the website [https://webhook.site](https://webhook.site) to see the content of the webhooks called by Scrada
+            
+        2. Copy the 'Your unique URL' on the [https://webhook.site](https://webhook.site) in the URL of the webhook config in the GUI of Scrada
+            
+    3. Create API key using the Scrada GUI: menu>settings>API-keys
+        
+    4. Copy paste the API Key and secret in the Postman variables **X-API-KEY**
+    and **X-PASSWORD**
+        
+    5. Set in the Postman variable **companyID**. This can be found in GUI of
+    Scrada in menu>settings>company>company identifier
+        
+    6. Set the Postman variable **baseUrl**:
+    [https://apitest.scrada.be](https://apitest.scrada.be)
+        
+    7. Set following Postman variables:
+        
+        1. **businessEntityName**: the name of the company you want to register on Peppol. ample: Scrada
+            
+        2. **businessEntityCountry**: the country code of the company you want to register on Peppol. Sample: BE
+            
+        3. **peppolIdentifierScheme**: The Peppol identifier scheme used. This is always _iso6523-actorid-upis_
+            
+        4. **peppolIdentifierTypeBE-CBE**: the Peppol identifier type of a Belgium CBE. Is always _0208_
+            
+        5. **peppolIdentifierValueBE-CBE**: the Peppol identifier value. This is the Belgium CBE number of the company you want to register. Sample: 0793904121
+            
+        6. **peppolIdentifierTypeBE-VAT**: the Peppol identifier type of a Belgium VAT. Is always 9925
+            
+        7. **peppolIdentifierValueBE-VAT**: the Peppol identifier value. This is the Belgium VAT number of the company you want to register. Sample: BE0793904121
+            
+    8. Open the folder '<u>1. Setup</u>' in your Postman collection
+        
+        1. You can register the company by calling the register functions
+            
+        2. If you register a company you can check the [https://test-directory.peppol.eu/public](https://test-directory.peppol.eu/public) to see if the company is registered in the test environment of Peppol. It can take some time before you see the company.
+            
+        3. You can deregister the company by calling the deregister functions
+            
+    9. The folder '<u>2. Upload Peppol Document</u>' show some examples to
+    upload a Peppol document to Peppol. The folder '<u>2.1 Upload Peppol BIS
+    3</u>' contains document that are put directly on Peppol. The folder '<u>2.2
+    Json To Peppol</u>' contains a JSON invoice that is converted by Scrada to a
+    Peppol BIS 3 document and then put on Peppol. The test environment of Scrada
+    is connected to the test environment of Peppol. This way if you send a
+    document to your own company you will see that the document arrives. **Be
+    careful to not send a document to another Peppol ID you don't control.**
+        
+        1. When using the JSON API you can use the Lookup party (2.2 Lookup party) endpoint to verify that the receiving party is active on Peppol and that a valid document can be send.  
+            When Sending the BIS3 (or other UBL) document you can use the lookup BE-CBE (2.1 Lookup BE-CBE) to see all possible document types for the given Peppol ID.
+            
+        2. If document is sent to Scrada you receive a GUID. This GUID can be used to get the status of the document later.
+            
+        3. You can see the inbound and outbound documents of Peppol in the GUI of Scrada: menu>settings>integrations>Peppol history
+            
+        4. When a document is received and webhook is configured then Scrada will call the webhook of topic 'peppolInboundDocument/new'
+            
+        5. When a document is sent and webhook is configured then Scrada will call the webhook of topic 'peppolOutboundDocument/statusUpdate'
+            
+    10. The folder '<u>3. Receive Peppol Document</u>' shows how to get the
+    non-confirmed documents. These are all the documents that are received but
+    are not confirmed.
+        
+        1. When doing the request 'Get unconfirmed documents' you will see all documents that you received.
+            
+        2. The ID of the first document in the list is put in the Postman variable **inboundDocumentID**. This is done by a script that runs in Postman when you do the request to get all unconfirmed documents.
+            
+        3. If you call the 'Get document' function this will get the content of the document
+            
+        4. If you call the 'Confirm document' function then this will confirm this document
+            
+        5. If you call 'Get unconfirmed documents' again you will see that you don't see this document anymore.
+  version: 1.0.0
+paths:
+  /v1/company/{companyID}/peppol/register:
+    post:
+      summary: Register BE-VAT
+      description: >-
+        Register a company using its Belgium VAT number on Peppol with the
+        document types '_Peppol BIS Billing UBL Invoice V3_', '_Peppol BIS
+        Billing UBL CreditNote V3_', '_UBL.BE Invoice 3.0_', '_UBL.BE Credit
+        Note 3.0_', '_Peppol Invoice Response transaction 3.0_', '_Peppol
+        Message Level Response transaction 3.0_', '_Peppol BIS SelfBilling UBL
+        Invoice V3_' and '_Peppol BIS SelfBilling UBL CreditNote V3_'.
+        Registration with VAT number on Peppol is optional but is recommended.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1register/post)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/deregister/{peppolIdentifierScheme}/{peppolIdentifierTypeBE-CBE}:{peppolIdentifierValueBE-CBE}:
+    delete:
+      summary: Deregister BE-CBE
+      description: >-
+        Deregister the CBE number registration on Peppol of a company that is
+        registered at Scrada. If this registration was done at an other access
+        point then you cannot call this function. You have to do the
+        deregistration at the other access point.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1deregister~1%7BparticipantIdentifierScheme%7D~1%7BparticipantIdentifierValue%7D/delete)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierScheme
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierTypeBE-CBE
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierValueBE-CBE
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/deregister/{peppolIdentifierScheme}/{peppolIdentifierTypeBE-VAT}:{peppolIdentifierValueBE-VAT}:
+    delete:
+      summary: Deregister BE-VAT
+      description: >-
+        Deregister the Belgium VAT number registration on Peppol of a company
+        that is registered at Scrada. If this registration was done at an other
+        access point then you cannot call this function. You have to do the
+        deregistration at the other access point.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1deregister~1%7BparticipantIdentifierScheme%7D~1%7BparticipantIdentifierValue%7D/delete)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierScheme
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierTypeBE-VAT
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierValueBE-VAT
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/lookup/{peppolIdentifierScheme}/{peppolIdentifierTypeBE-CBE}:{peppolIdentifierValueBE-CBE}:
+    get:
+      summary: Lookup BE-CBE
+      description: >-
+        Search for a company based on its CBE number if registered on Peppol and
+        if registered for which document types they are registered. You will
+        also see information about the access point they are registered.
+
+
+        This can be called for companies registered on Peppol using Scrada or an
+        other Access Point.
+
+
+        If no company is found then nothing is returned.
+
+
+        If using the test environment you are connected to the test network of
+        Peppol. If using the production environment then you are connected to
+        the production network of Peppol.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol/paths/)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierScheme
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierTypeBE-CBE
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: peppolIdentifierValueBE-CBE
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /v1/company/{companyID}/peppol/outbound/document:
+    post:
+      summary: Send valid Invoice Response to BE-CBE
+      description: >-
+        Send a Peppol Invoice Response transaction 3.0 document to Scrada that
+        will be put by Scrada on Peppol. You will receive an ID back from
+        Scrada. This ID can be used to get the status of the document.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-outbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1outbound~1document/post)
+
+
+        On the overview page of 'Scrada Peppol Only' in postman you can find
+        more information how to validate an UBL document using an other system.
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/outbound/document/{outboundDocumentID}/info:
+    get:
+      summary: Get status valid Invoice Response to BE-CBE
+      description: >-
+        Get the status of document sent to Scrada.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-outbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1outbound~1document~1%7BdocumentID%7D~1info/get)
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: outboundDocumentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/lookup:
+    post:
+      summary: Lookup party
+      description: >-
+        Search for the company to see if is is registrered on Peppol and what
+        document types can be send to this company.
+
+
+        For each document type (invoice, credit note, etc.) there is a boolean
+        indicating if it can be send to the requested party over Peppol.
+
+
+        If using the test environment you are connected to the test network of
+        Peppol. If using the production environment then you are connected to
+        the production network of Peppol.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol/paths/)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/outbound/salesInvoice:
+    post:
+      summary: Send valid Credit Note JSON
+      description: >-
+        The JSON is convert to Peppol BIS 3 document by Scrada and then put on
+        Peppol. You will receive an ID back from Scrada. This ID can be used to
+        get the status of the document.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-outbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1outbound~1document/post)
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/outbound/document/{outboundDocumentID}/ubl:
+    get:
+      summary: Get UBL valid self-billing credit note JSON
+      description: >-
+        Get the UBL document send over Peppol.  
+
+        The UBL is only available after it is succesfully send over Peppol. This
+        is the official credit note document send to the supplier.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-outbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1outbound~1document~1%7BdocumentID%7D~1info/get)
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: outboundDocumentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/outbound/selfBillingInvoice:
+    post:
+      summary: Send valid self-billing credit note JSON
+      description: >-
+        The JSON is convert to Peppol document by Scrada and then put on Peppol.
+        You will receive an ID back from Scrada. This ID can be used to get the
+        status of the document.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-outbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1outbound~1document/post)
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+  /v1/company/{companyID}/peppol/inbound/document/unconfirmed:
+    get:
+      summary: Get unconfirmed documents
+      description: >-
+        All received documents that are not confirmed can be found using this
+        API call. In the list you can find the ID to use to get the received
+        document itself from our system.
+
+
+        You can get a webhook if a document arrives at Scrada our you can use
+        this function to get all unconfirmed documents.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1inbound~1document~1unconfirmed/get)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /v1/company/{companyID}/peppol/inbound/document/{inboundDocumentID}:
+    get:
+      summary: Get document
+      description: >-
+        Get received document from our system.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1inbound~1document~1%7BdocumentID%7D/get)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: inboundDocumentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /v1/company/{companyID}/peppol/inbound/document/{inboundDocumentID}/pdf:
+    get:
+      summary: Get document as PDF
+      description: >-
+        Get received document from our system as PDF. Purchase invoices will be
+        returned as a formated PDF, other UBL documents will be returned with
+        their XML information inside the PDF.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1inbound~1document~1%7BdocumentID%7D/get)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: inboundDocumentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /v1/company/{companyID}/peppol/inbound/document/{inboundDocumentID}/confirm:
+    put:
+      summary: Confirm document
+      description: >-
+        After downloading the document you have to confirm the document in
+        Scrada so that we know that you have downloaded the document. This way
+        the document is also not shown anymore in the unconfirmed documents.
+
+
+        More information about the API at
+        [https://www.scrada.be/api-documentation](https://www.scrada.be/api-documentation/#tag/Peppol-inbound/paths/~1v1~1company~1%7BcompanyID%7D~1peppol~1inbound~1document~1%7BdocumentID%7D~1confirm/put)
+      parameters:
+        - name: companyID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: inboundDocumentID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+components:
+  schemas: {}
+  securitySchemes: {}
