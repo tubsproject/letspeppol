@@ -145,6 +145,35 @@ export $(xargs < .env)
 export ACUBE_TOKEN=`./auth.sh | json token`
 # run the proxy:
 pnpm install
+
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/acube-peppol.yaml --overlay ./openapi/overlay/acube-peppol-overlay.yaml > ./openapi/generated/acube.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/peppyrus-peppol.yaml --overlay ./openapi/overlay/peppyrus-peppol-overlay.yaml > ./openapi/generated/peppyrus.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/ion-peppol.yaml --overlay ./openapi/overlay/ion-peppol-overlay.yaml > ./openapi/generated/ion.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/arratech-peppol.json --overlay ./openapi/overlay/arratech-peppol-overlay.yaml > ./openapi/generated/arratech.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/maventa-peppol.yaml --overlay ./openapi/overlay/maventa-peppol-overlay.yaml > ./openapi/generated/maventa.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/recommand-peppol.yaml --overlay ./openapi/overlay/recommand-peppol-overlay.yaml > ./openapi/generated/recommand.yaml
+./node_modules/.bin/overlayjs --openapi ./openapi/oad/scrada-peppol.json --overlay ./openapi/overlay/scrada-peppol-overlay.yaml > ./openapi/generated/scrada.yaml
+npx openapi-typescript ./openapi/oad/front.yaml -o ./src/front.d.ts
+npx openapi-typescript ./openapi/generated/acube.yaml -o ./src/acube.d.ts
+npx openapi-typescript ./openapi/generated/peppyrus.yaml -o ./src/peppyrus.d.ts
+npx openapi-typescript ./openapi/generated/ion.yaml -o ./src/ion.d.ts
+# FIXME  npx openapi-typescript ./openapi/generated/arratech.yaml -o ./src/arratech.d.ts
+npx openapi-typescript ./openapi/generated/maventa.yaml -o ./src/maventa.d.ts
+npx openapi-typescript ./openapi/generated/recommand.yaml -o ./src/recommand.d.ts
+pnpm build
+docker compose up -d
+export ACUBE_PEPPOL_AUTH_HEADER_NAME="Authorization"
+export ACUBE_PEPPOL_AUTH_HEADER_VALUE="Bearer ${ACUBE_TOKEN}"
+export PEPPYRUS_PEPPOL_AUTH_HEADER_NAME="X-Api-Key"
+export PEPPYRUS_PEPPOL_AUTH_HEADER_VALUE="$PEPPYRUS_TOKEN_TEST"
+export ION_PEPPOL_AUTH_HEADER_NAME="Authorization"
+export ION_PEPPOL_AUTH_HEADER_VALUE="Token $ION_API_KEY"
+export ARRATECH_PEPPOL_AUTH_HEADER_NAME="Authorization"
+export ARRATECH_PEPPOL_AUTH_HEADER_VALUE="Bearer $_BEARER_TOKEN"
+export MAVENTA_PEPPOL_AUTH_HEADER_NAME="Authorization"
+export MAVENTA_PEPPOL_AUTH_HEADER_VALUE="Basic `echo $RECOMMAND_API_KEY:$RECOMMAND_API_SECRET | base64`"
+export RECOMMAND_PEPPOL_AUTH_HEADER_NAME="Authorization"
+export RECOMMAND_PEPPOL_AUTH_HEADER_VALUE="Bearer $RECOMMAND_API_KEY"
 pnpm build
 pnpm start
 export PROXY_HOST=http://localhost:3000
