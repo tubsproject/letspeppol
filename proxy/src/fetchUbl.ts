@@ -56,6 +56,10 @@ export async function fetchUbl(): Promise<void> {
         console.log('Updated document with UBL and metadata:', data);
     } catch (error) {
         console.error('Error fetching UBL:', error);
+        const updateQuery = 'update FrontDocs set "amount" = 0 where platformid = $1';
+        const updateParams = [row.platformid];
+        console.log('Updating document with query:', updateQuery, 'and params:', updateParams);
+        await client.query(updateQuery, updateParams);
     } finally {
         client.end();
     }
