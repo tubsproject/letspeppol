@@ -50,26 +50,12 @@ export async function startServer(env: ServerOptions): Promise<number> {
     scrada: new Scrada(),
     ion: new Ion(),
   };
-  const users = {
-    '9944:nl862637223B02': 'peppyrus',
-    '0208:1023290711': 'acube',
-    // '0208:0705969661': 'acube',
-    '0208:0705969661': 'scrada',
-    '0208:0541911284': 'scrada',
-    '0208:0433221497': 'scrada',
-    // '0208:0798640887': 'ion',
-    // '0208:0734825676': 'ion',
-    // '0208:0636984350': 'ion',
-  };
   function getBackend(peppolId: string): Backend {
     if (process.env.BACKEND) {
       console.log('Using backend', process.env.BACKEND, ' because of BACKEND env var');
       return backends[process.env.BACKEND];
     }
-    let backendName = users[peppolId];
-    if (!backendName) {
-      backendName = 'ion'; // default to ion
-    }
+    const backendName = 'peppyrus';
     console.log('Using backend', backendName, 'for', peppolId);
     return backends[backendName];
   }

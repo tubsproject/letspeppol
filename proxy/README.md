@@ -4,7 +4,7 @@ This is what runs on api.letspeppol.org.
 ## Usage (V1)
 First, set which proxy host you want to use. By default, use:
 ```sh
-export PROXY_HOST=https://api.letspeppol.org FIXME: this is not yet running v1, but will as soon as we merge and deploy this branch
+export PROXY_HOST=https://api.letspeppol.org
 ```
 
 ### Get an access token
