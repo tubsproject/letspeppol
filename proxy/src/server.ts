@@ -64,11 +64,6 @@ export async function startServer(env: ServerOptions): Promise<number> {
     res.setHeader('Content-Type', 'text/plain');
     res.end('Let\'s Peppol!\n');
   }
-  async function list (req, res) {
-    const documents = await listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
-    res.setHeader('Content-Type', 'application/json');
-    res.json(documents);
-  }
   async function listV1 (req, res) {
     const documents = await listEntityDocuments({ peppolId: req.peppolId, direction: req.params.direction, type: req.params.docType, query: req.query, apiVersion: 'v1', page: req.query.page ? parseInt(req.query.page as string) : 1, pageSize: req.query.pageSize ? parseInt(req.query.pageSize as string) : 20 });
     res.setHeader('Content-Type', 'application/json');
@@ -114,20 +109,12 @@ export async function startServer(env: ServerOptions): Promise<number> {
   }));
   app.use(express.json());
   return new Promise((resolve, reject) => {
-    app.get('/v1/', hello);
-    app.get('/v1/:docType/:direction', checkAuth, listV1);
-    app.get('/v1/:docType/:direction/:uuid', checkAuth, get);
-    app.post('/v1/send', checkAuth, express.text({type: '*/*'}), send);
-    app.post('/v1/reg', checkAuth, reg);
-    app.post('/v1/unreg', checkAuth, unreg);
-
-    app.get('/', hello);
-    app.get('/:docType/:direction', checkAuth, list);
-    app.get('/:docType/:direction/:uuid', checkAuth, get);
-    app.post('/send', checkAuth, express.text({type: '*/*'}), send);
-    app.post('/reg', checkAuth, reg);
-    app.post('/unreg', checkAuth, unreg);
-
+    app.get('/v2/', hello);
+    app.get('/v2/:docType/:direction', checkAuth, listV1);
+    app.get('/v2/:docType/:direction/:uuid', checkAuth, get);
+    app.post('/v2/send', checkAuth, express.text({type: '*/*'}), send);
+    app.post('/v2/reg', checkAuth, reg);
+    app.post('/v2/unreg', checkAuth, unreg);
 
     app.listen(port, (error) => {
       if (error) {
