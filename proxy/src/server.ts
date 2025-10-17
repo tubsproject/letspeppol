@@ -35,7 +35,7 @@ export type ServerOptions = {
   ACCESS_TOKEN_KEY: string;
 };
 
-const optionsToRequire = ['PORT', 'PEPPYRUS_TOKEN_TEST', 'ACCESS_TOKEN_KEY'];
+const optionsToRequire = ['PORT', 'PEPPYRUS_TOKEN_TEST', 'ACCESS_TOKEN_KEY', 'DATABASE_URL'];
 export async function startServer(env: ServerOptions): Promise<number> {
   const checkAuth = getAuthMiddleware(env.ACCESS_TOKEN_KEY);
   // console.error('checking', env);
