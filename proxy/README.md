@@ -11,7 +11,7 @@ export PROXY_HOST=https://api.letspeppol.org
 Next, get an access token (this requires the local `ACCESS_TOKEN_KEY` env var to be the same as the proxy instance you will be talking to):
 ```sh
 export ACCESS_TOKEN_KEY=...
-export ONE=`node token.js 0208:0798640887`
+export ONE=`node token.js 9944:nl862637223B02`
 export TWO=`node token.js 0208:0734825676`
 export THREE=`node token.js 0208:0636984350`
 
@@ -32,15 +32,13 @@ curl $PROXY_HOST/v2
 Not all sender/receiver combinations work yet, but the following ones do.
 Run this command from the proxy folder (note the relative file path pointing to [../docs/](../docs/)):
 ```sh
-curl -X POST --data-binary "@../docs/v2/invoice-scrada-to-scrada.xml" -H "Authorization: Bearer $TWO" $PROXY_HOST/v2/send
-curl -X POST --data-binary "@../docs/v2/invoice-peppyrus-to-scrada.xml" -H "Authorization: Bearer $ONE" $PROXY_HOST/v2/send
-curl -X POST --data-binary "@../docs/v2/invoice-acube-to-peppyrus.xml" -H "Authorization: Bearer $THREE" $PROXY_HOST/v2/send
-curl -X POST --data-binary "@../docs/v2/invoice-peppyrus-to-acube.xml" -H "Authorization: Bearer $ONE" $PROXY_HOST/v2/send
+pnpm build
+node ./build/src/genDoc.js invoice 9944:nl862637223B02 0208:0734825676 asdf > ./doc.xml
+curl -X POST --data-binary "@./doc.xml" -H "Authorization: Bearer $ONE" $PROXY_HOST/v2/send
 ```
 
 ### Activate and de-activate SMP records
-FIXME: currently only implemented for A-Cube backend
-FIXME: currently exposes the 409 saying legal entity already created
+FIXME: currently not implemented for Peppyrus backend.
 ```sh
 curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json' $PROXY_HOST/v2/reg
 curl -X POST -H "Authorization: Bearer $ONE" -H 'Content-Type: application/json' $PROXY_HOST/v2/unreg
@@ -60,11 +58,28 @@ curl -H "Authorization: Bearer $THREE" "$PROXY_HOST/v2/credit-notes/incoming?pag
 curl -H "Authorization: Bearer $ONE" "$PROXY_HOST/v2/invoices/incoming?page=1" | json
 ```
 
-This will give an array of uuid string. To fetch the XML of a specific one:
-```sh
-curl -H "Authorization: Bearer $ONE" $PROXY_HOST/v2/invoices/incoming/c40e41fc-c040-4ddc-b35b-4f2a23542e7a
-curl -H "Authorization: Bearer $THREE" $PROXY_HOST/v2/credit-notes/outgoing/2980217c-a95c-49b9-a5d5-d3b176fd9f67
+This will give an array of objects that look like this:
+```json
+  {
+    "platformId": "peppyrus:dca93007-6f8c-4ef7-943e-29ceff2c2a57",
+    "docType": "invoice",
+    "direction": "outgoing",
+    "senderId": "9944:nl862637223B02",
+    "senderName": "SupplierTradingName Ltd.",
+    "receiverId": "9925:be0123456789",
+    "receiverName": "BuyerTradingName AS",
+    "createdAt": "2025-09-12T17:18:04.000Z",
+    "amount": "1656.25",
+    "docId": "Snippet1"
+  },
 ```
+
+To fetch the XML of a specific one:
+```sh
+curl -H "Authorization: Bearer $ONE" $PROXY_HOST/v2/invoices/incoming/e37b5843-fc55-4b0b-8b8e-73435d9a0363
+```
+Note that this will only work for invoices whose platformId prefix matches the BACKEND env var, which by default is `peppyrus`.
+
 ## Deployment
 ### On the host system of your laptop
 Ask @michielbdejong if you need to run this code in development, because the current instructions require Peppyrus API credentials.
