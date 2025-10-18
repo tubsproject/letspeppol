@@ -1,10 +1,8 @@
 import {resolve} from "@aurelia/kernel";
 import {IRouter} from "@aurelia/router";
-import {ThemeService} from '../../services/app/theme-service';
 
-export class WizardView {
+export class ApplicationView {
     private readonly router: IRouter = resolve(IRouter);
-    private theme = resolve(ThemeService);
 
     attached() {
     }
