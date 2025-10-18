@@ -1,7 +1,7 @@
 import {resolve} from "@aurelia/kernel";
 import {InvoiceContext} from "./invoice-context";
 import {parseInvoice} from "../peppol/ubl-parser";
-import {AlertType} from "../alert/alert";
+import {AlertType} from "../components/alert/alert";
 import {IEventAggregator} from "aurelia";
 import {ListItemV1, ProxyService} from "../services/proxy/proxy-service";
 import {InvoiceDraftDto, InvoiceService} from "../services/app/invoice-service";

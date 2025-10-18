@@ -1,6 +1,6 @@
 import {CompanyDto, CompanyService} from "../services/app/company-service";
 import {resolve} from "@aurelia/kernel";
-import {AlertType} from "../alert/alert";
+import {AlertType} from "../components/alert/alert";
 import {IEventAggregator} from "aurelia";
 import {RegistrationService} from "../services/kyc/registration-service";
 

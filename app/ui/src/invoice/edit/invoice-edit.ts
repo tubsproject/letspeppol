@@ -3,7 +3,7 @@ import {ProxyService} from "../../services/proxy/proxy-service";
 import {DocumentType, InvoiceContext} from "../invoice-context";
 import {bindable, IEventAggregator, observable} from "aurelia";
 import {ClassifiedTaxCategory, CreditNote, getAmount, Invoice, PaymentMeansCode, UBLLine} from "../../peppol/ubl";
-import {AlertType} from "../../alert/alert";
+import {AlertType} from "../../components/alert/alert";
 import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/ubl-parser";
 import {InvoicePaymentModal} from "./components/invoice-payment-modal";
 import {InvoiceCustomerModal} from "./components/invoice-customer-modal";

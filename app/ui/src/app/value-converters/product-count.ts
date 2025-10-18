@@ -1,6 +1,6 @@
 import {valueConverter} from "aurelia";
-import {ProductDto} from "../services/app/product-service";
-import {ProductCategoryDto} from "../services/app/product-category-service";
+import {ProductDto} from "../../services/app/product-service";
+import {ProductCategoryDto} from "../../services/app/product-category-service";
 
 @valueConverter('productCount')
 export class ProductCountConverter {

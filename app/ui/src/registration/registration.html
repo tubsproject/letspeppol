@@ -1,90 +1,78 @@
-<div class="centered">
-    <img src="logo.png" class="logo" alt="LetsPeppol"/>
+<import from="../components/view/wizard-view"></import>
 
-    <div class="container">
-        <div class="card">
-            <template if.bind="step === 0">
-                <div class="section-header">
-                    <h1>Register your company</h1>
-                </div>
-                <form class="auth-form">
-                    <div class="grid">
-                        <label class="field full">
-                            <span>VAT number</span>
-                            <input name="companyNumber" type="text" placeholder="BE0123456789" required value.bind="companyNumber"/>
-                        </label>
-                        <label class="field full">
-                            <span>Email</span>
-                            <input name="email" type="email" placeholder="you@company.com" required value.bind="email"/>
-                        </label>
-                    </div>
-                    <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
-                    <div class="auth-actions">
-                        <button type="submit" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="checkCompanyNumber()">
-                            <span  class="loader"></span>
-                            Create account
-                        </button>
-                    </div>
-                    <p class="auth-alt">Already registered? <a href="../login">Log in</a></p>
-                </form>
-            </template>
-            <template if.bind="step === 1">
-                <div class="section-header">
-                    <h1>Confirm your company</h1>
-                </div>
-                <form class="auth-form" style="max-width: 400px">
-                    <div class="grid grid-col-73">
-                        <label class="field full">
-                            <span>VAT number</span>
-                            <input name="companyNumber" type="text" disabled="disabled" value.to-view="company.companyNumber"/>
-                        </label>
-                        <label class="field full">
-                            <span>Name</span>
-                            <input name="companyName" type="text" disabled="disabled" value.to-view="company.name"/>
-                        </label>
-                        <label class="field">
-                            <span>City</span>
-                            <input name="address" type="text" disabled="disabled" value.to-view="company.city"/>
-                        </label>
-                        <label class="field">
-                            <span>Postal Code</span>
-                            <input name="address" type="text" disabled="disabled" value.to-view="company.postalCode"/>
-                        </label>
-                        <label class="field">
-                            <span>Street</span>
-                            <input name="address" type="text" disabled="disabled" value.to-view="company.street"/>
-                        </label>
-                        <label class="field">
-                            <span>House Number</span>
-                            <input name="address" type="text" disabled="disabled" value.to-view="company.houseNumber"/>
-                        </label>
-                        <label class="field full">
-                            <span>Email</span>
-                            <input name="email" type="email" placeholder="you@company.com" disabled="disabled" value.to-view="email"/>
-                        </label>
-                    </div>
-                    <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
-                    <div class="auth-actions">
-                        <button type="button" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="confirmCompany()">
-                            Confirm
-                        </button>
-                    </div>
-                    <p class="auth-alt">Wrong company? <a href="#" click.trigger="restart($event)">Back</a></p>
-                </form>
-            </template>
-            <template if.bind="step === 2">
-                <div class="section-header">
-                    <h1>Account verification</h1>
-                </div>
-                <p>A confirmation email has been sent. But first:</p>
-                <ul>
-                    <li>Install the <b>web-eid plugin</b> via <a href="https://www.id.ee/en/article/install-id-software/">https://www.id.ee/en/article/install-id-software/</a></li>
-                    <li>Make sure you install the browser extension, you can find the instructions on the same page</a></li>
-                    <li><b>Restart your browser!</b></li>
-                    <li>Verify whether the plugin works <a href="https://www.id.ee/en/article/test-your-id-card/">here</a></li>
-                </ul>
-                <p><b>Finally</b>, check your mails and click on the verification link in the confirmation email</p>
-            </template>
+<wizard-view>
+    <h1 if.bind="step === 0" au-slot="header">Register your company</h1>
+    <form if.bind="step === 0" class="auth-form">
+        <div class="grid">
+            <label class="field full">
+                <span>VAT number</span>
+                <input name="companyNumber" type="text" placeholder="BE0123456789" required value.bind="companyNumber"/>
+            </label>
+            <label class="field full">
+                <span>Email</span>
+                <input name="email" type="email" placeholder="you@company.com" required value.bind="email"/>
+            </label>
         </div>
-    </div>
-</div>
+        <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
+        <div class="auth-actions">
+            <button type="submit" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="checkCompanyNumber()">
+                <span  class="loader"></span>
+                Create account
+            </button>
+        </div>
+        <p class="auth-alt">Already registered? <a href="../login">Log in</a></p>
+    </form>
+
+    <h1 if.bind="step === 1" au-slot="header">Confirm your company</h1>
+    <form if.bind="step === 1" class="auth-form" style="max-width: 400px">
+        <div class="grid grid-col-73">
+            <label class="field full">
+                <span>VAT number</span>
+                <input name="companyNumber" type="text" disabled="disabled" value.to-view="company.companyNumber"/>
+            </label>
+            <label class="field full">
+                <span>Name</span>
+                <input name="companyName" type="text" disabled="disabled" value.to-view="company.name"/>
+            </label>
+            <label class="field">
+                <span>City</span>
+                <input name="address" type="text" disabled="disabled" value.to-view="company.city"/>
+            </label>
+            <label class="field">
+                <span>Postal Code</span>
+                <input name="address" type="text" disabled="disabled" value.to-view="company.postalCode"/>
+            </label>
+            <label class="field">
+                <span>Street</span>
+                <input name="address" type="text" disabled="disabled" value.to-view="company.street"/>
+            </label>
+            <label class="field">
+                <span>House Number</span>
+                <input name="address" type="text" disabled="disabled" value.to-view="company.houseNumber"/>
+            </label>
+            <label class="field full">
+                <span>Email</span>
+                <input name="email" type="email" placeholder="you@company.com" disabled="disabled" value.to-view="email"/>
+            </label>
+        </div>
+        <p if.bind="errorCode" class="form-error" aria-live="assertive" t="error.${errorCode}">Login failed</p>
+        <div class="auth-actions">
+            <button type="button" class="btn primary" disabled.bind="!email || !companyNumber || companyService.http.isRequesting" click.trigger="confirmCompany()">
+                Confirm
+            </button>
+        </div>
+        <p class="auth-alt">Wrong company? <a href="#" click.trigger="restart($event)">Back</a></p>
+    </form>
+
+    <h1 if.bind="step === 2" au-slot="header">Account verification</h1>
+    <template if.bind="step === 2">
+        <p>A confirmation email has been sent. But first:</p>
+        <ul>
+            <li>Install the <b>web-eid plugin</b> via <a href="https://www.id.ee/en/article/install-id-software/">https://www.id.ee/en/article/install-id-software/</a></li>
+            <li>Make sure you install the browser extension, you can find the instructions on the same page</a></li>
+            <li><b>Restart your browser!</b></li>
+            <li>Verify whether the plugin works <a href="https://www.id.ee/en/article/test-your-id-card/">here</a></li>
+        </ul>
+        <p><b>Finally</b>, check your mails and click on the verification link in the confirmation email</p>
+    </template>
+</wizard-view>

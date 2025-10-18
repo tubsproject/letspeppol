@@ -229,22 +229,6 @@ body {
     padding: var(--space-09) var(--space-12);
 }
 
-.centered > .logo {
-    position: absolute;
-    left: 25px;
-    top: 25px;
-    width: 50px;
-    height: 50px;
-}
-
-.centered > .language {
-    position: absolute;
-    right: 25px;
-    top: 25px;
-    width: 50px;
-    height: 50px;
-}
-
 .header-actions {
     position: absolute;
     top: .5rem;
@@ -326,13 +310,6 @@ body {
     background: linear-gradient(180deg, color-mix(in hsl, var(--panel) 88%, transparent), var(--panel));
     border-color: var(--border-soft);
     box-shadow: var(--shadow-soft);
-}
-
-.centered {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .container {
@@ -1151,11 +1128,6 @@ main.container .data-table tbody td {
 /* ============================================================================
    15. Auth Forms
    ============================================================================ */
-.auth-card {
-    max-width: 640px;
-    margin: 0 auto;
-}
-
 .auth-form {
     display: grid;
     gap: var(--space-1);

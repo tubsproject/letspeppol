@@ -4,7 +4,7 @@ import {CompanyService} from "../services/app/company-service";
 import {resolve} from "@aurelia/kernel";
 import {InvoiceComposer} from "./invoice-composer";
 import {InvoiceCalculator} from "./invoice-calculator";
-import {AlertType} from "../alert/alert";
+import {AlertType} from "../components/alert/alert";
 import {InvoiceDraftDto} from "../services/app/invoice-service";
 
 export enum DocumentType {

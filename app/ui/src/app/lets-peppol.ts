@@ -5,7 +5,7 @@ import {Invoices} from "../invoice/invoices";
 import {Partners} from "../partner/partners";
 import {EmailConfirmation} from "../registration/email-confirmation";
 import {resolve} from "@aurelia/kernel";
-import {Alert} from "../alert/alert";
+import {Alert} from "../components/alert/alert";
 import {Account} from "../account/account";
 import {Products} from "../product/products";
 import {ResetPassword} from "../login/reset-password";

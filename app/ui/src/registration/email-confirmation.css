@@ -44,10 +44,6 @@
   }
 }
 
-.confirm-card {
-  max-width: 900px;
-}
-
 .directors-layout {
   display: flex;
   align-items: flex-start;

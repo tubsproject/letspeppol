@@ -2,7 +2,7 @@ import {resolve} from "@aurelia/kernel";
 import {PartnerDto, PartnerService} from "../services/app/partner-service";
 import {PartnerContext} from "./partner-context";
 import {IEventAggregator, watch} from "aurelia";
-import {AlertType} from "../alert/alert";
+import {AlertType} from "../components/alert/alert";
 
 export class PartnerOverview {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
