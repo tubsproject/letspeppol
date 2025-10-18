@@ -1,5 +1,5 @@
 import {bindable} from "aurelia";
-import {Party} from "../../../peppol/ubl";
+import {Party} from "../../../services/peppol/ubl";
 import {PartnerDto} from "../../../services/app/partner-service";
 
 export class InvoiceCustomerModal {

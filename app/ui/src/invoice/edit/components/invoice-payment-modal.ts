@@ -1,5 +1,5 @@
 import {bindable} from "aurelia";
-import {PaymentMeans} from "../../../peppol/ubl";
+import {PaymentMeans} from "../../../services/peppol/ubl";
 
 export class InvoicePaymentModal {
     @bindable invoiceContext;

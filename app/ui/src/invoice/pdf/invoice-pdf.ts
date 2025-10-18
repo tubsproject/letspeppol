@@ -1,5 +1,5 @@
-import { jsPDF } from "jspdf";
-import { CreditNote, Invoice, UBLDoc, UBLLine, getAmount } from "../../peppol/ubl";
+import {jsPDF} from "jspdf";
+import {getAmount, Invoice, UBLDoc, UBLLine} from "../../services/peppol/ubl";
 
 // Basic PDF generator for an Invoice / Credit Note.
 // Layout:

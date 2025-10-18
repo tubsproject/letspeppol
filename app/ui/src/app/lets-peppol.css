@@ -511,6 +511,13 @@ main.container {
     transform: translateY(1px);
 }
 
+.btn[disabled],
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 .btn.primary {
     background: var(--primary);
     color: var(--white); /* fixed var typo */
@@ -545,13 +552,6 @@ main.container {
 
 .btn.danger:active {
     filter: brightness(.9);
-}
-
-.btn.danger[disabled],
-.btn.danger:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-    box-shadow: none;
 }
 
 .btn.ghost {

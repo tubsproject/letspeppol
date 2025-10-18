@@ -1,9 +1,5 @@
 import {singleton} from "aurelia";
-import {
-    getLines,
-    TaxSubtotal,
-    UBLDoc,
-} from "../peppol/ubl";
+import {getLines, TaxSubtotal, UBLDoc,} from "../services/peppol/ubl";
 
 @singleton
 export class InvoiceCalculator {
