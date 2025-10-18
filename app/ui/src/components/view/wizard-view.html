@@ -1,8 +1,10 @@
 <import from="../lang/language-selector"></import>
+<import from="../theme/theme-selector"></import>
 
 <div class="centered">
-    <img src.bind="logo" class="logo" alt="Let's Peppol" click.trigger="goHome()" />
+    <img src.bind="this.theme.themeDark?'logo-dark.png':'logo.png'" class="logo" alt="Let's Peppol" click.trigger="goHome()" />
     <div class="language">
+        <theme-selector></theme-selector>
         <language-selector></language-selector>
     </div>
     <div class="container">
