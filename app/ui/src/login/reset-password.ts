@@ -1,9 +1,9 @@
 import {Params, RouteNode, Router} from "@aurelia/router";
 import {resolve} from "@aurelia/kernel";
-import {RegistrationService, ResetPasswordRequest} from "../services/kyc/registration-service";
+import {PasswordService, ResetPasswordRequest} from "../services/kyc/password-service";
 
 export class ResetPassword {
-    readonly registrationService = resolve(RegistrationService);
+    readonly passwordService = resolve(PasswordService);
     readonly router = resolve(Router);
     error: boolean = false;
     token: string;
@@ -20,7 +20,7 @@ export class ResetPassword {
             newPassword: this.password,
         } as ResetPasswordRequest;
         try {
-            await this.registrationService.resetPassword(request);
+            await this.passwordService.resetPassword(request);
             await this.router.load('login')
         } catch (e) {
             this.error = true;

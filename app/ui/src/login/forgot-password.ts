@@ -1,8 +1,8 @@
 import {resolve} from "@aurelia/kernel";
-import {ForgotPasswordRequest, RegistrationService} from "../services/kyc/registration-service";
+import {ForgotPasswordRequest, PasswordService} from "../services/kyc/password-service";
 
 export class ForgotPassword {
-    readonly registrationService = resolve(RegistrationService);
+    readonly passwordService = resolve(PasswordService);
     requestSent = false;
     email;
     error;
@@ -12,7 +12,7 @@ export class ForgotPassword {
             email: this.email,
         } as ForgotPasswordRequest;
         try {
-            await this.registrationService.forgotPassword(request);
+            await this.passwordService.forgotPassword(request);
             this.error = false;
             this.requestSent = true;
         } catch (e) {

@@ -3,12 +3,14 @@ import {resolve} from "@aurelia/kernel";
 import {AlertType} from "../components/alert/alert";
 import {IEventAggregator} from "aurelia";
 import {RegistrationService} from "../services/kyc/registration-service";
+import {ChangePasswordModal} from "./change-password-modal";
 
 export class Account {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
     private readonly companyService = resolve(CompanyService);
     private readonly registrationService = resolve(RegistrationService);
     private company: CompanyDto;
+    changePasswordModal: ChangePasswordModal;
 
     attached() {
         this.getCompany().catch(() => {
@@ -49,5 +51,9 @@ export class Account {
         } catch {
             this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to remove company from Peppol"});
         }
+    }
+
+    showChangePasswordModal() {
+        this.changePasswordModal.showChangePasswordModal();
     }
 }

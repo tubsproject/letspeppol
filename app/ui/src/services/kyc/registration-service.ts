@@ -47,15 +47,6 @@ export interface FinalizeSigningRequest {
     password: string,
 }
 
-export interface ForgotPasswordRequest {
-    email: string
-}
-
-export interface ResetPasswordRequest {
-    token: string,
-    newPassword: string
-}
-
 export class RegistrationService {
     public kycApi = resolve(KYCApi);
 
@@ -89,13 +80,5 @@ export class RegistrationService {
 
     async unregisterCompany() {
         await this.kycApi.httpClient.post('/api/company/unregister');
-    }
-
-    async forgotPassword(request: ForgotPasswordRequest) {
-        return await this.kycApi.httpClient.post(`/api/password/forgot`, JSON.stringify(request));
-    }
-
-    async resetPassword(request: ResetPasswordRequest) {
-        return await this.kycApi.httpClient.post(`/api/password/reset`, JSON.stringify(request));
     }
 }
