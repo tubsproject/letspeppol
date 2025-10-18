@@ -1,6 +1,5 @@
-import { describe, test, expect } from "vitest";
-import {buildInvoice, parseInvoice} from "../../src/peppol/ubl-parser";
-import {buildCreditNote, parseCreditNote} from "../../src/peppol/ubl-parser";
+import {describe, expect, test} from "vitest";
+import {buildCreditNote, buildInvoice, parseCreditNote, parseInvoice} from "../../src/services/peppol/ubl-parser";
 
 function normalizeXml(xml: string) {
     return xml

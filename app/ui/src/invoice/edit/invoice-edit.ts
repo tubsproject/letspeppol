@@ -2,9 +2,16 @@ import {resolve} from "@aurelia/kernel";
 import {ProxyService} from "../../services/proxy/proxy-service";
 import {DocumentType, InvoiceContext} from "../invoice-context";
 import {bindable, IEventAggregator, observable} from "aurelia";
-import {ClassifiedTaxCategory, CreditNote, getAmount, Invoice, PaymentMeansCode, UBLLine} from "../../peppol/ubl";
+import {
+    ClassifiedTaxCategory,
+    CreditNote,
+    getAmount,
+    Invoice,
+    PaymentMeansCode,
+    UBLLine
+} from "../../services/peppol/ubl";
 import {AlertType} from "../../components/alert/alert";
-import {buildCreditNote, buildInvoice, parseInvoice} from "../../peppol/ubl-parser";
+import {buildCreditNote, buildInvoice, parseInvoice} from "../../services/peppol/ubl-parser";
 import {InvoicePaymentModal} from "./components/invoice-payment-modal";
 import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
 import {InvoiceCalculator, roundTwoDecimals} from "../invoice-calculator";

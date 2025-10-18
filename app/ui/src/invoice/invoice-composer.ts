@@ -1,4 +1,4 @@
-import {AccountingParty, CreditNote, CreditNoteLine, Invoice, InvoiceLine, UBLBaseLine,} from "../peppol/ubl";
+import {AccountingParty, CreditNote, CreditNoteLine, Invoice, InvoiceLine, UBLBaseLine,} from "../services/peppol/ubl";
 import moment from "moment/moment";
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";

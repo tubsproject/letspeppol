@@ -1,5 +1,13 @@
 import {IEventAggregator, observable, singleton} from "aurelia";
-import {CreditNote, CreditNoteLine, getLines, Invoice, InvoiceLine, PaymentMeansCode, UBLDoc} from "../peppol/ubl";
+import {
+    CreditNote,
+    CreditNoteLine,
+    getLines,
+    Invoice,
+    InvoiceLine,
+    PaymentMeansCode,
+    UBLDoc
+} from "../services/peppol/ubl";
 import {CompanyService} from "../services/app/company-service";
 import {resolve} from "@aurelia/kernel";
 import {InvoiceComposer} from "./invoice-composer";
