@@ -4,11 +4,13 @@ import {AlertType} from "../components/alert/alert";
 import {IEventAggregator} from "aurelia";
 import {RegistrationService} from "../services/kyc/registration-service";
 import {ChangePasswordModal} from "./change-password-modal";
+import {ConfirmationModalContext} from "../components/confirmation/confirmation-modal-context";
 
 export class Account {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
     private readonly companyService = resolve(CompanyService);
     private readonly registrationService = resolve(RegistrationService);
+    private readonly confirmationModalContext = resolve(ConfirmationModalContext);
     private company: CompanyDto;
     changePasswordModal: ChangePasswordModal;
 
@@ -44,7 +46,17 @@ export class Account {
         this.ea.publish('alert', {alertType: AlertType.Info, text: "Account changes reverted"});
     }
 
-    async unregister() {
+    unregister() {
+        this.confirmationModalContext.showConfirmationModal(
+            "Remove From Peppol",
+            "Are you sure you whish to unsubscribe yourself from the Peppol network?\n" +
+            "Your invoices and credit notes will still be available.",
+            () => this.unregisterFromPeppol(),
+            undefined
+        );
+    }
+
+    async unregisterFromPeppol() {
         try {
             await this.registrationService.unregisterCompany()
             this.ea.publish('alert', {alertType: AlertType.Success, text: "Removed company from Peppol"});

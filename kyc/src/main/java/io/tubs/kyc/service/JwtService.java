@@ -59,21 +59,6 @@ public class JwtService {
         );
     }
 
-//    public String validateToken(String token) {
-//        try {
-//            Claims claims = Jwts.parserBuilder()
-//                    .setSigningKey(key)
-//                    .build()
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//
-//            return claims.get(PEPPOL_ID, String.class);
-//        } catch (Exception e) {
-//            log.error("Error validating token", e);
-//            return null;
-//        }
-//    }
-
     // Internal
 
     public String generateInternalToken() {
