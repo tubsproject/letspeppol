@@ -1,6 +1,6 @@
 import {resolve} from '@aurelia/kernel';
 import {singleton} from "aurelia";
-import {AppApi} from "./api/app-api";
+import {AppApi} from "./app-api";
 
 export interface CompanyDto {
     name: string,

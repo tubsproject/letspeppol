@@ -1,9 +1,9 @@
 import {resolve} from "@aurelia/kernel";
 import {singleton} from "aurelia";
-import {ProxyApi} from "./api/proxy-api";
-import {KYCApi} from "./api/kyc-api";
 import jwt, {JwtPayload} from "jsonwebtoken";
-import {AppApi} from "./api/app-api";
+import {KYCApi} from "../kyc/kyc-api";
+import {ProxyApi} from "../proxy/proxy-api";
+import {AppApi} from "./app-api";
 
 @singleton()
 export class LoginService {

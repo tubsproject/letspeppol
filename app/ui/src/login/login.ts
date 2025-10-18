@@ -1,7 +1,7 @@
 import {resolve} from "@aurelia/kernel";
-import {LoginService} from "../services/login-service";
+import {LoginService} from "../services/app/login-service";
 import {IRouter} from "@aurelia/router";
-import {CompanyService} from "../services/company-service";
+import {CompanyService} from "../services/app/company-service";
 
 export class Login {
     private readonly loginService = resolve(LoginService);

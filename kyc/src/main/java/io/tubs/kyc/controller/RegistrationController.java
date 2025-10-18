@@ -7,6 +7,7 @@ import io.tubs.kyc.exception.KycErrorCodes;
 import io.tubs.kyc.exception.KycException;
 import io.tubs.kyc.service.ActivationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class RegistrationController {
     private final ActivationService activationService;
 
     @PostMapping("/confirm-company")
-    public SimpleMessage confirmCompany(@RequestBody ConfirmCompanyRequest request) {
-        activationService.requestActivation(request);
+    public SimpleMessage confirmCompany(@RequestBody ConfirmCompanyRequest request, @RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false) String acceptLanguage) {
+        activationService.requestActivation(request, acceptLanguage);
         return new SimpleMessage("Activation email sent (if delivery fails, check logs for link)");
     }
 

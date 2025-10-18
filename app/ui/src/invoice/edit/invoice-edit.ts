@@ -1,5 +1,5 @@
 import {resolve} from "@aurelia/kernel";
-import {ProxyService} from "../../services/proxy-service";
+import {ProxyService} from "../../services/proxy/proxy-service";
 import {DocumentType, InvoiceContext} from "../invoice-context";
 import {bindable, IEventAggregator, observable} from "aurelia";
 import {ClassifiedTaxCategory, CreditNote, getAmount, Invoice, PaymentMeansCode, UBLLine} from "../../peppol/ubl";
@@ -10,7 +10,7 @@ import {InvoiceCustomerModal} from "./components/invoice-customer-modal";
 import {InvoiceCalculator, roundTwoDecimals} from "../invoice-calculator";
 import {InvoiceComposer} from "../invoice-composer";
 import {downloadInvoicePdf} from "../pdf/invoice-pdf";
-import {InvoiceDraftDto, InvoiceService} from "../../services/invoice-service";
+import {InvoiceDraftDto, InvoiceService} from "../../services/app/invoice-service";
 
 export class InvoiceEdit {
     readonly ea: IEventAggregator = resolve(IEventAggregator);

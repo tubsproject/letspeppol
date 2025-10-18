@@ -4,6 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.tubs.kyc.exception.KycErrorCodes;
+import io.tubs.kyc.exception.KycException;
+import io.tubs.kyc.service.jwt.JwtInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,12 +14,14 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class JwtService {
 
     public static final String PEPPOL_ID = "peppolId";
+    public static final String UID = "uid";
     public static final String ROLE_SERVICE = "service";
     private final Key key;
 
@@ -25,31 +30,49 @@ public class JwtService {
     }
 
     // External
-    public String generateToken(String peppolId) {
+    public String generateToken(String peppolId, UUID uid) {
         long expirationTime = 1000 * 60 * 60; // 1 hour
         return Jwts.builder()
                 .setIssuer("proxy")
                 .claim(PEPPOL_ID, peppolId)
+                .claim(UID, uid)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String validateToken(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            return claims.get(PEPPOL_ID, String.class);
-        } catch (Exception e) {
-            log.error("Error validating token", e);
-            return null;
+    public JwtInfo validateAndGetInfo(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new KycException(KycErrorCodes.AUTHENTCATION_FAILED);
         }
+        String token = authHeader.substring("Bearer ".length()).trim();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return new JwtInfo(
+                token,
+                claims.get(PEPPOL_ID, String.class),
+                claims.get(UID, String.class)
+        );
     }
+
+//    public String validateToken(String token) {
+//        try {
+//            Claims claims = Jwts.parserBuilder()
+//                    .setSigningKey(key)
+//                    .build()
+//                    .parseClaimsJws(token)
+//                    .getBody();
+//
+//            return claims.get(PEPPOL_ID, String.class);
+//        } catch (Exception e) {
+//            log.error("Error validating token", e);
+//            return null;
+//        }
+//    }
 
     // Internal
 

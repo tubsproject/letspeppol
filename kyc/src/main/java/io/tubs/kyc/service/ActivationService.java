@@ -8,6 +8,7 @@ import io.tubs.kyc.exception.NotFoundException;
 import io.tubs.kyc.model.EmailVerification;
 import io.tubs.kyc.repository.EmailVerificationRepository;
 import io.tubs.kyc.service.mail.ActivationEmailTemplateProvider;
+import io.tubs.kyc.util.LocaleUtil;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class ActivationService {
     private String fromAddress;
 
     @Transactional
-    public void requestActivation(ConfirmCompanyRequest request) {
+    public void requestActivation(ConfirmCompanyRequest request, String acceptLanguage) {
         if (isVerified(request.companyNumber())) {
             log.warn("User with email {} tried to register for company {} but company was already registered", request.email(), request.companyNumber());
             throw new KycException(KycErrorCodes.COMPANY_ALREADY_REGISTERED);
@@ -55,8 +56,12 @@ public class ActivationService {
                 Instant.now().plus(ttl)
         );
         verificationRepository.save(verification);
-        sendEmail(request.companyNumber(), request.email(), token);
+        String langTag = LocaleUtil.extractLanguageTag(acceptLanguage);
+        sendEmail(request.companyNumber(), request.email(), token, langTag);
     }
+
+    // Backwards compatibility
+    public void requestActivation(ConfirmCompanyRequest request) { requestActivation(request, null); }
 
     @Transactional
     public TokenVerificationResponse verify(String token) {
@@ -71,7 +76,7 @@ public class ActivationService {
         return new TokenVerificationResponse(
             verification.getEmail(),
             companyService.getByCompanyNumber(verification.getCompanyNumber())
-                .orElseThrow(() -> new NotFoundException("Company not found"))
+                .orElseThrow(() -> new NotFoundException(KycErrorCodes.COMPANY_NOT_FOUND))
         );
     }
 
@@ -104,10 +109,10 @@ public class ActivationService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private void sendEmail(String companyNumber, String to, String token) {
+    private void sendEmail(String companyNumber, String to, String token, String languageTag) {
         String activationLink = baseUrl + token;
         try {
-            ActivationEmailTemplateProvider.RenderedTemplate tpl = templateProvider.render(companyNumber, activationLink);
+            ActivationEmailTemplateProvider.RenderedTemplate tpl = templateProvider.render(companyNumber, activationLink, languageTag);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false);
             helper.setTo(to);
@@ -115,10 +120,12 @@ public class ActivationService {
             helper.setSubject(tpl.subject());
             helper.setText(tpl.body(), false);
             mailSender.send(message);
-            log.info("Sent activation email to {} for company {}", to, companyNumber);
+            log.info("Sent activation email to {} for company {} lang={} ", to, companyNumber, languageTag);
         } catch (Exception e) {
             log.warn("Failed to send email (logging activation link) token={} error={}", token, e.getMessage());
             log.info("Activation link for {} -> {}", to, activationLink);
         }
     }
+
+    private void sendEmail(String companyNumber, String to, String token) { sendEmail(companyNumber, to, token, null); }
 }

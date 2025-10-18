@@ -1,7 +1,6 @@
 import {resolve} from "@aurelia/kernel";
 import {IEventAggregator} from "aurelia";
-import {KycCompanyResponse, RegistrationService} from "../services/registration-service";
-import {AlertType} from "../alert/alert";
+import {KycCompanyResponse, RegistrationService} from "../services/kyc/registration-service";
 
 export class Registration {
     readonly ea: IEventAggregator = resolve(IEventAggregator);
@@ -11,7 +10,6 @@ export class Registration {
     companyNumber : string | undefined;
     company : KycCompanyResponse | undefined;
     errorCode: string | undefined;
-
 
     async checkCompanyNumber() {
         this.errorCode = undefined;

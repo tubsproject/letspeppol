@@ -9,20 +9,20 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "customer_identity_verification", indexes = {
-        @Index(name = "idx_customer", columnList = "customer_id")
+@Table(name = "user_identity_verification", indexes = {
+        @Index(name = "idx_user", columnList = "user_id")
 })
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerIdentityVerification {
+public class UserIdentityVerification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "director_id", nullable = false)
@@ -54,10 +54,10 @@ public class CustomerIdentityVerification {
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
-    public CustomerIdentityVerification(Customer customer, Director director, String directorNameSnapshot,
-                                        String certificateSubject, String certificateSerial,
-                                        String signatureAlgorithm, String dataHash, String certificate, String signature) {
-        this.customer = customer;
+    public UserIdentityVerification(User user, Director director, String directorNameSnapshot,
+                                    String certificateSubject, String certificateSerial,
+                                    String signatureAlgorithm, String dataHash, String certificate, String signature) {
+        this.user = user;
         this.director = director;
         this.directorNameSnapshot = directorNameSnapshot;
         this.certificateSubject = certificateSubject;

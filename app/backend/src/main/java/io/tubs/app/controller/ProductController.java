@@ -40,6 +40,6 @@ public class ProductController {
     @DeleteMapping("{id}")
     public void deleteProduct(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
         String companyNumber = JwtUtil.getCompanyNumber(jwt);
-        productService.deleteProduct(id);
+        productService.deleteProduct(companyNumber, id);
     }
 }

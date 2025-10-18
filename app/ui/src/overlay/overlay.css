@@ -38,19 +38,29 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .spinner { 
-        animation: none; 
-        border: 4px solid var(--primary, #5b8fff); 
+    .spinner {
+        animation: none;
+        border: 4px solid var(--primary, #5b8fff);
     }
 }
 
-@keyframes spin { 
-    to { transform: rotate(360deg); } 
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes fade-in {
-    from { opacity: 0; } to { opacity: 1; } 
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* Fallback for browsers without inert support */
-[inert] { pointer-events: none !important; user-select: none !important; }
+[inert] {
+    pointer-events: none !important;
+    user-select: none !important;
+}

@@ -1,7 +1,7 @@
 import {AlertType} from "../alert/alert";
 import {IEventAggregator, ISignaler} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {ProductService} from "../services/product-service";
+import {ProductService} from "../services/app/product-service";
 import {ProductContext} from "./product-context";
 
 export class ProductEdit {

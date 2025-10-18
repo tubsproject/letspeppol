@@ -84,7 +84,7 @@ public class ProductService {
         return ProductMapper.toDto(product);
     }
 
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+    public void deleteProduct(String companyNumber, Long id) {
+        productRepository.deleteForOwningCompany(companyNumber, id);
     }
 }

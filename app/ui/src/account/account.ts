@@ -1,11 +1,13 @@
-import {CompanyDto, CompanyService} from "../services/company-service";
+import {CompanyDto, CompanyService} from "../services/app/company-service";
 import {resolve} from "@aurelia/kernel";
 import {AlertType} from "../alert/alert";
 import {IEventAggregator} from "aurelia";
+import {RegistrationService} from "../services/kyc/registration-service";
 
 export class Account {
     private readonly ea: IEventAggregator = resolve(IEventAggregator);
     private readonly companyService = resolve(CompanyService);
+    private readonly registrationService = resolve(RegistrationService);
     private company: CompanyDto;
 
     attached() {
@@ -38,5 +40,14 @@ export class Account {
     discardChanges() {
         this.company = JSON.parse(JSON.stringify(this.companyService.myCompany));
         this.ea.publish('alert', {alertType: AlertType.Info, text: "Account changes reverted"});
+    }
+
+    async unregister() {
+        try {
+            await this.registrationService.unregisterCompany()
+            this.ea.publish('alert', {alertType: AlertType.Success, text: "Removed company from Peppol"});
+        } catch {
+            this.ea.publish('alert', {alertType: AlertType.Danger, text: "Failed to remove company from Peppol"});
+        }
     }
 }

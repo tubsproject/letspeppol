@@ -16,8 +16,12 @@
                         <span t="label.email">Emailasdf</span>
                         <input name="email" type="email" placeholder="you@company.com" required value.bind="email" t="[placeholder]placeholder.email"/>
                     </label>
-                    <label class="field full">
-                        <span>Password</span>
+                    <label class="field full" >
+                        <div style="display: flex; justify-content: space-between">
+                            <span>Password</span>
+                            <span><a href="../forgot-password">Forgot my password</a></span>
+                        </div>
+
                         <input name="email" type="password" required value.bind="password" />
                     </label>
                     <label class="field full checkbox">
@@ -27,7 +31,7 @@
                 </div>
                 <p if.bind="error" class="form-error" aria-live="assertive" t="error.login-failed">Login failed</p>
                 <div class="auth-actions">
-                    <button type="submit" class="btn primary" t="login.continue">Continue</button>
+                    <button type="submit" class="btn primary" t="login.continue">Sign in</button>
                 </div>
                 <p class="auth-alt">
                     <span t="login.new">New here?</span>

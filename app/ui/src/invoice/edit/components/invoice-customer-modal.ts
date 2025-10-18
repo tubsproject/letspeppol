@@ -1,6 +1,6 @@
 import {bindable} from "aurelia";
 import {Party} from "../../../peppol/ubl";
-import {PartnerDto} from "../../../services/partner-service";
+import {PartnerDto} from "../../../services/app/partner-service";
 
 export class InvoiceCustomerModal {
     @bindable invoiceContext;

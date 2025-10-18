@@ -1,6 +1,6 @@
 import {bindable, singleton} from "aurelia";
-import {ProductDto} from "../services/product-service";
-import {ProductCategoryDto} from "../services/product-category-service";
+import {ProductDto} from "../services/app/product-service";
+import {ProductCategoryDto} from "../services/app/product-category-service";
 
 @singleton
 export class ProductContext {

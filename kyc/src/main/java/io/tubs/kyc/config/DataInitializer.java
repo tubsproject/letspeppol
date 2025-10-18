@@ -1,10 +1,10 @@
 package io.tubs.kyc.config;
 
-import io.tubs.kyc.model.Customer;
+import io.tubs.kyc.model.User;
 import io.tubs.kyc.model.kbo.Company;
 import io.tubs.kyc.model.kbo.Director;
 import io.tubs.kyc.repository.CompanyRepository;
-import io.tubs.kyc.repository.CustomerRepository;
+import io.tubs.kyc.repository.UserRepository;
 import io.tubs.kyc.repository.DirectorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final DirectorRepository directorRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,12 +34,13 @@ public class DataInitializer implements CommandLineRunner {
             companyRepository.save(c);
             directorRepository.save(new Director("Bart In Stukken", c));
             directorRepository.save(new Director("Wout Schattebout", c));
-            Customer customer = Customer.builder()
+            User user = User.builder()
                     .company(c)
                     .email("test@softwareoplossing.be")
                     .passwordHash(passwordEncoder.encode("test"))
+                    .externalId(UUID.randomUUID())
                     .build();
-            customerRepository.save(customer);
+            userRepository.save(user);
             log.info("Seeded sample company {}", companyNumber);
         }
         companyNumber = "0705969661";
@@ -46,12 +49,13 @@ public class DataInitializer implements CommandLineRunner {
             companyRepository.save(c);
             directorRepository.save(new Director("Michiel Wouters", c));
             directorRepository.save(new Director("Saskia Verellen", c));
-            Customer customer = Customer.builder()
+            User user = User.builder()
                     .company(c)
                     .email("michiel@digita.be")
                     .passwordHash(passwordEncoder.encode("test"))
+                    .externalId(UUID.randomUUID())
                     .build();
-            customerRepository.save(customer);
+            userRepository.save(user);
             log.info("Seeded sample company {}", companyNumber);
         }
     }

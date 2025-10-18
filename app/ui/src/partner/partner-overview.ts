@@ -1,5 +1,5 @@
 import {resolve} from "@aurelia/kernel";
-import {PartnerDto, PartnerService} from "../services/partner-service";
+import {PartnerDto, PartnerService} from "../services/app/partner-service";
 import {PartnerContext} from "./partner-context";
 import {IEventAggregator, watch} from "aurelia";
 import {AlertType} from "../alert/alert";

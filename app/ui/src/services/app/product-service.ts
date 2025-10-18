@@ -1,6 +1,6 @@
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {AppApi} from "./api/app-api";
+import {AppApi} from "./app-api";
 
 export interface ProductDto {
     id?: number,

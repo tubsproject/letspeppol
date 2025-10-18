@@ -1,6 +1,6 @@
 import {resolve} from "@aurelia/kernel";
-import {KYCApi} from "./api/kyc-api";
 import {SignatureAlgorithm} from "@web-eid/web-eid-library/models/SignatureAlgorithm";
+import {KYCApi} from "./kyc-api";
 
 export interface TokenVerificationResponse {
     email: string;
@@ -47,6 +47,15 @@ export interface FinalizeSigningRequest {
     password: string,
 }
 
+export interface ForgotPasswordRequest {
+    email: string
+}
+
+export interface ResetPasswordRequest {
+    token: string,
+    newPassword: string
+}
+
 export class RegistrationService {
     public kycApi = resolve(KYCApi);
 
@@ -76,5 +85,17 @@ export class RegistrationService {
 
     async finalizeSign(request: FinalizeSigningRequest) : Promise<Response> {
         return await this.kycApi.httpClient.post(`/api/identity/sign/finalize`, JSON.stringify(request));
+    }
+
+    async unregisterCompany() {
+        await this.kycApi.httpClient.post('/api/company/unregister');
+    }
+
+    async forgotPassword(request: ForgotPasswordRequest) {
+        return await this.kycApi.httpClient.post(`/api/password/forgot`, JSON.stringify(request));
+    }
+
+    async resetPassword(request: ResetPasswordRequest) {
+        return await this.kycApi.httpClient.post(`/api/password/reset`, JSON.stringify(request));
     }
 }

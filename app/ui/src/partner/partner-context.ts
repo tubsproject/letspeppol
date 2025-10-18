@@ -1,5 +1,5 @@
 import {bindable, singleton} from "aurelia";
-import {PartnerDto} from "../services/partner-service";
+import {PartnerDto} from "../services/app/partner-service";
 
 @singleton
 export class PartnerContext {

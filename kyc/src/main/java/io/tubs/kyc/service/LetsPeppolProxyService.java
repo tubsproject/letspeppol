@@ -38,4 +38,21 @@ public class LetsPeppolProxyService {
         }
     }
 
+    public void unregisterCompany(String token) {
+        if (!proxyEnabled) {
+            return;
+        }
+        try {
+            ResponseEntity<String> response = this.webClient.post()
+                    .uri("/unreg")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .toEntity(String.class)
+                    .block();
+        } catch (Exception ex) {
+            log.error("Unregistering company to proxy failed", ex);
+            throw new KycException(KycErrorCodes.PROXY_UNREGISTRATION_FAILED);
+        }
+    }
+
 }

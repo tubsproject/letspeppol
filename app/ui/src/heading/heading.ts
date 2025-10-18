@@ -1,4 +1,4 @@
-import {LoginService} from "../services/login-service";
+import {LoginService} from "../services/app/login-service";
 import {resolve} from "@aurelia/kernel";
 import {Router} from "@aurelia/router";
 

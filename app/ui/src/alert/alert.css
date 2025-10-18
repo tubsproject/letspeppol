@@ -41,40 +41,40 @@
 
 .alert__icon {
     flex-shrink: 0;
-    margin-top: 2px
+    margin-top: 2px;
 }
 
 .alert__icon svg {
     width: 20px;
     height: 20px;
-    stroke-width: 2
+    stroke-width: 2;
 }
 
 .alert__body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    min-width: 0
+    min-width: 0;
 }
 
 .alert__title {
     font-weight: 600;
     font-size: 14px;
-    margin: 0
+    margin: 0;
 }
 
 .alert__msg {
     margin: 0;
     font-size: 13px;
     line-height: 1.3;
-    color: #374151
+    color: #374151;
 }
 
 .alert__actions {
     margin-left: auto;
     display: flex;
     gap: 6px;
-    align-items: center
+    align-items: center;
 }
 
 .btn-ghost {
@@ -83,11 +83,11 @@
     padding: 4px;
     cursor: pointer;
     color: #6b7280;
-    border-radius: 6px
+    border-radius: 6px;
 }
 
 .btn-ghost:hover {
-    background: rgb(0 0 0 / 5%)
+    background: rgb(0 0 0 / 5%);
 }
 
 .alert::before {
@@ -101,68 +101,68 @@
 }
 
 .alert--success {
-    background: var(--success-bg)
+    background: var(--success-bg);
 }
 
 .alert--success::before {
     background: var(--success-bar);
-    border-radius: 4px 0 0 4px
+    border-radius: 4px 0 0 4px;
 }
 
 .alert--info {
-    background: var(--info-bg)
+    background: var(--info-bg);
 }
 
 .alert--info::before {
     background: var(--info-bar);
-    border-radius: 4px 0 0 4px
+    border-radius: 4px 0 0 4px;
 }
 
 .alert--warning {
-    background: var(--warning-bg)
+    background: var(--warning-bg);
 }
 
 .alert--warning::before {
     background: var(--warning-bar);
-    border-radius: 4px 0 0 4px
+    border-radius: 4px 0 0 4px;
 }
 
 .alert--danger {
-    background: var(--danger-bg)
+    background: var(--danger-bg);
 }
 
 .alert--danger::before {
     background: var(--danger-bar);
-    border-radius: 4px 0 0 4px
+    border-radius: 4px 0 0 4px;
 }
 
 .alert--neutral {
-    background: var(--neutral-bg)
+    background: var(--neutral-bg);
 }
 
 .alert--neutral::before {
     background: var(--neutral-bar);
-    border-radius: 4px 0 0 4px
+    border-radius: 4px 0 0 4px;
 }
 
 @keyframes slide-up {
     0% {
         opacity: 0;
-        transform: translateY(-150px)
+        transform: translateY(-150px);
     }
 
     20% {
         opacity: 1;
-        transform: translateY(150px)
+        transform: translateY(150px);
     }
 
     80% {
         opacity: 1;
-        transform: translateY(150px)
+        transform: translateY(150px);
     }
 
     100% {
         opacity: 1;
-        transform: translateY(-150px)
+        transform: translateY(-150px);
     }
 }

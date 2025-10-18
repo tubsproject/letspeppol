@@ -1,14 +1,10 @@
 import {Params, RouteNode} from "@aurelia/router";
 import {resolve} from "@aurelia/kernel";
-import {
-    RegistrationService,
-    TokenVerificationResponse,
-    Director
-} from "../services/registration-service";
 import * as webeid from '@web-eid/web-eid-library/web-eid';
-import {KYCApi} from "../services/api/kyc-api";
 import {IEventAggregator} from "aurelia";
 import {AlertType} from "../alert/alert";
+import {KYCApi} from "../services/kyc/kyc-api";
+import {Director, RegistrationService, TokenVerificationResponse} from "../services/kyc/registration-service";
 
 
 export class EmailConfirmation {

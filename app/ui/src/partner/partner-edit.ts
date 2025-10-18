@@ -1,7 +1,7 @@
 import {AlertType} from "../alert/alert";
 import {IEventAggregator} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {PartnerService} from "../services/partner-service";
+import {PartnerService} from "../services/app/partner-service";
 import {PartnerContext} from "./partner-context";
 
 export class PartnerEdit {

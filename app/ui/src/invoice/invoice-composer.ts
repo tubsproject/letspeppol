@@ -2,9 +2,9 @@ import {AccountingParty, CreditNote, CreditNoteLine, Invoice, InvoiceLine, UBLBa
 import moment from "moment/moment";
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {CompanyService} from "../services/company-service";
+import {CompanyService} from "../services/app/company-service";
 import {omit} from 'lodash';
-import {PartnerDto} from "../services/partner-service";
+import {PartnerDto} from "../services/app/partner-service";
 
 @singleton()
 export class InvoiceComposer {

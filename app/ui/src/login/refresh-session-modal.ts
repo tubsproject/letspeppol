@@ -1,5 +1,5 @@
 import {resolve} from "@aurelia/kernel";
-import {LoginService} from "../services/login-service";
+import {LoginService} from "../services/app/login-service";
 import {watch} from "aurelia";
 
 export class RefreshSessionModal {

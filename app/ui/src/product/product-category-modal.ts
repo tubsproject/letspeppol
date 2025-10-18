@@ -1,4 +1,4 @@
-import {ProductCategoryDto, ProductCategoryService} from "../services/product-category-service";
+import {ProductCategoryDto, ProductCategoryService} from "../services/app/product-category-service";
 import {resolve} from "@aurelia/kernel";
 import {ProductContext} from "./product-context";
 import {ISignaler} from "aurelia";

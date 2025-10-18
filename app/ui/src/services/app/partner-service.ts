@@ -1,7 +1,7 @@
 import {singleton} from "aurelia";
 import {resolve} from "@aurelia/kernel";
-import {AppApi} from "./api/app-api";
 import {Address} from "./company-service";
+import {AppApi} from "./app-api";
 
 export interface CustomerResponse {
     name: string,

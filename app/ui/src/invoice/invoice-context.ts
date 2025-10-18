@@ -1,11 +1,11 @@
 import {IEventAggregator, observable, singleton} from "aurelia";
 import {CreditNote, CreditNoteLine, getLines, Invoice, InvoiceLine, PaymentMeansCode, UBLDoc} from "../peppol/ubl";
-import {CompanyService} from "../services/company-service";
+import {CompanyService} from "../services/app/company-service";
 import {resolve} from "@aurelia/kernel";
 import {InvoiceComposer} from "./invoice-composer";
 import {InvoiceCalculator} from "./invoice-calculator";
 import {AlertType} from "../alert/alert";
-import {InvoiceDraftDto} from "../services/invoice-service";
+import {InvoiceDraftDto} from "../services/app/invoice-service";
 
 export enum DocumentType {
     Invoice = "Invoice",

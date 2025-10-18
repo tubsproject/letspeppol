@@ -1,9 +1,9 @@
 import {resolve} from "@aurelia/kernel";
 import {bindable, IEventAggregator,} from "aurelia";
-import {ProductDto, ProductService} from "../services/product-service";
+import {ProductDto, ProductService} from "../services/app/product-service";
 import {ProductContext} from "./product-context";
 import {AlertType} from "../alert/alert";
-import {ProductCategoryDto, ProductCategoryService} from "../services/product-category-service";
+import {ProductCategoryDto, ProductCategoryService} from "../services/app/product-category-service";
 import {ProductCategoryModal} from "./product-category-modal";
 
 export class ProductOverview {

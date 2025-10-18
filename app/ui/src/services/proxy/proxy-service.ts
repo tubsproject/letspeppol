@@ -1,5 +1,5 @@
 import {resolve} from "@aurelia/kernel";
-import {ProxyApi} from "./api/proxy-api";
+import {ProxyApi} from "./proxy-api";
 
 export type ListItemV1 = {
     uuid: string;
